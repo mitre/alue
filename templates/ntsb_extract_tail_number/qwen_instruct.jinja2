@@ -1,0 +1,20 @@
+<|im_start|>system
+Using the information contained in the provided context, identify a concise, EXACT span of the context that answers the question. DO NOT provide sentence-long spans. Adhere to the stylistic guidelines provided in the question.
+
+{% if examples %}
+<|im_start|>userFor example:
+{% for example in examples %}
+    Question: {{ example.question }}
+    Context: {{ example.transcript }}
+    Answer: {{ example.answer }}
+{% endfor %}
+{% endif %}
+<|im_end|>
+
+<|im_start|>user
+Question: {{ query }}
+Context: {{ context }}
+<|im_end|>
+
+<|im_start|>assistant
+Answer:

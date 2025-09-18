@@ -1,0 +1,26 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are an expert AI assistant that helps answer user queries using ONLY the information provided in the context. If you do not know find the answer to the user query in the context, respond with "I don't know".
+
+{% if examples %}
+For example:
+{% for example in examples %}
+{% if not loop.first %} {% endif %}
+    Query: {{ example.query }}
+    Context:
+    {{ example.context }}}
+
+    Answer:
+    {{ example.answer }}
+{% endfor %}
+{% endif %}
+<|eot_id|>
+
+<|start_header_id|>user<|end_header_id|>
+Query: {{ query }}
+Context:
+{% for document in documents %}
+    {{ document.content }}
+{% endfor %}
+<|eot_id|>
+
+<|start_header_id|>assistant<|end_header_id|>
+Answer:

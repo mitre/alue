@@ -1,0 +1,21 @@
+<s>[INST] <<SYS>> You are an expert AI assistant that helps answer user queries using ONLY the information provided in the context. <</SYS>>
+
+{% if examples %}
+For example:
+{% for example in examples %}
+<s>[INST]
+    Query: {{ example.query }}
+    Context:
+    {{ example.context }}
+    Answer: [/INST]
+    {{ example.answer }}
+{% endfor %}
+{% endif %}
+
+<s>[INST]
+Query: {{ query }}
+Context:
+{% for document in documents %}
+    {{ document.content }}
+{% endfor %}
+Answer: [/INST]

@@ -1,0 +1,139 @@
+{
+    "examples": [
+        {
+            "query": "What is the location of the airport that needs its grass mowed?",
+            "context": "ACN: 1834092\nAircraft: 1\nReference: X\nAircraft Operator: Personal\nMake Model Name: Small Aircraft, High Wing, 1 Eng, Fixed Gear\nCrew Size.Number Of Crew: 1\nOperating Under FAR Part: Part 91\nFlight Plan: None\nMission: Personal\nFlight Phase: Takeoff / Launch\nRoute In Use: None\nPerson: 1\nLocation Of Person.Aircraft: X\nLocation In Aircraft: Flight Deck\nReporter Organization: Personal\nFunction.Flight Crew: Pilot Flying\nQualification.Flight Crew: Instrument\nExperience.Flight Crew.Total: 6000\nExperience.Flight Crew.Last 90 Days: 20\nExperience.Flight Crew.Type: 4000\nASRS Report Number.Accession Number: 1834092\nNarrative: Airport operations. While operating at this airport (Ridgeland SC) 3J1 the taxiway and runway markings are obscured by tall grass. Grass has grown to two to three feet and it is hard to see the markings and the airport now is being overrun with wild dogs and coyotes as well as deer. This airport was recently improved with new runway and grass areas however the airport management has chose to not maintain safe operations of the facility. My plane used to use the grass runway adjacent to the hard surface and now is unusable as the grass has grown too high making visibility restricted. My prop comes in contact with the taller grass. Please look into this for the safety of based aircraft and visiting aircraft as approaching the airport you can't tell the height of the grass from the air and we don't need wildlife entering the runway environment.\nSynopsis: Pilot reports the condition of runways and airport facilities are falling into disrepair. Pilot states grass runway conditions are becoming unsafe for landing aircraft because the grass has grown too high.\n",
+            "answer": "SC"
+        },
+
+        {
+            "query": "How many deer did the PA23-250 pilot observe?",
+            "context": "ACN: 1647428\nTime / Day\nDate: 201905\nLocal Time Of Day: 0601-1200\nPlace\nLocale Reference.Airport: ZZZ.Airport\nState Reference: US\nEnvironment\nFlight Conditions: VMC\nWeather Elements / Visibility.Visibility: 10\nLight: Daylight\nNarrative: Cross country to ZZZ. While at ZZZ performing my flare to land but prior to the mains touching down, 3 deer ran across the runway from right to left and directly under my plane. I immediately and simultaneously added power and pulled the nose up to go around but was not able to completely clear the animals. I heard and felt a significant double impact under the plane while initiating the go around. Immediately following the loud double impact, I instinctively looked at the mirror on my right engine and saw the nose gear \"dangling\" back and forth freely. At that moment, I opted to abort the go around, I retarded the throttles to idle and landed roughly 1000 feet down the runway. As expected the nose gear completely collapsed.\nSynopsis: PA23-250 pilot reported hitting a deer on runway in the landing flare.\n",
+            "answer": "3"
+        },
+
+        {
+            "query": "In what city and state did a general aviation pilot witness a UAV flying in close proximity?",
+            "context": "ACN: 1621331\nHuman Factors\nEvents\nAnomaly: {'Anomaly.Conflict': 'NMAC'}\nDetector.Person: Flight Crew\nMiss Distance.Horizontal: 100\nMiss Distance.Vertical: 100\nWhen Detected: In-flight\nResult.General: None Reported / Taken\nAssessments\nContributing Factors / Situations: Procedure\nPrimary Problem: Ambiguous\nNarrative: On extended right base leg to 25R at DVT, I observed am aircraft, similar to an Extra 300, traveling to the west (as though it were on the downwind to [Runway] 7L, against the current traffic direction), passing in front of me and slightly above. The aircraft was not in communication with the North Tower, which I was in contact with and had directed me to the extended base leg for [Runway] 25R. I was a little above traffic pattern altitude at about 2,700 feet as I was still descending, and the other aircraft was slightly above me. As it passed to my right and was off my right wing, it did a half snap roll and descended vertically, and at that time, it was apparent to me that it was a large radio controlled aircraft above the Sun Valley Fliers Field just NE of DVT. At that time, it was also evident that it was a lot closer to me than I had originally estimated, since it was not a full-sized aircraft. I reported this to ATC when it happened since there were other aircraft in the pattern at the time.\nSynopsis: General aviation pilot reported a close encounter with a UAV while in the landing pattern at Phoenix Deer Valley Airport.\n",
+            "answer": "Phoenix, AZ"
+        },
+
+        {
+            "query": "In the fume incident on board a commercial fixed wing aircraft in 2019, which flight attendant filed the report of the incident?",
+            "context": "ACN: 1675637\nTime / Day\nDate: 201907\nLocal Time Of Day: 0601-1200\nPlace\nEnvironment\nNarrative: I worked flight to ZZZ as the D Flight Attendant. My team was A Flight Attendant, B Flight Attendant and C Flight Attendant. These ladies are very senior to me and were stellar. They were professional, kept an upbeat attitude with great sense of humor and did their jobs to the \"above and beyond\" as standard. I was and am proud to have been part of their team that day and look forward to the opportunity to work with them on a future flight. On climbout, the gals in the back began the [service]. As I worked my way to the back to help, I passed through the exit row section and noticed a funky smell. It strengthened as I moved to the aft. Once in the aft galley the odor was very strong but I couldn't put my finger on it, B Flight Attendant and C Flight Attendant said that it was an oil smell that was recognized by C Flight Attendant and the guest at 17D right when she started the [service] at row 17. B Flight Attendant called the pilots and he said he just turned off some pack (?) and it should dissipate soon. Which it had already by the time I got to the aft and continued to as we started our first cart. In retrospect, my first symptom was on the cart, around row 9, I experienced a whole-body flush. Started with my face and went through my whole body. I asked C Flight Attendant are you hot, she laughed and said no, it's probably your own personal summer. My face especially and body stayed hot throughout the service. Next, B Flight Attendant and I pulled up the trash cart and began collecting. Around row 19-20, I looked at B Flight Attendant and asked her, do you feel that? she said oh yeah. Like the plane was sashaying, my stomach felt sick, my face was still hot feeling and I just didn't feel right. Off kilter, like stepping off a ride at the carnival and you feel like you're going to topple over but don't. All 3 of us in the back, throughout the rest of the flight, bumped into guest seats and the lavatory doors, almost like we were experiencing turbulence. Which to my knowledge we did not. Finishing trash, we arrived at the aft galley and almost at once all 3 of us said are you feeling like I am. The plane movement, nausea, 2 of us had a headache at that point, our brains felt fuzzy or muted, not clear thinking. I think it was C Flight Attendant who immediately called A Flight Attendant up front and asked her how she was feeling. She said \"OMG I thought it was just me!\" she was feeling some of the same symptoms and the weird motion of the plane too. The Captain had heard their conversation and asked what was going on. They explained and I can't remember what else was said. I was never on the inter phone during flight to my recollection, so my information is 3rd party. At this point I believe us 3 in the back took a seat and ate in hopes that it would help us feel better. Then C Flight Attendant and I did the 2nd cart with B Flight Attendant serving from the back. A Flight Attendant did trash behind the cart. We all convened in the aft galley to discuss how we were feeling, not good. Symptoms were not lessening, and we were all not thinking clear or feeling OK. I believe someone again spoke to the pilots and the Captain said medics would be meeting our plane. During deplaning, the cleaning crew was busting a nut, I have never seen so many on! There were 2 gentlemen at the front, I heard some interchange they had with A Flight Attendant, but it wasn't clear as I was in 2D saying goodbye to our guests. Then, the EMTs came on, only into the entrance, asking us (B Flight Attendant and C Flight Attendant had walked up to do the cabin check) if we were going to the hospital or only having vitals taken. I know we all looked like deer in the headlights because he then raised his voice and was firmer in repeating again vitals or hospital. We looked at each other and said, hospital. B Flight Attendant and C Flight Attendant went to the back to collect their bags and the Captain said to us I would like to debrief, and he followed them to the back to make sure they heard him about the debrief. While he was back there, he took a call from OPs I believe and A Flight Attendant and I were up front dealing with the 2 gentlemen asking us why we weren't getting off, both seemed impatient with us and one was very verbal about us getting off and the next flight being canceled. I went to the back to see if they were debriefing and A Flight Attendant followed, so did the 2 gentlemen. No briefing as the Captain was still on the phone and the 2 gentlemen asked again why still on plane if not safe etc. We all filed up front, the Captain came last as he finished up his call and spoke briefly to us, all the while the 2 gentlemen stood and waited. There were 2 guests who smelled the same smell; 17D and 31D, 31D also said to B Flight Attendant I think, that she felt the weird sashaying of the plane too. We did check in with both during flight as we deplaned, both said they felt totally fine. Before heading off to the hospital, A Flight Attendant said she had phoned maintenance or tried. We did go to the hospital, did have to navigate a very confusing trial and error effort on our parts with our addled brains to help ourselves help the doctors there, know what to test us for. Did give our personal insurance info. Did help each other and we stuck together, all in one room after A Flight Attendant joined us finally. She had other issues and was helped first in a different room. We did go to the hotel, no rooms booked for us when we arrived by car on A Flight Attendant, did buy T-shirt's in gift shop so we could go as a team to dinner in the hotel. The next am we headed to airport by the time we got there, we weren't on the flight anymore. A Flight Attendant made a phone call to someone corporate and we were all able to get home. Since the incident occurred, there have been a lot of emails, phone calls, texts, required forms, managing our line(s) to ensure we get the help we need and the payment we earned. However, all this was happening while our brains were still muddled, still fighting the nausea and headaches, still feeling the heavy fatigue daily, all while we are supposed to be healing. It was really difficult to put thoughts together. Safety issues [were] inability to make clear thought and safe decisions for myself, my team and my guests. In the future, proper protocol being in place for us to easily navigate a fume event. Also have protocol in place at the hospital level so they know how to treat us.\nSynopsis: Flight Attendant reported odor in passenger cabin which caused entire cabin crew to experience health issues. Flight attendants were provided medical evaluation at destination.\n",
+            "answer": "D Flight Attendant, who was the junior flight attendant to three others."
+        }
+    ],
+    "data": [
+        {
+            "title": "Airport Maintenance",
+            "paragraphs": [
+                {
+                    "qas": [
+
+                        {
+                            "id": "2",
+                            "question": "What is the location of the airport that needs its grass mowed?",
+                            "answers": [
+                                {
+                                    "text": "SC",
+                                    "document_id": [
+                                        "1834092"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "question": "Which airports are in need of improved fencing?",
+                            "answers": [
+                                {
+                                    "text": "Lonesome Pine Regional Airport (LNP), LWA, OWD, and an identified airport (ZZZ)",
+                                    "document_id": [
+                                        "1780427",
+                                        "1937796",
+                                        "1680055",
+                                        "1692643"
+                                    ]
+                                }
+                            ]
+                        },
+
+                        {
+                            "id": "5",
+                            "question": "How many deer were struck by the PA23-250?",
+                            "answers": [
+                                {
+                                    "text": "1",
+                                    "document_id": [
+                                        "1647428"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6",
+                            "question": "What was the model of plane that encountered a herd of 5 deer?",
+                            "answers": [
+                                {
+                                    "text": "Cessna 172",
+                                    "document_id": [
+                                        "1693821"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "8",
+                            "question": "How did the pilot of the plane and the pilot of the helicopter communicate with each other in the incident reported in which the helicopter chased deer off the runway?",
+                            "answers": [
+                                {
+                                    "text": "by phone",
+                                    "document_id": [
+                                        "1658941"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9",
+                            "question": "In the 2019 fume incident on board a commercial fixed wing aircraft, how many flight attendants were on duty?",
+                            "answers": [
+                                {
+                                    "text": "4",
+                                    "document_id": [
+                                        "1675637"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11",
+                            "question": "In the fume incident that occured on board a commercial fixed wing aircraft in 2019, what symtoms did the reporting flight attendant experience?",
+                            "answers": [
+                                {
+                                    "text": "a whole-body flush, hot, nausea (\"stomach felt sick\"), dizzy (\"off kilter\"), headache,  brains felt fuzzy or muted, not clear thinking, heavy fatigue, \"inability to make clear thought and safe decisions for myself, my team and my guests\"",
+                                    "document_id": [
+                                        "1675637"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "12",
+                            "question": "In the incident aboard the Gulfstream IV aircraft in May 2023, according to the co-pilot, what would he have preferred the Captain do rather than shouting at him?",
+                            "answers": [
+                                {
+                                    "text": "calmly take the controls from him",
+                                    "document_id": [
+                                        "1999625"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

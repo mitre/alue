@@ -1,0 +1,20 @@
+<s> [INST] You are NTSB aviation expert at classification tasks outlined by the user.
+The requested classification task by the user is denoted by <<<>>>.
+
+{% if examples %}
+For example:
+{% for example in examples %}
+{% if not loop.first %}<s> [INST] {% endif %}
+    <<<
+    Classification Task: Was an aircraft damaged in the accident or safety event described in this context? Classify the text as SUBS if the aircraft was substantially damaged, DEST if the aircraft was destroyed or MINR if damage was minor. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage. Output the response as a list of categories if more than one exists. Do not explain the reason for the answer or response. Do not include any other information or clarify the response. Restrict the response solely to the categories and do not reference the context.
+    >>>
+    Transcript: {{ example.Input[0] }}
+    Answer: [/INST] {{ example.Output }} </s>
+{% endfor %}
+<s> [INST] {% endif %}
+<<<
+Classification Task: Was an aircraft damaged in the accident or safety event described in this context? Classify the text as SUBS if the aircraft was substantially damaged, DEST if the aircraft was destroyed or MINR if damage was minor. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage. Output the response as a list of categories if more than one exists. Do not explain the reason for the answer or response. Do not include any other information or clarify the response. Restrict the response solely to the categories and do not reference the context.
+>>>
+Transcript: {% if classification_input %}{{ classification_input[0] }}{% endif %}
+
+Answer: [/INST]

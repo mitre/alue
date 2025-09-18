@@ -1,0 +1,12 @@
+### Instruction: Identify the tail number(s) in the provided transcript. If there is no tail number present, respond with [NONE]
+
+{% if examples %}
+For example:
+{% for example in examples %}
+    ### Input: {{ example.transcript }}
+    ### Output: {{ example.answer}}
+{% endfor %}
+{% endif %}
+
+### Input: {{ context }}
+### Output:

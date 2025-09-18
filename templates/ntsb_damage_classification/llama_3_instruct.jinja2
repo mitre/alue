@@ -1,0 +1,27 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are NTSB aviation expert at classification tasks outlined by the user.
+The requested classification task by the user is denoted by <<<>>>.
+<|eot_id|>
+
+{% if examples %}
+<|start_header_id|>user<|end_header_id|>Examples:
+{% for example in examples %}
+{% if not loop.first %}<|start_header_id|>user<|end_header_id|>{% endif %}
+        <<<
+        Classification Task: Was an aircraft damaged in the accident or safety event described in this context? Classify the text as SUBS if the aircraft was substantially damaged, DEST if the aircraft was destroyed or MINR if damage was minor. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage. Output the response as a list of categories if more than one exists. Do not explain the reason for the answer or response. Do not include any other information or clarify the response. Restrict the response solely to the categories and do not reference the context.
+        >>>
+        Transcript: {{ example.Input[0] }}
+        Answer: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>{{ example.Output }}<|eot_id|>
+{% endfor %}
+{% endif %}
+
+<|start_header_id|>user<|end_header_id|>
+<<<
+Classification Task: Was an aircraft damaged in the accident or safety event described in this context? Classify the text as SUBS if the aircraft was substantially damaged, DEST if the aircraft was destroyed or MINR if damage was minor. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage. Output the response as a list of categories if more than one exists. Do not explain the reason for the answer or response. Do not include any other information or clarify the response. Restrict the response solely to the categories and do not reference the context.
+>>>
+{% if classification_input %}
+Transcript: {{ classification_input[0] }}
+{% endif %}
+Answer: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>

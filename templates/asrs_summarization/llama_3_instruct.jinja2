@@ -1,0 +1,18 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an aviation safety analyst. Analyze the following narrative from a pilot that describes a potentially risky safety event, and then generate a one to two sentence summary of the event.
+<|eot_id|>
+
+{% if examples %}
+<|start_header_id|>user<|end_header_id|>For example:
+{% for example in examples %}
+{% if not loop.first %}<|start_header_id|>user<|end_header_id|>{% endif %}
+    Input Text: {{ example.input }}
+    Summary: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>{{ example.output }}<|eot_id|>
+{% endfor %}
+{% endif %}
+
+<|start_header_id|>user<|end_header_id|>
+Input Text: {{ input }}
+Summary: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>

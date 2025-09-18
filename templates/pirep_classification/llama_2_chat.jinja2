@@ -1,0 +1,19 @@
+<s> [INST] <<SYS>> A pilot report (PIREP) in air traffic control radio communications is a pilot report of in-flight weather (e.g. “rain”, “snow”, “fog”), sky conditions (e.g. “scattered”, “clear”), wind conditions (e.g., "wind calm", "wind calm"), atmospheric conditions (e.g. “outside temperature minus seven”, “severe icing"), and/or flight conditions (e.g. “smooth ride”, “moderate intermittent chop”).
+Radio transmissions that are not a PIREP:
+- Questions about a PIREP
+- Requests for a PIREP
+- Controller statements reiterating past PIREPs to answer a pilot's question
+- Airspace fix names that are homophones to weather terms, e.g. haze
+Classify a transcript as 1 or 0, where 1 means the transcript contains a PIREP and 0 means the transcript does not contain a PIREP. Do not provide an explanation for your classifications. <</SYS>>
+
+{% if examples %}
+{% for example in examples %}
+{% if not loop.first %}<s> [INST]{% endif %}
+    Transcript: {{ example.Input[0] }}
+    Answer: [/INST] {{ example.Output }} </s>
+{% endfor %}
+{% endif %}
+
+<s> [INST]
+Transcript: {% if classification_input %} {{ classification_input[0] }} {% endif %}
+Answer: [/INST]

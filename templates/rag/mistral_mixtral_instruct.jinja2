@@ -1,0 +1,16 @@
+<s>[INST] You are an expert AI assistant that helps answer user queries using ONLY the information provided in the context.
+{% if examples %}
+For example:
+{% for example in examples %}
+{% if not loop.first %}<s> [INST] {% endif %}
+    Question: {{ example.query }}
+    Context:
+    {{ example.context }}
+    Answer: [/INST] {{ example.answer }} </s>
+{% endfor %}
+[INST] {% endif %}Question: {{ query }}
+Context:
+{% for document in documents %}
+    {{ document.content }}
+{% endfor %}
+Answer: [/INST]

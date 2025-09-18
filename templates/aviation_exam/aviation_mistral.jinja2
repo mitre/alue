@@ -1,0 +1,17 @@
+### Instruction: Based on the given question and options, select the correct answer. Choose only one option that best answers the question.
+{% if json_schema %}
+Provide your answer in the following JSON format:
+{{ json_schema }}
+{% endif %}
+
+{% if examples %}
+Here are some examples:
+{% for example in examples %}
+#### Input: {{ example.question }}
+
+### Output:
+{{ example.correct_answer }}
+{% endfor %}
+{% endif %}
+
+### Output:

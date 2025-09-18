@@ -1,0 +1,402 @@
+[
+    {
+        "text": "PVU SVC TWR CLSD",
+        "label": "Yes"
+    },
+    {
+        "text": "MOT SVC TWR CLSD",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 119.4 DLY 1900-1945",
+        "label": "Yes"
+    },
+    {
+        "text": "ASE SVC TWR U/S CTC DENVER ARTCC 119.85",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "TOWER CLSD CLASS D AND AIRFIELD SERVICES NOT AVBL (1900 - 2300 JST)",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 118.95",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD 132.2 NOW CTAF",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD CLASS D SERVICE NOT AVBL CTC JNU FSS AT 118.7",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD, AS A RESULT CTR RECLASSIFIED AIRSPACE CLASS G",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "TOWER CLSD CLASS D IS UNAVAILABLE. CLASS E IS IN EFFECT.",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 118.35 CTC MEMPHIS ARTCC FOR CLR DELIVERY AT 901-368-8453.",
+        "label": "Yes"
+    },
+    {
+        "text": "RADAR PRESENTATION SYSTEM IN TWR U/S DUE TO TECR\"",
+        "label": "No"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "RAL SVC TWR CLSD MNT CTAF 121.0",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 125.30",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 119.525 CTC NORTHERN CALIFORNIA APP FOR CLR DELIVERY AT 916-366-4041",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 124.9 CTC VICTORIA TERMINAL APP FOR CLR DELIVERY ON 132.7 OR AT 604-586-4561",
+        "label": "Yes"
+    },
+    {
+        "text": "RWY COND AVBL ON REQUEST CTC 204-870-0049\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR U/S CTAF 118.7 CLASS B SERV NOT AVBL CTC HOUSTON,APP 127.12/281-443-5844 FOR CLR DELIVERY AT 121.25",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD CLASS D SER NOT AVBL",
+        "label": "Yes"
+    },
+    {
+        "text": "ATC FACILITIES (RADAR APPROACH CONTROL AND TOWER) WILL BE ATC ZERO 17 JULY 0200Z (16 JULY 2200L) - 17 JULY 1200Z (17 JULY 0800L). WASHINGTON ARTCC (ZDC) WILL ASSUME RESPONSIBILITY FOR ATC SERVICES ON FREQUENCY 132.05 OR 127.7. VFR FLIGHT FOLLOWING AND IFR DEPARTURES NOT AVAILABLE IN KDOV AIRSPACE.",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 119.525 CTC NORTHERN CALIFORNIA APP FOR CLR DELIVERY AT 916-366-4041 DLY 1200-1359",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD MNT CTAF 125.3",
+        "label": "Yes"
+    },
+    {
+        "text": "CLASS G\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 126.3 CTC MIAMI ARTCC AT 125.32 DLY 1500-0200",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC SVC TWR CLSD MNT CTAF 118.175 DLY 2200-0400",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD THU SUN 1800-1830",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 119.4 DLY 1400-1459",
+        "label": "Yes"
+    },
+    {
+        "text": "DELIVERY AT 118.75\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 124.6 DLY 0100-1300",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "TOWER CLSD MNT CTAF 118.30",
+        "label": "Yes"
+    },
+    {
+        "text": "ASE SVC TWR U/S CLASS D SER NOT AVBL CTC DENVER ARTCC ON 119.85",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD CTC NORCAL APCH FOR CLR - DELIVERY AT 916-366-4043",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC SEE SPS 11/022 TWR CLSD",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD CTC KNOXVILLE APP AT 123.9/121.2",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 119.525 CTC NORCAL APP FOR CLR DELIVERY AT 916-366-4041 DLY 2145-0200",
+        "label": "Yes"
+    },
+    {
+        "text": "FLG SVC TWR CLSD THU SUN 1300-1400",
+        "label": "Yes"
+    },
+    {
+        "text": "AT 602-306-2565 OR 124.9 DLY 1200-1300\"",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD FRI 1200-1300",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD TWR 124.50 NOW CTAF",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 128.45 FOR CLR DELIVERY CALL 904-845-1592",
+        "label": "Yes"
+    },
+    {
+        "text": "FOR CLR DELIVER 317-247-2411\"",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 125.6 CTC SALT LAKE CITY ARTCC FOR CLR DELIVERY ON 118.05 OR AT 801-320-2568",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD TWR 118.7 NOW CTAF TERMINAL RADAR SERVICE AREA SER INVOLVING VFR ACFT NOT AVBL CTC SALT LAKE CITY ARTCC FOR CLR DELIVERY AT 801-320-2568/133.4",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "TWR CLSD CTC AT ATLANTA ARTCC 133.6/254.3",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 121.9 DLY 0200-0500",
+        "label": "Yes"
+    },
+    {
+        "text": "ALBUQUERQUE ARTCC ON 124.32, FOR CLR DELIVERY AT 505-856-4561\"",
+        "label": "Yes"
+    },
+    {
+        "text": "IFR ACT DEP/ARR MAY ANTICIPATE DLA\"",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "TOWER CLSD CLASS D AND AIRFIELD SVCS NOT AVBL",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD DLY 0100-1300",
+        "label": "Yes"
+    },
+    {
+        "text": "DEL\"",
+        "label": "Yes"
+    },
+    {
+        "text": "RDM SVC TWR CLSD",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC SVC TWR CLSD DAILY MNT CTAF 119.75 DLY 2300-0200",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 126.2 MON FRI 2300-0100",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD CTC OAKLAND ARTCC 128.8 2307080700-2307101530",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "NEW NOTAM TO FOLLOW\"",
+        "label": "Yes"
+    },
+    {
+        "text": "HOUSTON APP 127.12/281-443-5842\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 134.75",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD CLASS C SER NOT AVBL CTC JACKSONVILLE ATCSCC ON 134.37",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 120.6. CTC PHOENIX APP FOR CLR DELIVERY AT 602-306-2565 DLY 1200-1300",
+        "label": "Yes"
+    },
+    {
+        "text": "HOU SVC TWR U/S CTC HOUSTON ARTCC FOR CLR DELIVERY AT 127.12",
+        "label": "Yes"
+    },
+    {
+        "text": "IFR ACT DEP/ARR MAY ANTICIPATE DELAY\"",
+        "label": "Yes"
+    },
+    {
+        "text": "NO ATS AVBL IN KINGSTON FIR DUE STAFFING. ATC ZERO CONTINGENCY ROUTING PROCEDURE WILL BE IN EFFECT IN ACCORDANCE WITH AIC A17/21. CAYMAN TMA NOT AFFECTED.",
+        "label": "Yes"
+    },
+    {
+        "text": "134.0 FOR CLR DELIVERY AT 904-845-1537.\"",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "SVC TWR CLSD CTC JACKSONVILLE ARTCC AT 134.37 FOR CLR DELIVERY AT 904-845-1537 GND CTL 122.95",
+        "label": "Yes"
+    },
+    {
+        "text": "AIRSPACE CLASS G\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF AT 118.5 WED SUN 1300-1500",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR U/S CTC FORT WORTH ARTCC 133.1",
+        "label": "Yes"
+    },
+    {
+        "text": "CANCELED\"",
+        "label": "No"
+    },
+    {
+        "text": "CLR DELIVERY AT 904-845-1592\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD TWR 134.725 NOW CTAF CTC INDIANAPOLIS ARTCC FOR CLR DELIVERY AT 317-247-2411",
+        "label": "Yes"
+    },
+    {
+        "text": "DELIVERY AT 440-774-0233\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD TWR 125.3 NOW CTAF CTC SALT LAKE APP ON 118.85, FOR CLR DELIVERY AT 801-325-9670 DLY 2115-0300",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD SUN SAT 2300-1300",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD TWR 125.6 NOW CTAF CTC SALT LAKE CITY ARTCC FOR CLR DELIVERY ON 118.05",
+        "label": "Yes"
+    },
+    {
+        "text": "TWR CLSD CLASS C SER NOT AVBL CTC ORLANDO APP ON 119.77",
+        "label": "Yes"
+    },
+    {
+        "text": "AIRSPACE. GROUND CTL AVBL 121.9MHZ AND 275.8MHZ.\"",
+        "label": "Yes"
+    },
+    {
+        "text": "ARTCC FOR CLR DELIVERY 505-856-4561\"",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR CLSD MNT CTAF 118.3 CLASS C SER AVBL CTC AMARILLO APP FOR CLASS C VFR DEP AND IFR CLR DELIVERY 806-335-4040",
+        "label": "Yes"
+    },
+    {
+        "text": "NFL SVC TWR CLSD CTC OAKLAND ARTCC AT 128.8 DLY 0300-1700",
+        "label": "Yes"
+    },
+    {
+        "text": "SVC TWR U/S TWR 118.30 NOW CTAF CTC WASHINGTON ARTCC AT 134.4",
+        "label": "Yes"
+    },
+    {
+        "text": "ATIS 125.1MHZ FOR MORE INFO\"",
+        "label": "Yes"
+    },
+    {
+        "text": "MSO SVC TWR CLSD MNT CTAF 118.4",
+        "label": "Yes"
+    }
+]

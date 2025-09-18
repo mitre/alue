@@ -1,0 +1,12 @@
+{
+    "properties": {
+        "selected_option": {
+            "title": "Selected Option",
+            "type": "string",
+            "enum": ["A", "B", "C"]
+        }
+    },
+    "required": ["selected_option"],
+    "title": "MCQA",
+    "type": "object"
+}

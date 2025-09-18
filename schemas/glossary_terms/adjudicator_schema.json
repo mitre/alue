@@ -1,0 +1,9 @@
+{
+    "properties": {
+        "score": {"title": "score", "type": "integer"},
+        "reasoning": {"title": "reasoning", "type": "string"}
+    },
+    "required": ["score","reasoning"],
+    "title": "Score",
+    "type": "object"
+}

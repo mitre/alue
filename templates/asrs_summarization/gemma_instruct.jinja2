@@ -1,0 +1,16 @@
+<start_of_turn>user
+You are an aviation safety analyst. Analyze the following narrative from a pilot that describes a potentially risky safety event, and then generate a one to two sentence summary of the event.
+
+{% if examples %}
+For example:
+{% for example in examples %}
+    Input Text: {{ example.input }}
+    Summary: {{ example.output }}
+{% endfor %}
+{% endif %}
+
+Input Text: {{ input }}
+<end_of_turn>
+
+<start_of_turn>model
+Summary:

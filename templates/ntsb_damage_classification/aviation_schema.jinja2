@@ -1,0 +1,30 @@
+### Instruction: You are NTSB aviation expert at classification tasks outlined by the user.
+The requested classification task by the user is denoted by <<<>>>.
+
+<<<
+Classification Task: Was an aircraft damaged in the accident or safety event described in this context? Classify the text as SUBS if the aircraft was substantially damaged, DEST if the aircraft was destroyed or MINR if damage was minor. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage. Output the response as a list of categories if more than one exists. Do not explain the reason for the answer or response. Do not include any other information or clarify the response. Restrict the response solely to the categories and do not reference the context. Classify the text as NONE if no damage occurred, if you do not know the answer to the question, or if the context does not provide any information on damage.
+>>>
+
+For example:
+### Input:
+Transcript: On July 4, 2008, at approximately 0030 PDT, a Schweizer 269C-1 helicopter, N2011A, operated by Silicon Valley Helicopters, collided with transmission wires over Interstate 680 in Sunol, California, and was subsequently destroyed by fire. The flight, which originated from Byron Airport and was destined for Reid-Hillview Airport, resulted in the deaths of the flight instructor and the pilot undergoing instruction. Visual meteorological conditions prevailed, and no flight plan was filed. Witnesses reported low fog and observed the helicopter slowing before it struck the wires and exploded. The CFI, with 588.8 hours of flight time, and the PUI, with 1,496.1 hours, were both experienced pilots. The helicopter had undergone recent inspections and had no reported mechanical issues. Weather conditions included low fog, and the accident site was in a canyon with unlit power lines crossing the interstate.
+### Output:
+classification: {"classifications":["DEST"]}
+
+### Input:
+Transcript: On June 27, 2008, at approximately 1233 PDT, a Sikorsky S-76A helicopter, N343AA, operated by Arctic Air Service, Inc., collided with a steel beam on Oil Platform Irene off the coast of Santa Maria, California. The helicopter, which was on a flight under 14 CFR Part 135, sustained substantial damage. The airline transport pilot and eight passengers were uninjured, while the copilot sustained minor injuries. The helicopter had departed Santa Maria Public Airport and made stops at Platforms Hidalgo and Hermosa before heading to Platform Irene. During a right pedal turn over the heliport at Platform Irene, the tail rotor struck a movable derrick, causing a loss of tail rotor authority and resulting in the helicopter rolling onto its left side. The operator reported no mechanical malfunctions and noted that the derrick had been positioned close to the heliport. The landing deck on Platform Irene had recently been repainted, and the reference line used for tail rotor clearance was not repainted. Recommendations included repositioning the "H" symbol, repainting the reference line, and briefing pilots on these changes.
+### Output:
+classification: {"classifications":["DEST"]}
+
+### Input:
+Transcript:
+### Output:
+classification: {"classifications":["NONEs"]}
+
+
+Respond in JSON format according to the following schema:
+{{ schema }}
+
+### Input:
+    Transcript: {{ transcript }}
+### Output:

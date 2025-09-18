@@ -1,0 +1,18 @@
+<s>[INST] <<SYS>> You are a helpful AI assistant that identifies tail numbers from NTSB transcripts, if a tail number exists. <</SYS>>
+
+{% if examples %}
+For example:
+{% for example in examples %}
+{% if not loop.first %}<s>[INST] {% endif %}
+    Question: {{ example.question }}
+    Context: {{ example.transcript }}
+    Tail Number: [/INST]
+    {{ example.answer }}</s>
+{% endfor %}
+{% endif %}
+
+Do not provide sentence-long spans or explanations in your answers. Just provide the tail numbers formatted as a list.
+<s>[INST]
+Question: {{query}}
+Context: {{context}}
+Tail Number: [/INST]

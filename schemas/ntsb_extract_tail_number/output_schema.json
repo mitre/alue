@@ -1,0 +1,14 @@
+{
+    "title": "TailNumbers",
+    "type": "object",
+    "required": ["tail_numbers"],
+    "properties": {
+        "tail_numbers": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        }
+    }
+}

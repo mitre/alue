@@ -1,0 +1,39 @@
+{
+    "title": "ASRS Factors Classification",
+    "type": "object",
+    "properties": {
+        "labels": {
+            "title": "Factors",
+            "description": "List of factors chosen from fixed values.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Manuals",
+                    "Procedure",
+                    "Human Factors",
+                    "Airspace Structure",
+                    "Chart Or Publication",
+                    "Aircraft",
+                    "Environment - Non Weather Related",
+                    "Airport",
+                    "Software and Automation",
+                    "Incorrect / Not Installed / Unavailable Part",
+                    "Staffing",
+                    "Weather",
+                    "Logbook Entry",
+                    "ATC Equipment / Nav Facility / Buildings",
+                    "Company Policy",
+                    "Equipment / Tooling",
+                    "Minimum Equipment List",
+                    "None"
+                ]
+            },
+            "minItems": 1,
+            "maxItems": 12
+        }
+    },
+    "required": [
+        "labels"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "properties": {
+        "definition": {"title": "definition", "type": "string"}
+    },
+    "required": ["definition"],
+    "title": "Aviation",
+    "type": "object"
+}

@@ -1,0 +1,22 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+Based on the given question and options, select the correct answer. Choose only one option that best answers the question.
+{% if json_schema|default(None) %}
+Please format your answer as JSON using the following schema:
+{{ json_schema }}
+{% endif %}
+<|eot_id|>
+
+{% if examples|default(None) %}
+<|start_header_id|>user<|end_header_id|>Here are some examples:
+{% for example in examples %}
+{% if not loop.first %}<|start_header_id|>user<|end_header_id|>{% endif %}
+    Question: {{ example.question }}
+    Answer: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>{{ example.correct_answer }}<|eot_id|>
+{% endfor %}
+{% endif %}
+
+<|start_header_id|>user<|end_header_id|>
+Question: {{ query|default(None) }}
+Answer: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>

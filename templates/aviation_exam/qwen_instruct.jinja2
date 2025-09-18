@@ -1,0 +1,22 @@
+<|im_start|>system
+Based on the given question and options, select the correct answer. Choose only one option that best answers the question.
+{% if json_schema|default(None) %}
+Please format your answer as JSON using the following schema:
+{{ json_schema }}
+{% endif %}
+
+{% if examples|default(None) %}
+Here are some examples:
+{% for example in examples %}
+    Question: {{ example.question }}
+    Answer: {{ example.correct_answer }}
+{% endfor %}
+{% endif %}
+<|im_end|>
+
+<|im_start|>user
+Question: {{ query|default(None) }}
+<|im_end|>
+
+<|im_start|>assistant
+Answer:

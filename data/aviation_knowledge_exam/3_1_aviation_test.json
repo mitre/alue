@@ -1,0 +1,1256 @@
+{
+    "examples": [
+        {
+            "question": "What part of a rotary-wing aircraft makes directional control possible?\r\nA) the teeter hinge\r\nB) the swashplate\r\nC) the ducted fan",
+            "correct_answer": {
+                "selected_option": "B"
+            }
+        },
+        {
+            "question": "What is the preferred method of ground movement for helicopters on airports?\r\nA) ground taxi\r\nB) air taxi\r\nC) taxi",
+            "correct_answer": {
+                "selected_option": "B"
+            }
+        },
+        {
+            "question": "Which aerodynamic force(s) must a rotary-wing aircraft balance in order to hover?\r\nA) weight, lift, thrust, and drag\r\nB) translational lift\r\nC) dissymmetry of lift",
+            "correct_answer": {
+                "selected_option": "A"
+            }
+        },
+        {
+            "question": "If the airspeed indicator needle is in the yellow and approaching the red line during a maneuver, what would be the correct response?\r\nA) increase thrust \r\nB) decrease altitude\r\nC) decrease airspeed",
+            "correct_answer": {
+                "selected_option": "C"
+            }
+        },
+        {
+            "question": "Which pilot-static instrument makes use of both pitot and static pressure?\r\nA) airspeed indicator\r\nB) vertical speed indicator\r\nC) magnetic compass",
+            "correct_answer": {
+                "selected_option": "A"
+            }
+        },
+        {
+            "question": "What type of helicopter design uses a ducted fan in place of a tail rotor to cancel torque effect?\r\nA) the coaxial rotor system\r\nB) the skids\r\nC) the NOTAR",
+            "correct_answer": {
+                "selected_option": "C"
+            }
+        },
+        {
+            "question": "What is the unit of measure for airspeed?\r\nA) knots\r\nB) AOA\r\nC) rate of climb",
+            "correct_answer": {
+                "selected_option": "A"
+            }
+        },
+        {
+            "question": "What is the degree increment between the hash marks on the attitude indicator?\r\nA) 10 degrees\r\nB) 30 degrees\r\nC) 45 degrees",
+            "correct_answer": {
+                "selected_option": "B"
+            }
+        },
+        {
+            "question": "Which term is used to describe the weight of an aircraft, including all hydraulic and oil systems, full, trapped and unusable fuel, and all fixed equipment?\r\nA) empty weight\r\nB) basic operating weight\r\nC) basic weight or basic empty weight",
+            "correct_answer": {
+                "selected_option": "C"
+            }
+        },
+        {
+            "question": "What one of the acronyms for all-up weight is defined as the total aircraft weight at any given moment during the flight?\r\nA) MLR\r\nB) AGW\r\nC) MRW",
+            "correct_answer": {
+                "selected_option": "B"
+            }
+        }
+    ],
+    "data": [
+        {
+            "question": "What should a pilot do if after crossing a stop bar, the taxiway centerline lead-on lights inadvertently extinguish?\r\nA) Proceed with caution\r\nB) Hold their position and contact ATC\r\nC) Turn back towards the stop bar",
+            "answer": "B",
+            "id": 0
+        },
+        {
+            "question": "Which aircraft configuration hastens wake decay?\r\nA) Clean configuration\r\nB) Dirty configuration\r\nC) Both configurations equally",
+            "answer": "B",
+            "id": 1
+        },
+        {
+            "question": "What is the significance of the blue radial line on most airspeed indicators in multiengine airplanes?\r\nA) Marks the safe, intentional one-engine inoperative speed\r\nB) Indicates the best rate of climb speed with one engine inoperative\r\nC) Represents the landing reference speed",
+            "answer": "B",
+            "id": 2
+        },
+        {
+            "question": "What is a primary cause of undue concern about getting hurt during an emergency landing?\r\nA) Fear leading to panic\r\nB) Over-reliance on the airplane's safety features\r\nC) Lack of emergency procedure knowledge",
+            "answer": "A",
+            "id": 3
+        },
+        {
+            "question": "Where can a current list of CTAs be found?\r\nA) On the aircraft's onboard navigation system\r\nB) In the pilot's operating handbook\r\nC) At the FAA's official website",
+            "answer": "C",
+            "id": 4
+        },
+        {
+            "question": "Which of the following is NOT subject to a waiver under Part 107?\r\nA) Beyond Visual Line-Of-Sight operations\r\nB) Carriage of Hazardous Materials\r\nC) Flying in Class G airspace",
+            "answer": "B",
+            "id": 5
+        },
+        {
+            "question": "How should pilots communicate with ATC when applying cold temperature altitude corrections?\r\nA) By declaring an emergency\r\nB) Through initial radio contact requesting the corrected altitude\r\nC) By only reporting the corrected altitude after the approach is completed",
+            "answer": "B",
+            "id": 6
+        },
+        {
+            "question": "What does 14 CFR Part 137 specifically regulate?\r\nA) Recreational UAS flights\r\nB) Agricultural aircraft operations\r\nC) Urban air mobility operations",
+            "answer": "B",
+            "id": 7
+        },
+        {
+            "question": "What visual illusion can affect a pilot's perception of distance to a ground reference?\r\nA) Larger objects appear further away\r\nB) Brighter objects appear larger\r\nC) Larger objects may appear closer",
+            "answer": "C",
+            "id": 8
+        },
+        {
+            "question": "What is the primary cause of wheelbarrowing during the landing roll?\r\nA) Excessive airspeed with late touchdown\r\nB) Concentrating the airplane weight on the nose-wheel\r\nC) Insufficient use of ailerons and rudder",
+            "answer": "B",
+            "id": 9
+        },
+        {
+            "question": "What is the main goal when a VFR pilot encounters IMC?\r\nA) To exit the IMC conditions as quickly as possible\r\nB) To keep the airplane under adequate control until visual references are regained\r\nC) To immediately attempt an instrument landing",
+            "answer": "B",
+            "id": 10
+        },
+        {
+            "question": "Under what condition must helicopter/tanker operations not be conducted?\r\nA) During daylight hours\r\nB) During product/cargo transfer\r\nC) When the tanker is anchored",
+            "answer": "B",
+            "id": 11
+        },
+        {
+            "question": "How do wind turbines affect air traffic radar reception?\r\nA) They enhance the radar signal\r\nB) They have no effect\r\nC) They can cause substantial detection loss",
+            "answer": "C",
+            "id": 12
+        },
+        {
+            "question": "Which statement is true regarding the operation of large civil UAS in the NAS?\r\nA) They always receive ATC separation services\r\nB) They may operate under UAS Traffic Management (UTM) structures\r\nC) They may not receive ATC separation services",
+            "answer": "C",
+            "id": 13
+        },
+        {
+            "question": "How does the angle of attack affect a tailwheel airplane during taxi speeds in a headwind?\r\nA) It has no effect\r\nB) It decreases the potential for lift\r\nC) It can aid in liftoff due to increased lift",
+            "answer": "C",
+            "id": 14
+        },
+        {
+            "question": "If the phraseology is not adequate, what should pilots do?\r\nA) Use CB slang to get the message across\r\nB) Use whatever words are necessary to ensure understanding\r\nC) Repeat the same phrase until acknowledged",
+            "answer": "B",
+            "id": 15
+        },
+        {
+            "question": "What is the mandatory requirement for recorded calls to operational ATC facilities?\r\nA) A beeper tone for each recording\r\nB) Consent to record is assumed by the individual placing a call\r\nC) Notice and consent must be verbally given in each call",
+            "answer": "B",
+            "id": 16
+        },
+        {
+            "question": "What is emphasized in the training for stalls and stall recoveries?\r\nA) The importance of maintaining high speed to avoid stalls\r\nB) That the direct cause of every stall is an excessive angle of attack (AOA)\r\nC) That stalls can only occur at low altitudes",
+            "answer": "B",
+            "id": 17
+        },
+        {
+            "question": "What type of propeller do LSAs typically have?\r\nA) Variable pitch\r\nB) Fixed pitch or ground adjustable\r\nC) Constant speed",
+            "answer": "B",
+            "id": 18
+        },
+        {
+            "question": "Who can complete online training instead of taking the initial knowledge test for Part 107 certification?\r\nA) Any person interested in flying a UAS\r\nB) Part 61 manned pilot certificate holders with a current flight review\r\nC) Recreational UAS pilots",
+            "answer": "B",
+            "id": 19
+        },
+        {
+            "question": "What type of marking is used to indicate the edge of a taxiway?\r\nA) Continuous or dashed double yellow lines\r\nB) Single red line\r\nC) Blue and white alternating stripes",
+            "answer": "A",
+            "id": 20
+        },
+        {
+            "question": "What is NOT required for foreign state aircraft operations that transit U.S. controlled oceanic airspace but do not enter U.S. territorial airspace?\r\nA) A diplomatic clearance\r\nB) A transponder with altitude reporting capability\r\nC) Two-way radio communications with ATC",
+            "answer": "A",
+            "id": 21
+        },
+        {
+            "question": "What does the power required curve represent?\r\nA) The airplane's rate of energy gain\r\nB) The airplane's rate of energy loss due to total drag\r\nC) The maximum power the engine can produce",
+            "answer": "B",
+            "id": 22
+        },
+        {
+            "question": "During an emergency descent, what should a pilot establish to maintain positive load factors on the airplane?\r\nA) A descent in a slight slip\r\nB) A bank of approximately 30 to 45 degrees\r\nC) A straight descent with no turns",
+            "answer": "B",
+            "id": 23
+        },
+        {
+            "question": "Which of the following is a characteristic of the slow acceleration of jet engines?\r\nA) It allows for quicker responses in emergency situations\r\nB) It requires anticipation of the need for adding power\r\nC) It is similar to the acceleration of piston engines from idle to full power",
+            "answer": "B",
+            "id": 24
+        },
+        {
+            "question": "What is the function of the Phonetic Alphabet in radio communications?\r\nA) To confuse unauthorized listeners\r\nB) To ensure clarity and avoid misunderstandings\r\nC) To shorten transmission time",
+            "answer": "B",
+            "id": 25
+        },
+        {
+            "question": "When does an airplane's nose rotate backwards relative to the pilot?\r\nA) When left pressure is applied to the aileron control\r\nB) When pulling the elevator pitch control toward the pilot\r\nC) When pushing elevator pitch control toward the instrument panel",
+            "answer": "B",
+            "id": 26
+        },
+        {
+            "question": "How does a crosswind affect the lateral movement of wake vortices?\r\nA) Decreases the movement of both vortices\r\nB) Increases the movement of the downwind vortex and decreases the movement of the upwind vortex\r\nC) Has no effect on the movement of vortices",
+            "answer": "B",
+            "id": 27
+        },
+        {
+            "question": "What is the primary goal of primary and intermediate flight training according to the Airplane Flying Handbook?\r\nA) To learn how to fly specific makes and models of airplanes\r\nB) To pass required practical tests for pilot certification\r\nC) To acquire and hone basic airmanship skills",
+            "answer": "C",
+            "id": 28
+        },
+        {
+            "question": "How often does a code beacon flash the airport identifier in International Morse Code?\r\nA) Once per minute\r\nB) Six to eight times per minute\r\nC) Ten times per minute",
+            "answer": "B",
+            "id": 29
+        },
+        {
+            "question": "Who can operate within a Weather Reconnaissance Area (WRA)?\r\nA) Any pilot with an instrument rating\r\nB) Only weather reconnaissance/research aircraft from specified organizations\r\nC) Any aircraft with prior ATC clearance",
+            "answer": "B",
+            "id": 30
+        },
+        {
+            "question": "What ensures effective communication during an aircraft emergency?\r\nA) Having a robust gossip network among aircrew\r\nB) The use of designated frequencies and emergency hand signals\r\nC) Yelling loudly from the cockpit",
+            "answer": "B",
+            "id": 31
+        },
+        {
+            "question": "According to the Airplane Flying Handbook, what is the usual traffic pattern altitude above the airport surface?\r\nA) 500 feet\r\nB) 1,000 feet\r\nC) 2,000 feet",
+            "answer": "B",
+            "id": 32
+        },
+        {
+            "question": "How does LED lighting systems' visibility to NVGs differ from traditional lighting systems?\r\nA) They are always visible to NVGs\r\nB) They may not be visible to NVGs\r\nC) They enhance the visibility of NVGs",
+            "answer": "B",
+            "id": 33
+        },
+        {
+            "question": "When is an aircraft considered clear of the runway?\r\nA) As soon as it touches down\r\nB) When all parts of the aircraft are past the runway edge\r\nC) After it has come to a complete stop",
+            "answer": "B",
+            "id": 34
+        },
+        {
+            "question": "What information can pilots obtain about an active MOA before entering it?\r\nA) The hours of operation only\r\nB) Traffic advisories from the controlling agency\r\nC) Permission to conduct aerobatic flight within the MOA",
+            "answer": "B",
+            "id": 35
+        },
+        {
+            "question": "How does the Gulf of Mexico Grid System assist in navigation?\r\nA) By providing a network of ground-based NAVAIDs\r\nB) By defining routes using over 300 offshore waypoints\r\nC) By limiting flights to daytime operations only",
+            "answer": "B",
+            "id": 36
+        },
+        {
+            "question": "Who may apply for expedited airspace authorizations through the SGI process?\r\nA) Only Part 107 operators\r\nB) Public Safety organizations\r\nC) Recreational flyers for personal use",
+            "answer": "B",
+            "id": 37
+        },
+        {
+            "question": "What is a key point about LSA maneuvers during slow flight practice?\r\nA) They cannot perform slow flight maneuvers\r\nB) They perform at slower airspeeds due to low stall speeds\r\nC) They require full throttle to maintain altitude",
+            "answer": "B",
+            "id": 38
+        },
+        {
+            "question": "What is the primary reason for the case-by-case evaluation of on-airport sUAS operation requests?\r\nA) To ensure all drones are brightly colored\r\nB) To assess the pilot's skills\r\nC) To carefully assess the inherent risks involved",
+            "answer": "C",
+            "id": 39
+        },
+        {
+            "question": "Who can register a UAS if the owner is less than 13 years of age?\r\nA) A parent only\r\nB) Another person 13 years of age or older\r\nC) No one; UAS cannot be registered",
+            "answer": "B",
+            "id": 40
+        },
+        {
+            "question": "When should pilots file IFR flight plans to minimize delay in receiving departure clearance?\r\nA) At least 4 hours prior to ETD for flights above FL 230\r\nB) At least 2 hours after proposed departure time\r\nC) At least 30 minutes prior to estimated time of departure",
+            "answer": "C",
+            "id": 41
+        },
+        {
+            "question": "Who is responsible for issuing pilot and flight instructor certificates?\r\nA) The Federal Aviation Administration (FAA)\r\nB) The National Transportation Safety Board (NTSB)\r\nC) The Department of Transportation (DOT)",
+            "answer": "A",
+            "id": 42
+        },
+        {
+            "question": "For an aircraft flying at 5,000 feet AGL, the VOR MON ensures the aircraft is within how many nautical miles of a MON airport?\r\nA) 100 NM\r\nB) 70 NM\r\nC) 50 NM",
+            "answer": "A",
+            "id": 43
+        },
+        {
+            "question": "What is the visibility minimum based on for an approach to a specific landing area?\r\nA) The distance from the MAP to the landing area\r\nB) The altitude of the landing area\r\nC) The speed of the helicopter during approach",
+            "answer": "A",
+            "id": 44
+        },
+        {
+            "question": "What should pilots do to increase their awareness of traffic in congested areas?\r\nA) Only rely on visual scanning techniques\r\nB) Monitor an appropriate control frequency\r\nC) Fly at higher altitudes to avoid congestion",
+            "answer": "B",
+            "id": 45
+        },
+        {
+            "question": "What is the proper position for the elevator control in a nosewheel-type airplane during crosswind taxiing?\r\nA) Neutral position\r\nB) Full aft position\r\nC) Full forward position",
+            "answer": "A",
+            "id": 46
+        },
+        {
+            "question": "Which process should small UAS operators use to coordinate airspace access with ATC?\r\nA) Direct radio or telephone contact with ATC\r\nB) Using the LAANC, DroneZone, or CAPS processes\r\nC) Extemporaneous verbal coordination during flight",
+            "answer": "B",
+            "id": 47
+        },
+        {
+            "question": "What is the priority of air traffic controllers according to FAA Order JO 7110.65?\r\nA) Separation of aircraft  \r\nB) Issuance of radar safety alerts  \r\nC) Additional services as possible",
+            "answer": "A",
+            "id": 48
+        },
+        {
+            "question": "For what reasons might an aircraft be intercepted during peacetime operations?\r\nA) For recreational purposes by the intercepting aircraft\r\nB) To identify, track, inspect, divert, or establish communications with the aircraft\r\nC) To provide aerial photography opportunities",
+            "answer": "B",
+            "id": 49
+        },
+        {
+            "question": "What is the purpose of runway aiming point markings?\r\nA) To indicate where aircraft should accelerate during takeoff\r\nB) To serve as a visual aiming point for a landing aircraft\r\nC) To delineate the edge of the runway",
+            "answer": "B",
+            "id": 50
+        },
+        {
+            "question": "When are altimeter settings automatically uplinked after a Monitor TOC?\r\nA) Above FL 180\r\nB) Below FL 180\r\nC) At any altitude",
+            "answer": "B",
+            "id": 51
+        },
+        {
+            "question": "What should a pilot do if capable during a hijacking?\r\nA) Maintain a true airspeed of no more than 400 knots\r\nB) Attempt to land immediately\r\nC) Increase speed and altitude",
+            "answer": "A",
+            "id": 52
+        },
+        {
+            "question": "In which range does operating with reverse thrust require specific techniques and procedures?\r\nA) Alpha range\r\nB) Beta range\r\nC) Gamma range",
+            "answer": "B",
+            "id": 53
+        },
+        {
+            "question": "What visual references must be visible and identifiable for a pilot to proceed visually to a heliport?\r\nA) Only the FATO or FATO lights\r\nB) At least one of several specified visual references\r\nC) Any visible landmark near the heliport",
+            "answer": "B",
+            "id": 54
+        },
+        {
+            "question": "What is the purpose of medium intensity flashing white obstruction lights?\r\nA) To mark obstructions only during the daytime\r\nB) To mark obstructions during daytime and twilight, with reduced intensity at night\r\nC) To indicate safe landing zones for helicopters",
+            "answer": "B",
+            "id": 55
+        },
+        {
+            "question": "What is the role of a Designated Pilot Examiner (DPE)?\r\nA) To provide financial assistance to pilot students\r\nB) To conduct practical tests leading to the issuance of specific pilot certificates and/or ratings\r\nC) To investigate aviation accidents and incidents",
+            "answer": "B",
+            "id": 56
+        },
+        {
+            "question": "What information should be reported if birds or other animals are observed on or near the runway?\r\nA) Just the geographic location\r\nB) Geographic location, bird type, approximate numbers, altitude, and direction of bird flight path\r\nC) Only the bird type and approximate numbers",
+            "answer": "B",
+            "id": 57
+        },
+        {
+            "question": "What does an \u201copen\u201d energy system mean in the context of an airplane?\r\nA) The airplane can only lose energy to the environment\r\nB) The airplane can gain energy from some source and lose energy to the environment\r\nC) The airplane's energy system is unaffected by external factors",
+            "answer": "B",
+            "id": 58
+        },
+        {
+            "question": "How are on-airport operation requests for sUAS evaluated?\r\nA) Based on the size of the drone\r\nB) On a case-by-case basis\r\nC) Based on the pilot's years of experience",
+            "answer": "B",
+            "id": 59
+        },
+        {
+            "question": "What denotes the existence of unusual, often invisible, hazards to aircraft in restricted areas?\r\nA) High volume of pilot training\r\nB) Artillery firing, aerial gunnery, or guided missiles\r\nC) Military flight operations",
+            "answer": "B",
+            "id": 60
+        },
+        {
+            "question": "Which chart depicts the airspace designated as Class B airspace?\r\nA) Sectional Aeronautical Charts\r\nB) VFR Terminal Area Charts (TAC)\r\nC) IFR En Route Low Altitude Charts",
+            "answer": "B",
+            "id": 61
+        },
+        {
+            "question": "How does an electrical landing gear retraction system operate?\r\nA) Through manual cranking by the pilot\r\nB) Utilizing pressurized hydraulic fluid\r\nC) Using an electrically-driven motor",
+            "answer": "C",
+            "id": 62
+        },
+        {
+            "question": "What behavioral characteristics do helicopter main rotor(s) generate in a slow hover taxi or stationary hover?\r\nA) Downwash producing high velocity outwash vortices\r\nB) No significant vortices\r\nC) Only upward vortices",
+            "answer": "A",
+            "id": 63
+        },
+        {
+            "question": "How should the ARFF Incident Commander and flight crew communicate if electronic communications fail?\r\nA) Through mobile phones\r\nB) Using standard emergency hand signals\r\nC) By flashing lights on the aircraft",
+            "answer": "B",
+            "id": 64
+        },
+        {
+            "question": "What action should a pilot take if unable to reestablish communication after a two-way radio failure?\r\nA) Land at the closest airport without attempting further communication\r\nB) Attempt contact on the previously assigned frequency or with an FSS\r\nC) Immediately set the transponder to code 7700",
+            "answer": "B",
+            "id": 65
+        },
+        {
+            "question": "The recommended wait time before flying at altitudes above 8,000 feet after scuba diving is:\r\nA) At least 12 hours\r\nB) At least 24 hours\r\nC) At least 48 hours",
+            "answer": "B",
+            "id": 66
+        },
+        {
+            "question": "What is a key factor in selecting pylons for eights around pylons maneuver?\r\nA) Similar color of pylons for easy identification\r\nB) Pylons being at the same elevation\r\nC) Maximum distance between pylons",
+            "answer": "B",
+            "id": 67
+        },
+        {
+            "question": "What does the corrected altitude ensure during a cold temperature correction?\r\nA) Increased fuel efficiency\r\nB) More accurate GPS tracking\r\nC) Safe distance above terrain/obstacle on the corrected approach segment(s)",
+            "answer": "C",
+            "id": 68
+        },
+        {
+            "question": "What is the main difference between VASI and PAPI installations?\r\nA) The number of light units used\r\nB) The color of lights emitted\r\nC) The arrangement of light units",
+            "answer": "C",
+            "id": 69
+        },
+        {
+            "question": "How should pilots ensure their RNAV system is correctly operating before takeoff?\r\nA) By verifying the navigation database is current and correct airport/runway data have been loaded\r\nB) Checking fuel levels only\r\nC) Ensuring all personal electronic devices are turned off",
+            "answer": "A",
+            "id": 70
+        },
+        {
+            "question": "Which factor is NOT listed as a top causal factor leading to an upset and resulting in LOC-I accidents?\r\nA) Environmental factors\r\nB) Mechanical factors\r\nC) Incorrect flight planning",
+            "answer": "C",
+            "id": 71
+        },
+        {
+            "question": "What conditions are pilots expected to follow if experiencing two-way radio communications failure during IFR flights?\r\nA) Deviate from flight plans as deemed necessary\r\nB) Follow the procedures prescribed under \u201cIFR operations, two\u2010way radio communications failure\u201d\r\nC) Immediately land at the nearest suitable airport",
+            "answer": "B",
+            "id": 72
+        },
+        {
+            "question": "What does the annotation \u201cPBN/A1\u201d in Item 18 of the flight plan indicate?\r\nA) RNP 1 authorization\r\nB) RNP 4 authorization\r\nC) RNP 10 authorization",
+            "answer": "C",
+            "id": 73
+        },
+        {
+            "question": "What is the purpose of the FAA's WINGS Program?\r\nA) To provide free aircraft to pilots\r\nB) To offer continuing pilot education and enhance flight safety\r\nC) To certify new types of aircraft for commercial use",
+            "answer": "B",
+            "id": 74
+        },
+        {
+            "question": "Which FAA document describes IR/VR routes through charts and narratives?\r\nA) Aeronautical Information Manual (AIM)\r\nB) Department of Defense Flight Information Publications (FLIP)\r\nC) VFR Terminal Area Charts (TAC)",
+            "answer": "B",
+            "id": 75
+        },
+        {
+            "question": "What should the pilot do if no power is available during a ditching?\r\nA) Use a greater than normal approach speed\r\nB) Land perpendicular to the swell\r\nC) Stall the aircraft immediately above water",
+            "answer": "A",
+            "id": 76
+        },
+        {
+            "question": "The typical turboprop airplane electrical system is a:\r\nA) 12-volt direct current (DC) system.\r\nB) 28-volt direct current (DC) system.\r\nC) 120-volt alternating current (AC) system.",
+            "answer": "B",
+            "id": 77
+        },
+        {
+            "question": "How can pilots mitigate and adapt to GPS interference?\r\nA) By using only VOR for navigation\r\nB) By having additional navigation equipment for their intended route\r\nC) By relying solely on ADS-B for navigation",
+            "answer": "B",
+            "id": 78
+        },
+        {
+            "question": "When planning to fly near complex terminal airspace, what helps VFR pilots avoid major controlled traffic flows?\r\nA) VFR Flyway Planning Charts\r\nB) Special Use Airspace (SUA) charts\r\nC) Online flight planning tools",
+            "answer": "A",
+            "id": 79
+        },
+        {
+            "question": "What is a pilot required to do with the temperature compensation system prior to the IAF?\r\nA) Turn it off\r\nB) Ensure it is on and active\r\nC) Reset it to sea level standard temperature",
+            "answer": "B",
+            "id": 80
+        },
+        {
+            "question": "During the before-takeoff check, the engine should be checked to ensure:\r\nA) It can reach its maximum speed immediately\r\nB) That the oil temperature is within operating range\r\nC) The fuel pump can be turned off",
+            "answer": "B",
+            "id": 81
+        },
+        {
+            "question": "What kind of phenomena can cause radar pulses to bend, leading to anomalous propagation?\r\nA) High humidity levels\r\nB) Temperature inversions\r\nC) Solar flares",
+            "answer": "B",
+            "id": 82
+        },
+        {
+            "question": "What is the minimum runway length for an airport to undergo CTA risk analysis?\r\nA) 1500 ft\r\nB) 2000 ft\r\nC) 2500 ft",
+            "answer": "C",
+            "id": 83
+        },
+        {
+            "question": "How is wind direction and speed represented in a METAR report?\r\nA) Degrees magnetic and miles per hour\r\nB) Degrees true and knots\r\nC) Degrees magnetic and knots",
+            "answer": "C",
+            "id": 84
+        },
+        {
+            "question": "What is the vertical limit of Class D airspace?\r\nA) Up to 10,000 feet MSL\r\nB) Up to 2,500 feet above the airport elevation\r\nC) Up to 4,000 feet above the airport elevation",
+            "answer": "B",
+            "id": 85
+        },
+        {
+            "question": "What should the pilot do if oil pressure does not rise to the AFM/POH values within the required time after engine start?\r\nA) Continue taxiing to observe if it changes\r\nB) Shut down the engine immediately\r\nC) Increase engine rpm to raise pressure",
+            "answer": "B",
+            "id": 86
+        },
+        {
+            "question": "What is required for recreational UAS pilots to fly legally in the NAS?\r\nA) Part 107 Certificate\r\nB) Passing the TRUST test\r\nC) A commercial pilot's license",
+            "answer": "B",
+            "id": 87
+        },
+        {
+            "question": "What is the purpose of the cones in the human eye?\r\nA) To detect detail and perceive color\r\nB) To improve night vision\r\nC) To control the amount of light entering the eye",
+            "answer": "A",
+            "id": 88
+        },
+        {
+            "question": "What is dynamic hydroplaning and when can it occur?\r\nA) It happens when the tires ride on a cushion of water, typically at high speeds\r\nB) It is caused by excessive braking leading to skidding\r\nC) It occurs due to a thin layer of oil on the runway",
+            "answer": "A",
+            "id": 89
+        },
+        {
+            "question": "What is the main purpose of 14 CFR Part 107 operations?\r\nA) For recreational flying only\r\nB) For commercial use and operations for hire\r\nC) For public UAS demonstrations",
+            "answer": "B",
+            "id": 90
+        },
+        {
+            "question": "In controlled airspace, what is required for a pilot to operate under Instrument Flight Rules (IFR)?\r\nA) Approval from the Federal Aviation Administration (FAA)\r\nB) Filing an IFR flight plan and receiving an ATC clearance\r\nC) Ensuring the aircraft is equipped with a Mode C transponder",
+            "answer": "B",
+            "id": 91
+        },
+        {
+            "question": "In the scenario of descending below the desired glideslope, what should the pilot check first?\r\nA) If the landing gear is down\r\nB) The airplane's current weight\r\nC) The airspeed relative to the target airspeed",
+            "answer": "C",
+            "id": 92
+        },
+        {
+            "question": "How should the pilot preplan for taxiing at an unfamiliar airport?\r\nA) By memorizing the airport layout beforehand\r\nB) Having an airport diagram readily available at all times\r\nC) Relying on ATC instructions only",
+            "answer": "B",
+            "id": 93
+        },
+        {
+            "question": "What is the purpose of Stability Augmentation Systems (SAS) in helicopters?\r\nA) To provide long-term autopilot navigation\r\nB) To provide short-term rate damping control inputs to increase helicopter stability\r\nC) To provide a cyclic centering effect",
+            "answer": "B",
+            "id": 94
+        },
+        {
+            "question": "What is a characteristic feature of a complex airplane?\r\nA) Fixed landing gear and fixed pitch propeller\r\nB) Retractable landing gear, flaps, and a controllable pitch propeller\r\nC) Jet-powered propulsion system",
+            "answer": "B",
+            "id": 95
+        },
+        {
+            "question": "What happens to the aircraft's true altitude when the barometric pressure is above 31.00 'Hg?\r\nA) It is lower than indicated\r\nB) It is higher than indicated\r\nC) It remains the same as indicated",
+            "answer": "B",
+            "id": 96
+        },
+        {
+            "question": "According to the Airplane Flying Handbook, how should checklists be used?\r\nA) As a \u201cdo list\u201d to perform actions in real-time\r\nB) Only in emergency situations\r\nC) As a memory aid to ensure critical items are not overlooked",
+            "answer": "C",
+            "id": 97
+        },
+        {
+            "question": "What color do taxiway centerline lights emit?\r\nA) Blue\r\nB) Green\r\nC) Yellow",
+            "answer": "B",
+            "id": 98
+        },
+        {
+            "question": "What is the maximum takeoff weight for a landplane LSA?\r\nA) 1,320 pounds\r\nB) 1,430 pounds\r\nC) 1,500 pounds",
+            "answer": "A",
+            "id": 99
+        },
+        {
+            "question": "What is the minimum altitude a helicopter should hover at during the departure from a point-in-space (PinS) SID with a visual segment indicated?\r\nA) At or above the heliport crossing height (HCH) specified\r\nB) Exactly at the altitude depicted on the chart\r\nC) Below the altitude for obstacle avoidance",
+            "answer": "A",
+            "id": 100
+        },
+        {
+            "question": "Is it possible for Part 107 operations to include UAS weighing less than 55 lbs?\r\nA) Yes, but only with special permission\r\nB) No, Part 107 is strictly for UAS of 55 lbs or more\r\nC) Yes, that is the standard weight range for Part 107",
+            "answer": "C",
+            "id": 101
+        },
+        {
+            "question": "What is the usual hazard associated with wake turbulence?\r\nA) Engine failure\r\nB) Induced rolling moments exceeding roll-control authority\r\nC) Loss of communication",
+            "answer": "B",
+            "id": 102
+        },
+        {
+            "question": "What is the significance of a black oxide film around a rivet head during visual inspection?\r\nA) It indicates a well-maintained surface\r\nB) It may suggest the rivet is working free from its hole\r\nC) It is a normal part of aging aircraft",
+            "answer": "B",
+            "id": 103
+        },
+        {
+            "question": "What is the accuracy of DME in terms of distance at line-of-sight altitude?\r\nA) Less than 1/2 mile or 3 percent of the distance, whichever is greater\r\nB) Exactly 1 mile\r\nC) Better than 1/2 mile or 3 percent of the distance, whichever is greater",
+            "answer": "C",
+            "id": 104
+        },
+        {
+            "question": "What does a runway holding position sign indicate?\r\nA) The presence of an ILS critical area\r\nB) An entrance to a runway or critical area\r\nC) The taxiway designation",
+            "answer": "B",
+            "id": 105
+        },
+        {
+            "question": "What is Class G airspace?\r\nA) Controlled airspace designated for general aviation\r\nB) Uncontrolled airspace not designated as Class A, B, C, D, or E\r\nC) Special use airspace with restricted access",
+            "answer": "B",
+            "id": 106
+        },
+        {
+            "question": "What is required for a remote pilot-in-command to report a sUAS crash under Part 107?\r\nA) Any crash that causes property damage over $500\r\nB) Any crash that involves a bird strike\r\nC) Any crash regardless of injury or property damage",
+            "answer": "A",
+            "id": 107
+        },
+        {
+            "question": "What is a critical error that can be made during the planning and execution of an emergency landing?\r\nA) Initiating an emergency descent too early\r\nB) Loss of initiative over the airplane\u2019s attitude and sink rate at touchdown\r\nC) Selecting an area too close to civilization for landing",
+            "answer": "B",
+            "id": 108
+        },
+        {
+            "question": "What should be the first action in a spin recovery procedure when not specified by the manufacturer?\r\nA) Increase throttle\r\nB) Neutralize the ailerons\r\nC) Reduce the power (throttle) to idle",
+            "answer": "C",
+            "id": 109
+        },
+        {
+            "question": "Which part of the 14 CFR outlines aircraft certifications and equipment requirements for operation in U.S. airspace?\r\nA) 14 CFR part 39\r\nB) 14 CFR part 67\r\nC) 14 CFR part 91",
+            "answer": "C",
+            "id": 110
+        },
+        {
+            "question": "What speed achieves the greatest gain in altitude for a given distance over the ground during takeoff?\r\nA) VX\r\nB) VY\r\nC) Both VX and VY equally",
+            "answer": "A",
+            "id": 111
+        },
+        {
+            "question": "What does \u201cPROB30\u201d indicate in a TAF report?\r\nA) Probability of 30% for specified conditions to occur\r\nB) A temporary change expected to last 30 minutes\r\nC) Visibility improving to 30 statute miles",
+            "answer": "A",
+            "id": 112
+        },
+        {
+            "question": "What are runways identified by?\r\nA) The nearest whole number to their magnetic azimuth\r\nB) The airport's elevation\r\nC) The length of the runway in feet",
+            "answer": "A",
+            "id": 113
+        },
+        {
+            "question": "What are the two main categories of airspace?\r\nA) Controlled and Uncontrolled\r\nB) Regulatory and Nonregulatory\r\nC) Special Use and Other Airspace",
+            "answer": "B",
+            "id": 114
+        },
+        {
+            "question": "Where can public sales of aeronautical charts and publications be found?\r\nA) Through FAA approved print providers\r\nB) At any local bookstore\r\nC) Directly from the FAA website",
+            "answer": "A",
+            "id": 115
+        },
+        {
+            "question": "What limitation does TIS have regarding collision avoidance?\r\nA) It cannot provide audible alerts\r\nB) It does not relieve the pilot's responsibility to 'see and avoid'\r\nC) It only works in visual meteorological conditions (VMC)",
+            "answer": "B",
+            "id": 116
+        },
+        {
+            "question": "What is the definition of a Near Midair Collision (NMAC)?\r\nA) Any incident where an aircraft diverts from its flight path\r\nB) An incident with proximity of less than 1000 feet to another aircraft\r\nC) An incident with proximity of less than 500 feet to another aircraft",
+            "answer": "C",
+            "id": 117
+        },
+        {
+            "question": "How far can the Approach Light Systems extend into the approach area for precision instrument runways?\r\nA) 2400-3000 feet\r\nB) 1400-1500 feet\r\nC) 500-700 feet",
+            "answer": "A",
+            "id": 118
+        },
+        {
+            "question": "What does the condition lever control in a free power-turbine engine?\r\nA) The propeller pitch\r\nB) The flow of fuel to the engine\r\nC) The engine's carburetor settings",
+            "answer": "B",
+            "id": 119
+        },
+        {
+            "question": "Which Class of airspace is considered more restrictive than Class D airspace?\r\nA) Class G\r\nB) Class C\r\nC) Class E",
+            "answer": "B",
+            "id": 120
+        },
+        {
+            "question": "In Class D airspace, when is two-way radio communication required to be established with the ATC facility?\r\nA) Before entry and maintained while in the airspace\r\nB) Only upon departure from the primary airport\r\nC) After takeoff if departing from an airport without an operating control tower",
+            "answer": "A",
+            "id": 121
+        },
+        {
+            "question": "What does a pilot need to check during the preflight inspection at night?\r\nA) The operation of all airplane lights\r\nB) The color of the position lights only\r\nC) The intensity of the landing light beam",
+            "answer": "A",
+            "id": 122
+        },
+        {
+            "question": "What color are the markings for taxiways?\r\nA) White\r\nB) Yellow\r\nC) Red",
+            "answer": "B",
+            "id": 123
+        },
+        {
+            "question": "What is the primary reason for using the landing light during takeoff, climb, and landing at night?\r\nA) To signal distress in case of emergency\r\nB) For illumination to assist in avoiding collisions\r\nC) Solely for visibility on the runway",
+            "answer": "B",
+            "id": 124
+        },
+        {
+            "question": "What minimum radar separation is applied to small aircraft operating directly behind a B757?\r\nA) 6 miles\r\nB) 4 miles\r\nC) 5 miles",
+            "answer": "B",
+            "id": 125
+        },
+        {
+            "question": "When can a pilot request a flight level change or re-route due to MWA or severe turbulence?\r\nA) Only before entry into RVSM airspace\r\nB) During any phase of the flight when encountering such conditions\r\nC) Only if other traffic is not affected",
+            "answer": "B",
+            "id": 126
+        },
+        {
+            "question": "What must all activity within an alert area be conducted in accordance with?\r\nA) Military directives only\r\nB) Code of Federal Regulations (CFRs), without waiver\r\nC) Special permissions from the controlling agency",
+            "answer": "B",
+            "id": 127
+        },
+        {
+            "question": "What could be a direct consequence of taxiing too fast during a turn?\r\nA) Increased fuel efficiency\r\nB) Unnecessary radio communications\r\nC) Possible damage to the landing gear or loss of control",
+            "answer": "C",
+            "id": 128
+        },
+        {
+            "question": "At what age can applicants for Part 107 operations take the initial testing?\r\nA) 18 years\r\nB) 16 years\r\nC) 21 years",
+            "answer": "B",
+            "id": 129
+        },
+        {
+            "question": "What is the consequence of not adhering to \u201cIFR operations, two\u2010way radio communications failure\u201d procedures?\r\nA) Mandatory retraining\r\nB) Possible deviation from safe flight protocols\r\nC) Immediate suspension of pilot's license",
+            "answer": "B",
+            "id": 130
+        },
+        {
+            "question": "What is the primary purpose of ground reference maneuvers?\r\nA) To perform aerobatic flight routines\r\nB) To develop a pilot's coordination, timing, and attention for accurate maneuvering\r\nC) To conduct geographic surveys from the air",
+            "answer": "B",
+            "id": 131
+        },
+        {
+            "question": "Which of the following is a method to mark a UAS with a registration number?\r\nA) Engraving\r\nB) A temporary sticker\r\nC) Using washable paint",
+            "answer": "A",
+            "id": 132
+        },
+        {
+            "question": "What must operators do to operate in a FRIA according to 14 CFR Part 89?\r\nA) Maintain visual line of sight at all times\r\nB) Obtain a special waiver for each flight\r\nC) Fly only during specific hours approved by the FAA",
+            "answer": "A",
+            "id": 133
+        },
+        {
+            "question": "What is a distinguishing feature of Controlled Firing Areas (CFAs)?\r\nA) Activities are suspended when an aircraft approaches the area\r\nB) They are charted on aeronautical charts\r\nC) Pilots are required to obtain permission before entering",
+            "answer": "A",
+            "id": 134
+        },
+        {
+            "question": "How are runway distance remaining signs marked?\r\nA) Yellow background with black numbers\r\nB) Black background with white numeral inscription\r\nC) Red background with yellow inscription",
+            "answer": "B",
+            "id": 135
+        },
+        {
+            "question": "During a bounced landing, what is the immediate danger if the pilot does not take corrective action?\r\nA) The airplane may stall\r\nB) The nose-wheel may collapse\r\nC) Excessive wear on the main landing gear tires",
+            "answer": "A",
+            "id": 136
+        },
+        {
+            "question": "What happens when overlapping airspace designations apply?\r\nA) The less restrictive rules apply\r\nB) The more restrictive airspace designation's rules apply\r\nC) Both sets of rules are ignored",
+            "answer": "B",
+            "id": 137
+        },
+        {
+            "question": "What happens if a person fails the Initial Aeronautical Knowledge Test for Part 107 certification?\r\nA) They can retake it immediately\r\nB) They must wait 14 calendar days before retaking\r\nC) They are not allowed to retake the test",
+            "answer": "B",
+            "id": 138
+        },
+        {
+            "question": "What is the transponder code for a hijacking situation?\r\nA) 7700\r\nB) 7600\r\nC) 7500",
+            "answer": "C",
+            "id": 139
+        },
+        {
+            "question": "What is the pilot expected to do if holding instructions have not been issued by ATC?\r\nA) Land at the nearest airport\r\nB) Ask ATC for holding instructions\r\nC) Continue to the destination airport",
+            "answer": "B",
+            "id": 140
+        },
+        {
+            "question": "What is the primary means of air/ground communication between controllers and pilots in flight?\r\nA) CPDLC\r\nB) Voice communication\r\nC) Text messages",
+            "answer": "B",
+            "id": 141
+        },
+        {
+            "question": "At what altitude does a jet airplane's wing, designed primarily for high-speed flight, exhibit poor low-speed characteristics?\r\nA) Below 10,000 feet\r\nB) Above 35,000 feet\r\nC) At low altitudes during landing and takeoff",
+            "answer": "C",
+            "id": 142
+        },
+        {
+            "question": "What should pilots do to maintain IFR proficiency when operating VFR?\r\nA) Ignore IFR procedures to focus on VFR flight\r\nB) Practice IFR procedures whenever possible\r\nC) Only use IFR procedures in actual IFR conditions",
+            "answer": "B",
+            "id": 143
+        },
+        {
+            "question": "The personal checklist for pilots to assess their fitness for flight does NOT include:\r\nA) Illness\r\nB) Stress\r\nC) Weather conditions",
+            "answer": "C",
+            "id": 144
+        },
+        {
+            "question": "What is the primary reason for pilots to be particularly alert when operating near an airport?\r\nA) To observe wildlife\r\nB) Due to increased traffic congestion and potential for hazardous accidents\r\nC) To follow scenic routes",
+            "answer": "B",
+            "id": 145
+        },
+        {
+            "question": "What is the transponder code for emergency?\r\nA) 7700\r\nB) 7600\r\nC) 7500",
+            "answer": "A",
+            "id": 146
+        },
+        {
+            "question": "According to 14 CFR part 61, section 61.57(b)(1), what is the time period referred to as 'night' for meeting recent flight experience requirements?\r\nA) Between sunset and sunrise\r\nB) 1 hour after sunset and ending 1 hour before sunrise\r\nC) During evening civil twilight",
+            "answer": "B",
+            "id": 147
+        },
+        {
+            "question": "What must the pilot-in-command do if they deviate from an ATC clearance due to an emergency?\r\nA) Land at the nearest airport and file a report\r\nB) Notify ATC as soon as possible and obtain an amended clearance\r\nC) Continue to the destination without further communication",
+            "answer": "B",
+            "id": 148
+        },
+        {
+            "question": "What is the term for the portion of the glide slope that intersects the localizer?\r\nA) Glide angle\r\nB) Glide path\r\nC) Glide ratio",
+            "answer": "B",
+            "id": 149
+        },
+        {
+            "question": "What is a critical consideration when choosing a Landing Zone (LZ) for a helicopter?\r\nA) The LZ should be on a slope\r\nB) The LZ should be level and free of loose debris\r\nC) The LZ should be near water bodies",
+            "answer": "B",
+            "id": 150
+        },
+        {
+            "question": "If a pilot is told to expect a clearance to a higher altitude at a specific waypoint but experiences two-way failure before then, what should they do?\r\nA) Maintain the last assigned altitude until the waypoint, then climb to the expected altitude\r\nB) Immediately climb to the expected altitude\r\nC) Continue at the last assigned altitude without climbing",
+            "answer": "A",
+            "id": 151
+        },
+        {
+            "question": "What should a pilot do if they experience a severe bounce during landing?\r\nA) Try to correct with back-elevator pressure\r\nB) Continue the landing with increased forward pressure\r\nC) Execute an immediate go-around",
+            "answer": "C",
+            "id": 152
+        },
+        {
+            "question": "What is the purpose of the base leg in the traffic pattern?\r\nA) To align the aircraft with the runway for takeoff\r\nB) To provide a transitional part between the downwind leg and the final approach\r\nC) To gain altitude before leaving the airport area",
+            "answer": "B",
+            "id": 153
+        },
+        {
+            "question": "How can operators receive SAFOs and InFOs?\r\nA) By purchasing them from the FAA\r\nB) Through a free electronic subscription on the FAA website\r\nC) By attending annual FAA meetings",
+            "answer": "B",
+            "id": 154
+        },
+        {
+            "question": "How can Part 107 operators request airspace authorizations?\r\nA) Through the DroneZone or LAANC systems\r\nB) By sending a written request to the FAA\r\nC) By calling the nearest airport",
+            "answer": "A",
+            "id": 155
+        },
+        {
+            "question": "How are runway numbers and letters determined?\r\nA) By the length of the runway\r\nB) From the approach direction based on magnetic azimuth\r\nC) According to international standards",
+            "answer": "B",
+            "id": 156
+        },
+        {
+            "question": "How often is the Chart Supplement U.S. published?\r\nA) Every 28 days\r\nB) Every 56 days\r\nC) Annually",
+            "answer": "B",
+            "id": 157
+        },
+        {
+            "question": "How can pilots reduce bird strike risks?\r\nA) By flying at lower altitudes during bird migration\r\nB) By avoiding overflight of known areas of bird concentration and flying at low altitudes during bird migration\r\nC) By increasing speed in areas of known bird concentrations",
+            "answer": "B",
+            "id": 158
+        },
+        {
+            "question": "What must aircraft equipped with when conducting operations into, within, or across the contiguous U.S. ADIZ according to 14 CFR 99?\r\nA) A valid passport for all passengers\r\nB) An operable radar beacon transponder\r\nC) A special permit from the Department of Defense",
+            "answer": "B",
+            "id": 159
+        },
+        {
+            "question": "What is the consequence of not performing a magneto switch test properly before engine shutdown?\r\nA) The engine might not start next time\r\nB) It might indicate improper grounding\r\nC) The engine could potentially keep running",
+            "answer": "B",
+            "id": 160
+        },
+        {
+            "question": "What is the primary purpose of Air Route Traffic Control Centers?\r\nA) To monitor and control all high-altitude air traffic\r\nB) To provide air traffic service to aircraft operating on IFR flight plans within controlled airspace, principally during the en route phase of flight\r\nC) To manage airport taxi routes and gate assignments",
+            "answer": "B",
+            "id": 161
+        },
+        {
+            "question": "What percentage of all yearly general aviation accidents occur during takeoff and departure climbs?\r\nA) About ten percent\r\nB) About twenty percent\r\nC) About thirty percent",
+            "answer": "B",
+            "id": 162
+        },
+        {
+            "question": "What is a common error during soft/rough field takeoff and climbs?\r\nA) Applying too much back-elevator pressure resulting in a steep climb\r\nB) Insufficient back-elevator pressure resulting in inadequate AOA\r\nC) Excessive use of flaps",
+            "answer": "B",
+            "id": 163
+        },
+        {
+            "question": "What is recommended for air carriers/operators who use NVGs?\r\nA) To avoid flying at low altitudes\r\nB) To incorporate procedures for periodic, unaided scanning\r\nC) To only use LED lighting systems",
+            "answer": "B",
+            "id": 164
+        },
+        {
+            "question": "What can decrease the life expectancy of an injured survivor by as much as 80% during the first 24 hours?\r\nA) Lack of a flight plan\r\nB) Inability to communicate\r\nC) Delay in initiating a search and rescue operation",
+            "answer": "C",
+            "id": 165
+        },
+        {
+            "question": "What should pilots do if unable to comply with the maximum holding airspeed?\r\nA) Continue holding as planned\r\nB) Advise ATC immediately and request an alternate clearance\r\nC) Automatically divert to the nearest airport",
+            "answer": "B",
+            "id": 166
+        },
+        {
+            "question": "What is the primary reason for the absence of a significant difference between power-on and power-off stall speeds in a jet airplane?\r\nA) The effect of propeller slipstream on lift\r\nB) The aerodynamic design of jet wings\r\nC) The high thrust-to-weight ratio of jet engines",
+            "answer": "B",
+            "id": 167
+        },
+        {
+            "question": "Maintenance records show the last transponder inspection was performed on\nSeptember 1, 2014. The next inspection will be due no later than\nA. September 30, 2015.\nB. September 1, 2016.\nC. September 30, 2016.",
+            "answer": "C",
+            "id": 168
+        },
+        {
+            "question": "With respect to the certification of airmen, which are categories of aircraft?\nA. Gyroplane, helicopter, airship, free balloon.\nB. Airplane, rotorcraft, glider, lighter-than-air.\nC. Single-engine land and sea, multiengine land and sea.",
+            "answer": "B",
+            "id": 169
+        },
+        {
+            "question": "A flashing white light signal from the control tower to a taxiing aircraft is an indication\nto\nA. taxi at a faster speed.\nB. taxi only on taxiways and not cross runways.\nC. return to the starting point on the airport.",
+            "answer": "C",
+            "id": 170
+        },
+        {
+            "question": "During operations outside controlled airspace at altitudes of more than 1,200 feet\nAGL, but less than 10,000 feet MSL, the minimum flight visibility for day VFR flight is\nA. 1 mile.\nB. 3 miles.\nC. 5 miles.",
+            "answer": "B",
+            "id": 171
+        },
+        {
+            "question": "Unless otherwise authorized, two-way radio communications with Air Traffic Control\nare required for landings or takeoffs at all towered airports\nA. regardless of weather conditions.\nB. only when weather conditions are less than VFR.\nC. within Class D airspace only when weather conditions are less than VFR.",
+            "answer": "A",
+            "id": 172
+        },
+        {
+            "question": "During operations outside controlled airspace at altitudes of more than 1,200 feet\nAGL, but less than 10,000 feet MSL, the minimum distance below clouds requirement\nfor VFR flight at night is\nA. 500 feet.\nB. 1,000 feet.\nC. 1,500 feet.",
+            "answer": "A",
+            "id": 173
+        },
+        {
+            "question": "Two-way radio communication must be established with the Air Traffic Control facility\nhaving jurisdiction over the area prior to entering which class airspace?\nA. Class C.\nB. Class E.\nC. Class G.",
+            "answer": "A",
+            "id": 174
+        },
+        {
+            "question": "Pre-takeoff briefing of passengers about the use of seat belts for a flight is the\nresponsibility of\nA. all passengers.\nB. the pilot in command.\nC. the right seat pilot.",
+            "answer": "B",
+            "id": 175
+        },
+        {
+            "question": "A 100-hour inspection was due at 3302.5 hours. The 100-hour inspection was actually\ndone at 3305 hours. When is the next 100-hour inspection due?\nA. 3312.5 hours.\nB. 3395.5 hours.\nC. 3402.5 hours.",
+            "answer": "C",
+            "id": 176
+        },
+        {
+            "question": "When speaking to a flight service weather briefer, you should state\nA. the pilot in command`s full name and address.\nB. a summary of your qualifications.\nC. whether the flight is VFR or IFR.",
+            "answer": "C",
+            "id": 177
+        },
+        {
+            "question": "Why is frost considered hazardous to flight?\nA. Frost changes the basic aerodynamic shape of the airfoils, thereby increasing\nlift.\nB. Frost slows the airflow over the airfoils, thereby increasing control\neffectiveness.\nC. Frost spoils the smooth flow of air over the wings, thereby decreasing lifting\ncapability.",
+            "answer": "C",
+            "id": 178
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 17.) What wind is forecast for STL at 12,000 feet?\nA. 230\u00b0 true at 56 knots.\nB. 230\u00b0 true at 39 knots.\nC. 230\u00b0 magnetic at 56 knots.",
+            "answer": "B",
+            "id": 179
+        },
+        {
+            "question": "The mature stage of a thunderstorm begins with\nA. formation of the anvil top.\nB. the start of precipitation.\nC. continuous downdrafts.",
+            "answer": "B",
+            "id": 180
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figures 32 and 33.) Which action can adjust the airplane`s\nweight to maximum gross weight and the CG within limits for takeoff?\nFront seat occupants: 425 lb\nRear seat occupants: 300 lb\nFuel, main tanks: 44 gal\nA. Drain 12 gallons of fuel.\nB. Drain 9 gallons of fuel.\nC. Transfer 12 gallons of fuel from the main tanks to the auxiliary tanks.",
+            "answer": "B",
+            "id": 181
+        },
+        {
+            "question": "What action should a pilot take when operating under VFR in a Military Operations\nArea (MOA)?\nA. Obtain a clearance from the controlling agency prior to entering the MOA.\nB. Operate only on the airways that transverse the MOA.\nC. Exercise extreme caution when military activity is being conducted.",
+            "answer": "B",
+            "id": 182
+        },
+        {
+            "question": "Unless otherwise authorized, if flying a transponder equipped aircraft, a pilot should\nsquawk which VFR code?\nA. 1200\nB. 7600\nC. 7700",
+            "answer": "A",
+            "id": 183
+        },
+        {
+            "question": "What is one purpose of wing flaps?\nA. To enable the pilot to make steeper approaches to a landing without increasing\nthe airspeed.\nB. To relieve the pilot of maintaining continuous pressure on the controls.\nC. To decrease wing area to vary the lift.",
+            "answer": "A",
+            "id": 184
+        },
+        {
+            "question": "With regard to carburetor ice, float-type carburetor systems in comparison to fuel\ninjection systems are generally considered to be\nA. more susceptible to icing.\nB. equally susceptible to icing.\nC. less susceptible to icing.",
+            "answer": "A",
+            "id": 185
+        },
+        {
+            "question": "What does the red line on an airspeed indicator represent?\nA. Maneuvering speed.\nB. Turbulent or rough-air speed.\nC. Never-exceed speed.",
+            "answer": "C",
+            "id": 186
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 48.) The portion of the runway identified by the\nletter A may be used for\nA. landing.\nB. taxiing and takeoff.\nC. taxiing and landing.",
+            "answer": "B",
+            "id": 187
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 47.) While on final approach to a runway equipped\nwith a standard 2-bar VASI, the lights appear as shown by illustration D. This means\nthat the aircraft is\nA. above the glide path.\nB. below the glide path.\nC. on the glide path.",
+            "answer": "B",
+            "id": 188
+        },
+        {
+            "question": "Who has final authority to accept or decline any land and hold short (LAHSO)\nclearance?\nA. Pilot in command.\nB. Air Traffic Controller.\nC. Second in command.",
+            "answer": "A",
+            "id": 189
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 38.) Determine the approximate landing ground roll\ndistance.\nPressure altitude: 5,000 ft\nHeadwind: Calm\nTemperature: 101\u00b0F\nA. 445 feet.\nB. 545 feet.\nC. 495 feet.",
+            "answer": "B",
+            "id": 190
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 38.) Determine the total distance required to land\nover a 50-foot obstacle.\nPressure altitude: 5,000 ft\nHeadwind: 8 kts\nTemperature: 41\u00b0F\nRunway: Hard surface\nA. 837 feet.\nB. 956 feet.\nC. 1,076 feet.",
+            "answer": "B",
+            "id": 191
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 35.) Determine the approximate manifold pressure\nsetting with 2,450 RPM to achieve 65 percent maximum continuous power at 6,500\nfeet with a temperature of 36\u00b0F higher than standard.\nA. 19.8 inches Hg.\nB. 20.8 inches Hg.\nC. 21.0 inches Hg.",
+            "answer": "C",
+            "id": 192
+        },
+        {
+            "question": "The term 'angle of attack' is defined as the angle between the\nA. chord line of the wing and the relative wind.\nB. airplane's longitudinal axis and that of the air striking the airfoil.\nC. airplane's center line and the relative wind.",
+            "answer": "A",
+            "id": 193
+        },
+        {
+            "question": "When the course deviation indicator (CDI) needle is centered using a VOR test signal\n(VOT), the omnibearing selector (OBS) and the TO/FROM indicator should read\nA. 180\u00b0 FROM, only if the pilot is due north of the VOT.\nB. 0\u00b0 TO or 180\u00b0 FROM, regardless of the pilot`s position from the VOT.\nC. 0\u00b0 FROM or 180\u00b0 TO, regardless of the pilot`s position from the VOT.",
+            "answer": "B",
+            "id": 194
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 26, area 2.) The day VFR visibility and cloud\nclearance requirements to operate over the town of Cooperstown, after departing\nand climbing out of the Cooperstown Airport at or below 700 feet AGL are\nA. 1 mile and clear of clouds.\nB. 1 mile and 1,000 feet above, 500 feet below, and 2,000 feet horizontally from\nclouds.\nC. 3 miles and clear of clouds.",
+            "answer": "A",
+            "id": 195
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 52.) What is the recommended communications\nprocedure for landing at Lincoln Municipal during the hours when the tower is not in\noperation?\nA. Monitor airport traffic and announce your position and intentions on 118.5 MHz.\nB. Contact UNICOM on 122.95 MHz for traffic advisories.\nC. Monitor ATIS for airport conditions, then announce your position on 122.95 MHz.",
+            "answer": "C",
+            "id": 196
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 25, area 5.) The navigation facility at Dallas-Ft.\nWorth International (DFW) is a\nA. VOR.\nB. VORTAC.\nC. VOR/DME.",
+            "answer": "C",
+            "id": 197
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 52.) Where is Loup City Municipal located in relation\nto the city?\nA. Northeast approximately 3 miles.\nB. Northwest approximately 1 mile.\nC. East approximately 7 miles.",
+            "answer": "A",
+            "id": 198
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 52.) When approaching Lincoln Municipal from the\nwest at noon for the purpose of landing, initial communications should be with\nA. Lincoln Approach Control on 124.0 MHz.\nB. Minneapolis Center on 128.75 MHz.\nC. Lincoln Tower on 118.5 MHz.",
+            "answer": "A",
+            "id": 199
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 64.) Which marking indicates a vehicle lane?\nA. A.\nB. C.\nC. E.",
+            "answer": "B",
+            "id": 200
+        },
+        {
+            "question": "A pilot and two passengers landed on a 2,100 foot east-west gravel strip with an\nelevation of 1,800 feet. The temperature is warmer than expected and after computing\nthe density altitude it is determined the takeoff distance over a 50 foot obstacle is\n1,980 feet. The airplane is 75 pounds under gross weight. What would be the best\nchoice?\nA. Taking off into the headwind will give the extra climb-out time needed.\nB. Try a takeoff without the passengers to make sure the climb is adequate.\nC. Wait until the temperature decreases, and recalculate the takeoff performance.",
+            "answer": "C",
+            "id": 201
+        },
+        {
+            "question": "If an aircraft is equipped with a fixed-pitch propeller and a float-type carburetor, the\nfirst indication of carburetor ice would most likely be\nA. a drop in oil temperature and cylinder head temperature.\nB. engine roughness.\nC. loss of RPM.",
+            "answer": "C",
+            "id": 202
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 20, area 1.) The NALF Fentress (NFE) Airport is in\nwhat type of airspace?\nA. Class C.\nB. Class E.\nC. Class G.",
+            "answer": "B",
+            "id": 203
+        },
+        {
+            "question": "While on a VFR cross country and not in contact with ATC, what frequency would\nyou use in the event of an emergency?\nA. 121.5 MHz.\nB. 122.5 MHz.\nC. 128.725 MHz.",
+            "answer": "A",
+            "id": 204
+        },
+        {
+            "question": "ATC advises, 'traffic 12 o'clock.' This advisory is relative to your\nA. true course.\nB. ground track.\nC. magnetic heading.",
+            "answer": "B",
+            "id": 205
+        },
+        {
+            "question": "Which statement relates to Bernoulli's principle?\nA. For every action there is an equal and opposite reaction.\nB. An additional upward force is generated as the lower surface of\nthe airfoil deflects air downward.\nC. Air traveling faster over the curved upper surface of an airfoil causes lower\npressure on the top surface.",
+            "answer": "C",
+            "id": 206
+        },
+        {
+            "question": "Deviation error of the magnetic compass is caused by\nA. a northerly turning error.\nB. certain metals and electrical systems within the aircraft.\nC. the difference in location of true north and magnetic north.",
+            "answer": "B",
+            "id": 207
+        },
+        {
+            "question": "When executing an emergency approach to land in a single-engine airplane, it is\nimportant to maintain a constant glide speed because variations in glide speed will\nA. increase the chances of shock cooling the engine.\nB. assure the proper descent angle is maintained until entering the flare.\nC. nullify all attempts at accuracy in judgment of gliding distance and landing spot.",
+            "answer": "B",
+            "id": 208
+        },
+        {
+            "question": "How far will an aircraft travel in 7.5 minutes with a ground speed of 114 knots?\nA. 14.25 NM.\nB. 15.00 NM.\nC. 14.50 NM.",
+            "answer": "A",
+            "id": 209
+        },
+        {
+            "question": "The radius of the procedural outer area of Class C airspace is normally\nA. 10 NM.\nB. 20 NM.\nC. 30 NM.",
+            "answer": "B",
+            "id": 210
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 8.) What is the effect of a temperature increase from\n35 to 50\u00b0F on the density altitude if the pressure altitude remains at 3,000 feet MSL?\nA. 1,000-foot increase.\nB. 1,100-foot decrease.\nC. 1,300-foot increase.",
+            "answer": "A",
+            "id": 211
+        },
+        {
+            "question": "The Aeronautical Information Manual (AIM) specifically encourages pilots to turn on\ntheir landing lights when operating below 10,000 feet, day or night, and especially\nwhen operating\nA. in Class B airspace.\nB. in conditions of reduced visibility.\nC. within 15 miles of a towered airport.",
+            "answer": "B",
+            "id": 212
+        },
+        {
+            "question": "When making routine transponder code changes, pilots should avoid inadvertent\nselection of which code?\nA. 7200\nB. 7000\nC. 7500",
+            "answer": "B",
+            "id": 213
+        },
+        {
+            "question": "A pilot experiencing the effects of hyperventilation should be able to restore the\nproper carbon dioxide level in the body by\nA. slowing the breathing rate, breathing into a paper bag, or talking aloud.\nB. breathing spontaneously and deeply or gaining mental control of the situation.\nC. increasing the breathing rate in order to increase lung ventilation.",
+            "answer": "A",
+            "id": 214
+        },
+        {
+            "question": "(Refer to FAA-CT-8080-2H, Figure 78.) What are the basic VFR weather minima\nrequired to takeoff from the Onawa, IA (K36) airport during the day?\nA. 3 statute miles visibility, 500 feet below the clouds, 1,000 feet above the clouds,\nand 2,000 feet horizontally from the clouds.\nB. 0 statute miles, clear of clouds.\nC. 1 statute mile, clear of clouds.",
+            "answer": "A",
+            "id": 215
+        },
+        {
+            "question": "If Receiver Autonomous Integrity Monitoring (RAIM) capability is lost in-flight,\nA. the pilot may still rely on GPS derived altitude for vertical information.\nB. the pilot has no assurance of the accuracy of the GPS position.\nC. GPS position is reliable provided at least 3 GPS satellites are available.",
+            "answer": "B",
+            "id": 216
+        },
+        {
+            "question": "You plan to phone a weather briefing facility for preflight weather information. You\nshould\nA. provide the number of occupants on board.\nB. identify yourself as a pilot.\nC. begin with your route of flight.",
+            "answer": "B",
+            "id": 217
+        },
+        {
+            "question": "Your cousin wants you to take him flying. You must have made at least three takeoffs\nand three landings in your aircraft within the preceding\nA. 90 days.\nB. 60 days.\nC. 30 days.",
+            "answer": "A",
+            "id": 218
+        },
+        {
+            "question": "Metadata: ACSCode : PA.I.A.K1\n In what flight condition are torque effects more pronounced in a single-engine\nairplane?\nA. Low airspeed, high power, high angle of attack.\nB. Low airspeed, low power, low angle of attack.\nC. High airspeed, high power, high angle of attack.",
+            "answer": "A",
+            "id": 219
+        },
+        {
+            "question": "The wind at 5,000 feet AGL is southwesterly while the surface wind is southerly. This\ndifference in direction is primarily due to\nA. stronger pressure gradient at higher altitudes.\nB. friction between the wind and the surface.\nC. stronger Coriolis force at the surface.",
+            "answer": "B",
+            "id": 220
+        },
+        {
+            "question": "Eye movements during daytime collision avoidance scanning should\nA. not exceed 10 degrees and view each sector at least 1 second.\nB. be 30 degrees and view each sector at least 3 seconds.\nC. use peripheral vision by scanning small sectors and utilizing off-center viewing.",
+            "answer": "A",
+            "id": 221
+        },
+        {
+            "question": "When there is a temperature inversion, you would expect to experience\nA. clouds with extensive vertical development above an inversion aloft.\nB. good visibility in the lower levels of the atmosphere and poor visibility above an\ninversion aloft.\nC. an increase in temperature as altitude increases.",
+            "answer": "C",
+            "id": 222
+        },
+        {
+            "question": "When warm, moist, stable air flows upslope, it\nA. produces stratus type clouds.\nB. causes showers and thunderstorms.\nC. develops convective turbulence.",
+            "answer": "A",
+            "id": 223
+        },
+        {
+            "question": "Each person who holds a pilot certificate or a medical certificate shall present it for\ninspection upon the request of any\nA. authorized representative of the Department of Transportation.\nB. person in a position of authority.\nC. local law enforcement officer.",
+            "answer": "C",
+            "id": 224
+        },
+        {
+            "question": "The correct method of stating 5,500 feet MSL to ATC is\nA. FIVE POINT FIVE.\nB. FIFTY-FIVE HUNDRED FEET MSL.\nC. FIVE THOUSAND FIVE HUNDRED.",
+            "answer": "C",
+            "id": 225
+        },
+        {
+            "question": "Unless otherwise authorized, which situation requires Automatic Dependent\nSurveillance-Broadcast (ADS-B)?\nA. Landing at an airport with an operating control tower.\nB. Overflying Class C airspace below 10,000 feet MSL.\nC. Flying under the shelf of Class C airspace.",
+            "answer": "B",
+            "id": 226
+        },
+        {
+            "question": "The wind at 5,000 feet agl is southwesterly while the surface wind is southerly. The difference in direction is primarily caused by\nA. stronger Coriolis force at the surface.\nB. stronger pressure gradient at higher altitudes.\nC. friction between the wind and the surface.",
+            "answer": "C",
+            "id": 227
+        },
+        {
+            "question": "When telephoning a weather briefing facility for preflight weather information, pilots should state\nA. the full name and address of the formation commander.\nB. whether they intend to fly VFR only.\nC. that they possess a current pilot certificate.",
+            "answer": "B",
+            "id": 228
+        },
+        {
+            "question": "An ATC radar facility issues the following advisory to a pilot flying north in a calm wind: 'Traffic, nine o'clock, two miles, southbound.' Where should the pilot look for this traffic?\nA. South.\nB. North.\nC. West.",
+            "answer": "C",
+            "id": 229
+        },
+        {
+            "question": "To use VHF/DF facilities for assistance in locating an aircraft's position, the aircraft must have a\nA. VHF transmitter and receiver.\nB. VOR receiver and DME.\nC. 4096-code transponder.",
+            "answer": "A",
+            "id": 230
+        },
+        {
+            "question": "What is the approximate base of the cumulus clouds if the surface air temperature at 1,000 feet msl is 70 degrees Fahrenheit and the dewpoint is 48 degrees F?\nA. 4,000 feet msl.\nB. 5,000 feet msl.\nC. 6,000 feet msl.",
+            "answer": "B",
+            "id": 231
+        },
+        {
+            "question": "In the Northern Hemisphere, a magnetic compass will normally indicate a turn toward the north if\nA. a right turn is entered from an east heading.\nB. a left turn is entered from a west heading.\nC. an aircraft is accelerated while on an east or west heading.",
+            "answer": "C",
+            "id": 232
+        },
+        {
+            "question": "The angle of attack at which an airplane wing stalls will\nA. remain the same regardless of the airplane's gross weight.\nB. change with an increase in the airplane's gross weight.\nC. increase if the CG is moved forward.",
+            "answer": "A",
+            "id": 233
+        },
+        {
+            "question": "The vertical limit of Class C airspace above the primary airport is normally\nA. 3,000 feet agl.\nB. 1,200 feet agl.\nC. 4,000 feet agl.",
+            "answer": "C",
+            "id": 234
+        },
+        {
+            "question": "What are the standard temperature and pressure values for sea level?\nA. 15 degrees Celsius and 292 inches Hg.\nB. 59 degrees C and 1013.2 millibars.\nC. 59 degrees Fahrenheit and 292 millibars.",
+            "answer": "A",
+            "id": 235
+        },
+        {
+            "question": "Which items are included in the empty weight of an aircraft?\nA. Only the airframe, powerplant, and optional equipment.\nB. Unusable fuel and undrainable oil.\nC. Full tanks and engine oil filled to capacity.",
+            "answer": "B",
+            "id": 236
+        },
+        {
+            "question": "The most effective method of scanning for other aircraft for collision avoidance during nighttime hours is to use\nA. regularly spaced concentration on the three-, nine-, and 12-o'clock positions.\nB. a series of short, regularly spaced eye movements to search each 30-degree sector.\nC. peripheral vision by scanning small sectors and utilizing off-center viewing.",
+            "answer": "C",
+            "id": 237
+        }
+    ]
+}

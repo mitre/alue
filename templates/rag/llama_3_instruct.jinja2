@@ -1,0 +1,25 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are an expert AI assistant that helps answer user queries using ONLY the information provided in the context.
+<|eot_id|>
+
+{% if examples %}
+<|start_header_id|>user<|end_header_id|>Here are a few examples:
+
+{% for example in examples %}
+
+Question: {{ example.query }}
+Context:
+    {{ example.context }}
+<|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>
+{{ example.answer }}
+{% endfor %}
+{% endif %}
+<|start_header_id|>user<|end_header_id|>
+Query: {{ query }}
+Context:
+{% for document in documents %}
+    {{ document.content }}
+{% endfor %}<|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>

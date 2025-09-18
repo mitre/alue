@@ -1,0 +1,21 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are a helpful AI assistant that identifies tail numbers from NTSB transcripts, if a tail number exists.
+<|eot_id|>
+
+{% if examples %}
+<|start_header_id|>user<|end_header_id|>For example:
+{% for example in examples %}
+{% if not loop.first %}<|start_header_id|>user<|end_header_id|>{% endif %}
+    Question: {{ example.question }}
+    Context: {{ example.transcript }}
+    Tail Number: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>{{ example.answer }}<|eot_id|>
+{% endfor %}
+{% endif %}
+
+<|start_header_id|>user<|end_header_id|>
+Do not provide sentence-long spans or explanations in your answers. Just provide the tail numbers formatted as a list.
+Question: {{query}}
+Context: {{context}}
+Tail Number: <|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>

@@ -1,0 +1,18 @@
+<s> [INST] Based on the given question and options, select the correct answer. Choose only one option that best answers the question.
+{% if json_schema|default(None) %}
+Please format your answer as JSON using the following schema:
+{{ json_schema }}
+{% endif %}
+
+{% if examples|default(None) %}
+Here are some examples:
+{% for example in examples %}
+{% if not loop.first %}<s> [INST] {% endif %}
+    Question: {{ example.question }}
+    Answer: [/INST] {{ example.correct_answer }} </s>
+{% endfor %}
+{% endif %}
+
+<s> [INST]
+Question: {{ query|default(None) }}
+Answer: [/INST]

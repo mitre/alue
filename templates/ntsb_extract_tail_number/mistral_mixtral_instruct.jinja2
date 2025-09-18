@@ -1,0 +1,16 @@
+<s>[INST] Using the information contained in the provided context, identify a concise, EXACT span of the context that answers the question. DO NOT provide sentence-long spans. Adhere to the stylistic guidelines provided in the question.
+
+{% if examples %}
+For example:
+{% for example in examples %}
+{% if not loop.first %}<s>[INST] {% endif %}
+    Question: {{ example.question }}
+    Context: {{ example.transcript }}
+    Answer: [/INST] {{ example.answer }} </s>
+{% endfor %}
+{% endif %}
+
+<s>[INST]
+Question: {{ query }}
+Context: {{ context }}
+Answer: [/INST]

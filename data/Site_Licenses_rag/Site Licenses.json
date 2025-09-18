@@ -1,0 +1,74 @@
+{
+    "examples": [
+        {
+            "query": "What considerations are important for selecting a launch site?",
+            "context": "When selecting a launch site, several considerations are crucial to ensure safety and operational efficiency. These include geographical location, which affects the trajectory and potential impact zones; proximity to populated areas, which must be minimized to reduce risk; and environmental factors, such as weather patterns and natural hazards. Additionally, logistical support, including access to transportation and communication infrastructure, is essential. Regulatory compliance with local, state, and federal laws is also a key factor in the site selection process.",
+            "answer": "Geographical location, proximity to populated areas, environmental factors, logistical support, and regulatory compliance."
+        },
+        {
+            "query": "How can launch vehicle operators improve telemetry data accuracy?",
+            "context": "Improving telemetry data accuracy is vital for the successful monitoring and control of launch vehicles. Operators can enhance accuracy by using high-quality sensors and ensuring proper calibration before each launch. Implementing redundant systems can help verify data integrity and identify discrepancies. Additionally, operators should employ advanced data processing algorithms to filter out noise and improve signal clarity. Regular maintenance and testing of telemetry equipment are also essential to ensure reliable performance during launch operations.",
+            "answer": "Use high-quality sensors, implement redundant systems, employ advanced algorithms, and conduct regular maintenance."
+        }
+    ],
+    "data": [
+        {
+            "title": "DRS Site Licenses",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": " What is the purpose of the redesignation in the Commercial Space Launch Act as stated in the document issued in June 23, 2015?",
+                            "answers": [
+                                {
+                                    "text": "Due to the recodification of the Commercial Space Launch Act in the federal\ncode, redesignated Authority to read: \"51 U.S.C. Subtitle V, Ch. 509.",
+                                    "document_id": [
+                                        "8ebcf100696d1724af8b9e031bc44551529aebfa8a6d73d63cb37ca13859561e"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1",
+                            "question": "What is the authority for the License Order No. LSO 15-016A issued to Houston Airport System?",
+                            "answers": [
+                                {
+                                    "text": "51 U.S.C. Subtitle V, chapter 509, and 14 C.F.R.\nCh. III.",
+                                    "document_id": [
+                                        "7f0c2ea2c2d0dc8475c1ab015dc80e3c37726f8e7b423bd7155064a7f019ac38"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "question": "What is the explosive siting requirement that the licensee must comply with for any explosive hazard facility within the launch site boundary as stated in Revision 7 of License No. LSO 04-009?",
+                            "answers": [
+                                {
+                                    "text": "For any explosive hazard facility where handling of incompatible\nenergetic liquids occurs within the launch site boundary, EKAD may have\nno more than 30,000 pounds in net explosive weight of the energetic\nliquids at each explosive hazard facility.\nFor any explosive hazard facility where handling of incompatible\nenergetic liquids occurs within the launch site boundary, EKAD shall\nrestrict foot traffic of all members of the public to a radius of 1250 feet\nand vehicular traffic to a radius of 750 feet during handling of energetic\nliquids. Handling of incompatible energetic liquids includes engine test\nfiring.\nFor any explosive hazard facility where the quantity of energetic liquids is\n450 pounds of net explosive weight or less, EKAD may establish a\ndistance of less than 1250 feet in accordance with Table C9.T2 and\nC9.4.1.2.1.1.1 of DOD 6055.9 \u2013 STD, Oct. 5, 2004, as the distance within\nwhich members of the public may not enter.\nFor the storage of LOX, kerosene and isopropyl alcohol within the launch\nsite boundaries, EKAD must comply with National Fire Protection\nAssociation (NFPA) standards #55 (2005 edition) and #30 (2008 edition)\nfor separation distance and spill containment requirements.\nFor all energetic liquids within the launch site boundaries, regardless of\nwhether those energetic liquids are used for an aircraft or a launch\nvehicle, EKAD must maintain an intraline distance or EKAD must account\nfor all quantities of energetic liquids to determine the distance for\nseparating the explosive hazard facility from each public area, including\neach public road. EKAD must use DOD 6055.9-STD o",
+                                    "document_id": [
+                                        "95ff8e39fc1fa37b39a20834bea82b0457097cd5572f3c8548b96cdf76f1ff2a",
+                                        " 4514e35a6d6d70375af7e5e142801b3d8f2de49078fe5ef08c64b3344a8453c7"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "question": "What document is used to determine the intraline and public area distances for maintaining explosive liquids distance from public areas and roads?",
+                            "answers": [
+                                {
+                                    "text": "DOD 6055.9-STD of Oct. 5, 2004",
+                                    "document_id": [
+                                        "021de4716c67702882ad58cbf7346d0e3fda543597d8982934350175a414fa1b"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
