@@ -13,7 +13,10 @@ import chromadb
 import outlines
 import requests
 import torch
-from config import EMBEDDING_MODELS, MODELS, USE_AIP, USE_TGI
+from config import (EMBEDDING_MODELS, 
+                    MODELS, 
+                    ENDPOINT_TYPE, 
+                    ENDPOINT_URL)
 from haystack import Document, Pipeline, component
 from haystack.components.builders import PromptBuilder
 from haystack.components.embedders import (
@@ -35,24 +38,7 @@ from transformers import (
 from vllm import LLM, SamplingParams
 from vllm.sampling_params import GuidedDecodingParams
 from dotenv import load_dotenv
-
-
-load_dotenv()
-
-
-def _secret_from_env(*env_keys: str) -> Secret:
-    
-    for key in env_keys:
-        value = os.getenv(key)
-        if value:
-            return Secret.from_token(value)
-    
-    raise ValueError(
-        f"Misssing required API key env variable. Tried: {', '.join(env_keys)}"
-    )
-
-random.seed(42)
-
+from settings import settings, secret_from_env
 
 @component
 class CustomPromptBuilder:
@@ -784,11 +770,10 @@ class BaseAbstractPipeline:
         self,
         model_type: str,
         prompt_template_path: str,
-        use_tgi: bool = USE_TGI,
-        tgi_endpoint: str = "",
+        endpoint_type: str = ENDPOINT_TYPE,
+        endpoint_url: str = ENDPOINT_URL,
         vllm_offline: bool = False,
         num_gpus: int = 1,
-        use_aip: bool = USE_AIP,
         quantized: bool = False,
         generation_kwargs: dict[str, Any] | None = None,
         classification_kwargs: dict[str, Any] | None = None,
@@ -848,11 +833,10 @@ class BaseAbstractPipeline:
         if generation_kwargs is None:
             generation_kwargs = {}
         self.model_type = model_type
-        self.use_tgi = use_tgi
-        self.tgi_endpoint = tgi_endpoint
+        self.endpoint_type = endpoint_type
+        self.endpoint_url = endpoint_url
         self.vllm_offline = vllm_offline
         self.num_gpus = num_gpus
-        self.use_aip = use_aip
         self.quantized = quantized
         self.generation_kwargs = generation_kwargs
         self.classification_kwargs = classification_kwargs
@@ -905,12 +889,10 @@ class BaseAbstractPipeline:
         """
         if self.use_rag:
             if not self.use_local_embedding_model:
-                embeddings_api_key = _secret_from_env(
+                embeddings_api_key = secret_from_env(
                     "EMBEDDINGS_API_KEY",
                 )
-                api_base_url = os.getenv(
-                    "EMBEDDINGS_BASE_URL", "https://embeddings-bge.tld/v1"
-                )
+                api_base_url = (settings.EMBEDDINGS_URL or "http://embeddings-bge.tld/v1")
                 text_embedder = OpenAIDocumentEmbedder(
                     api_key=embeddings_api_key,
                     api_base_url=api_base_url,
@@ -952,7 +934,7 @@ class BaseAbstractPipeline:
                     name="generator",
                     instance=CustomOpenAIGenerator(
                         model_type=self.model_type,
-                        api_key=_secret_from_env("OPENAI_API_KEY"),
+                        api_key=secret_from_env("OPENAI_API_KEY"),
                         api_base_url=model_url,
                     ),
                 )
