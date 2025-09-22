@@ -1,395 +1,336 @@
-import argparse
+import json
+import logging
 import os
-import re
-import uuid
-from re import Pattern
-from typing import Any
+from pprint import pformat
+from typing import Optional, List, Dict, Any
 
-import chromadb
-from cleantext import clean
-from config import EMBEDDING_MODELS
-from haystack import Document, Pipeline, component
-from haystack.components.converters import (
-    PyPDFToDocument,
-    TextFileToDocument,
+from unstructured.chunking.basic import chunk_elements
+from unstructured.chunking.title import chunk_by_title
+from unstructured.documents.elements import (
+    Element,
+    ElementMetadata,
+    CompositeElement,
 )
-from haystack.components.embedders import (
-    OpenAIDocumentEmbedder,
-    SentenceTransformersDocumentEmbedder,
-)
-from haystack.components.joiners import DocumentJoiner
-from haystack.components.preprocessors import DocumentSplitter
-from haystack.components.routers import FileTypeRouter
-from haystack.components.writers import DocumentWriter
-from haystack.document_stores.types import DuplicatePolicy
-from haystack.utils import ComponentDevice, Secret
-from dotenv import load_dotenv
+from unstructured.partition.pdf import partition_pdf
 
+def setup_logger(name: str) -> logging.Logger:
+    """Set up and configure a logger with console output.
 
-load_dotenv()
+    Args:
+        name: Name to be used for the logger instance.
 
-def _secret_from_env(*env_keys: str) -> Secret:
-    
-    for key in env_keys:
-        value = os.getenv(key)
-        if value:
-            return Secret.from_token(value)
-    
-    raise ValueError(
-        f"Misssing required API key env variable. Tried: {', '.join(env_keys)}"
-    )
-
-
-@component
-class CustomDocumentCleaner:
-    r"""
-    A custom components to clean documents that will be loaded to our OpenSearchDocumentStore
-
-    Attributes
-    ----------
-    fix_unicode : bool
-        If True, fix 'broken' unicode such as mojibake and garbled HTML entities to proper unicode.
-    to_ascii : bool
-        If True, transliterate to closest ASCII representation.
-    no_line_breaks : bool
-        If True, remove line breaks by converting "\n" or "\r" to a single space.
-    no_urls : bool
-        If True, replace all URLs with a special token.
-    no_emails : bool
-        If True, replace all email addresses with a special token.
-    no_phone_numbers : bool
-        If True, replace all phone numbers with a special token.
-    no_punct : bool
-        If True, remove punctuations.
-    no_numbers : bool
-        If True, remove numbers.
-    no_digits : bool
-        If True, replace all digits with a special token.
-    no_currency_symbols : bool
-        If True, replace all currency symbols with a special token.
-    lower : bool
-        If True, convert all characters to lowercase.
-    custom_regex_pattern : Pattern[str]
-        Custom regex pattern to be applied on the text.
-
-    Methods
-    -------
-    run(documents: List[Document]) -> List[Document]
-        Clean the given list of documents and return the cleaned documents.
+    Returns:
+        Configured logging.Logger instance with console handler and formatter.
     """
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    console_handler = logging.StreamHandler()
+    console_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+    return logger
+
+
+logger = setup_logger(__name__)
+
+class DocumentProcessor:
+
+    # Define block types to keep
+    EXTRACT_IMAGE_BLOCK_TYPES: List[str] = ["Image", "Table"]
+    # Constants that control the number of characters per text chunk.
+    # "HARD": No chunk will exceed this length. A single element that exceeds this length
+    # will be divided into two or more chunks using text-splitting.
+    # "SOFT": Chunk length >= this value is not extended to include the next element, even
+    # if that element would fit without exceeding max_characters. A "soft max" length that
+    # can be used in conjunction with max_characters to limit most chunks to a preferred
+    # length while still allowing larger elements to be included in a single chunk without
+    # resorting to text-splitting.
+    CHUNK_HARD_MAX_CHARS = 1200
+    CHUNK_SOFT_MAX_CHARS = 700
+    OVERLAP_SIZE = 50  # ie. no overlap
+    OVERLAP_ALL = False
+    # Specific to the `by_title` strategy
+    # Combines elements (ex: a series of titles) until a section reaches a length of N chars.
+    # Defaults to `max_characters`, which combines chunks whenever space allows. Note this
+    # value is "capped" at the `new_after_n_chars` value ("SOFT MAX") since a value higher
+    # than that would not change this parameter's effect.
+    COMBINE_TEXT_UNDER_N_CHARS = 500
+    MULTIPAGE_SECTIONS = True
+
+    document_directory_path: str
+    output_path: str
+
 
     def __init__(
         self,
-        fix_unicode: bool = True,
-        to_ascii: bool = True,
-        no_line_breaks: bool = False,
-        no_urls: bool = True,
-        no_emails: bool = True,
-        no_phone_numbers: bool = False,
-        no_punct: bool = False,
-        no_numbers: bool = False,
-        no_digits: bool = False,
-        no_currency_symbols: bool = True,
-        lower: bool = False,
-        custom_regex_pattern: Pattern[
-            str
-        ] = r"[^\x00-\x7F]+",  # remove all non-ascii characters
+        document_directory_path: str,
+        output_path: str
     ):
-        """
-        Constructs all the necessary attributes for the CustomDocumentCleaner object.
+        self.document_directory_path = document_directory_path
+        self.output_path = output_path
 
-        Parameters
-        ----------
-        fix_unicode : bool, optional
-            If True, fix 'broken' unicode such as mojibake and garbled HTML entities to proper unicode.
-        to_ascii : bool, optional
-            If True, transliterate to closest ASCII representation.
-        no_line_breaks : bool, optional
-            If True, remove line breaks
-        no_urls : bool, optional
-            If True, replace all URLs with a special token.
-        no_emails : bool, optional
-            If True, replace all email addresses with a special token.
-        no_phone_numbers : bool, optional
-            If True, replace all phone numbers with a special token.
-        no_punct : bool, optional
-            If True, remove punctuations.
-        no_numbers : bool, optional
-            If True, remove numbers.
-        no_digits : bool, optional
-            If True, replace all digits with a special token.
-        no_currency_symbols : bool, optional
-            If True, replace all currency symbols with a special token.
-        lower : bool, optional
-            If True, convert all characters to lowercase.
-        custom_regex_pattern : Pattern[str], optional
-            Custom regex pattern to be applied on the text.
-        """
-        self.fix_unicode = fix_unicode
-        self.to_ascii = to_ascii
-        self.no_line_breaks = no_line_breaks
-        self.no_urls = no_urls
-        self.no_emails = no_emails
-        self.no_phone_numbers = no_phone_numbers
-        self.no_punct = no_punct
-        self.no_numbers = no_numbers
-        self.no_digits = no_digits
-        self.no_currency_symbols = no_currency_symbols
-        self.lower = lower
-        self.custom_regex_pattern = custom_regex_pattern
 
-    @component.output_types(documents=list[Document])
-    def run(self, documents: list[Document]) -> list[Document]:
-        """
-        Clean Documents
+    def process_document_directory(
+        self,
+        temp_document_path: Optional[str] = None,
+        partition_strategy: str = "hi_res",
+        hi_res_model_name: str = "yolox",
+        extracted_image_block_types: Optional[List[str]] = EXTRACT_IMAGE_BLOCK_TYPES,
+        write_image_block_types_metadata: Optional[bool] = False,
+        elements_to_keep: List[str] = ["NarrativeText", "ListItem", "Title"],
+        chunk_hard_max_chars: int = CHUNK_HARD_MAX_CHARS,
+        chunk_soft_max_chars: int = CHUNK_SOFT_MAX_CHARS,
+        overlap_size: int = OVERLAP_SIZE,
+        combine_text_under_n_chars: int = COMBINE_TEXT_UNDER_N_CHARS,
+        multipage_sections: bool = MULTIPAGE_SECTIONS,
+        chunk_type: str = "title",
+        write_to_file: bool = True,
+    ) -> List[Dict[str,Any]]:
+        
+        chunks = []
+        for dirpath, _, filenames in os.walk(self.document_directory_path):
+            logger.info(f"Processing documents in {dirpath}")
 
-        Parameters
-        ----------
-        documents : List[Document]
-            list of unprocessed documents
-
-        Returns
-        -------
-        List[Document]
-            list of cleaned documents
-        """
-        for i, document in enumerate(documents):
-            if self.custom_regex_pattern:
-                documents[i].content = re.sub(
-                    self.custom_regex_pattern, " ", document.content
+            for filename in filenames:
+                document_path = os.path.join(dirpath, filename)
+                logger.info(f"Processing document {document_path}")
+                doc_chunks = self.process_single_document(
+                    document_path,
+                    temp_document_path,
+                    partition_strategy,
+                    hi_res_model_name,
+                    extracted_image_block_types,
+                    write_image_block_types_metadata,
+                    elements_to_keep,
+                    chunk_hard_max_chars,
+                    chunk_soft_max_chars,
+                    overlap_size,
+                    combine_text_under_n_chars,
+                    multipage_sections,
+                    chunk_type,
+                    write_to_file,
                 )
-            documents[i].content = clean(
-                document.content,
-                fix_unicode=self.fix_unicode,
-                to_ascii=self.to_ascii,
-                no_line_breaks=self.no_line_breaks,
-                no_urls=self.no_urls,
-                no_emails=self.no_emails,
-                no_phone_numbers=self.no_phone_numbers,
-                no_punct=self.no_punct,
-                no_numbers=self.no_numbers,
-                no_digits=self.no_digits,
-                no_currency_symbols=self.no_currency_symbols,
-                lower=self.lower,
-            )
+                logger.info(f"Retrieved {len(doc_chunks)} chunks from {document_path}")
+                chunks.extend(doc_chunks)
 
-        return {"documents": documents}
+        logger.info(f"Returning {len(chunks)} chunks from documents in {self.document_directory_path}")
+        return chunks
+        
 
-
-class ProcessDocuments:
-    def __init__(
+    def write_image_block_metadata(
         self,
-        document_store: Any,
-        use_local: bool = False,
-        embedding_endpoint: str = EMBEDDING_MODELS["BAAI/bge-m3"]["aip_endpoint"],
-        embedding_path: str = EMBEDDING_MODELS["BAAI/bge-m3"]["local_path"],
-        use_splitter: bool = False,
-        split_by: str = "word",
-        split_length: int = 128,
-        split_overlap: int = 0,
-        split_threshold: int = 0,
-    ):
-        """
-        Initialize the ProcessDocuments class. This class initializes the
-        preprocessing pipeline to read in documents and store in Chroma.
-        Args:
-            document_store (Any): Chroma Document Store where docs will be stored
-            embedding_endpoint (str): Embedding model to use, default is AIP Embedding endpoint
-            embedding_path (str): Embedding model to use locally
-            use_splitter (bool): Whether to chunk documents or not
-            split_by (str): Method to split documents (word, sentence, passage, page)
-            split_length (int): Length of each split chunk
-            split_overlap (int): Overlap between chunks
-            split_threshold (int): Minimum length of a document fragment
-
-        """
-        self.embedding_model = embedding_endpoint if not use_local else embedding_path
-        self.document_store = document_store
-        file_type_router = FileTypeRouter(mime_types=["text/plain", "application/pdf"])
-        text_file_converter = TextFileToDocument()
-        pdf_converter = PyPDFToDocument()
-        # pdf_converter = PDFMinerToDocument()
-        document_joiner = DocumentJoiner()
-        document_cleaner = CustomDocumentCleaner()
-
-        if not use_local:
-            document_embedder = OpenAIDocumentEmbedder(
-                api_key=_secret_from_env("EMBEDDINGS_API_KEY"),
-                api_base_url=self.embedding_model,
-                model="tei",
-            )
-        else:
-            device = ComponentDevice.from_str("cuda:2")
-            document_embedder = SentenceTransformersDocumentEmbedder(
-                model=self.embedding_model, device=device
-            )
-        document_writer = DocumentWriter(
-            self.document_store, policy=DuplicatePolicy.SKIP
-        )
-        # create pipeline to process documents
-        self.chunk_creation_pipeline = Pipeline()
-        self.write_chunks_to_index_pipeline = Pipeline()
-
-        self.chunk_creation_pipeline.add_component(
-            instance=file_type_router, name="file_type_router"
-        )
-        self.chunk_creation_pipeline.add_component(
-            instance=text_file_converter, name="text_file_converter"
-        )
-        self.chunk_creation_pipeline.add_component(
-            instance=pdf_converter, name="pypdf_converter"
-        )
-        self.chunk_creation_pipeline.add_component(
-            instance=document_joiner, name="document_joiner"
-        )
-        self.chunk_creation_pipeline.add_component(
-            instance=document_cleaner, name="document_cleaner"
-        )
-        if use_splitter:
-            document_splitter = DocumentSplitter(
-                split_by=split_by,
-                split_length=split_length,
-                split_overlap=split_overlap,
-                split_threshold=split_threshold,
-            )
-            self.chunk_creation_pipeline.add_component(
-                instance=document_splitter, name="document_splitter"
-            )
-
-        self.chunk_creation_pipeline.connect(
-            "file_type_router.text/plain", "text_file_converter.sources"
-        )
-        self.chunk_creation_pipeline.connect(
-            "file_type_router.application/pdf", "pypdf_converter.sources"
-        )
-        self.chunk_creation_pipeline.connect("text_file_converter", "document_joiner")
-        self.chunk_creation_pipeline.connect("pypdf_converter", "document_joiner")
-        self.chunk_creation_pipeline.connect("document_joiner", "document_cleaner")
-
-        if use_splitter:
-            self.chunk_creation_pipeline.connect(
-                "document_cleaner", "document_splitter"
-            )
-
-        self.write_chunks_to_index_pipeline.add_component(
-            instance=document_embedder, name="document_embedder"
-        )
-        self.write_chunks_to_index_pipeline.add_component(
-            instance=document_writer, name="document_writer"
-        )
-
-        self.write_chunks_to_index_pipeline.connect(
-            "document_embedder", "document_writer"
-        )
-
-    def run_document_process(
-        self, directory: str = "", doc_id_field: str = "ACN"
+        elements: List["Element"],
+        metadata_fpath: str,
+        document_path: str,
+        extracted_image_block_types: Optional[List[str]] = EXTRACT_IMAGE_BLOCK_TYPES,
     ) -> None:
-        """
-        Run the document processing pipeline.
-        Args:
-            directory (str): The directory where the documents are stored.
-        """
-        file_paths = [
-            os.path.join(directory, file_path) for file_path in os.listdir(directory)
-        ]
+        """Write image metadata to metadata file."""
+        logger.info(f"Writing image block metadata to: {metadata_fpath}")
+        with open(metadata_fpath, "w", encoding="utf-8") as f:
+            f.write(f"Metadata for extracted image blocks from {document_path}\n")
+            f.write(f"Extracted image block types: {extracted_image_block_types}\n")
+            f.write(f"Number of extracted image blocks: {len(elements)}\n")
+            f.write("Metadata for each extracted image block:\n")
+            for element in elements:
+                if extracted_image_block_types and element.category in extracted_image_block_types:
+                    element_metadata = element.metadata
+                    element_metadata_str = pformat(element_metadata.to_dict())
+                    f.write(f"{element_metadata_str}\n")
 
-        output = self.chunk_creation_pipeline.run(
-            {"file_type_router": {"sources": file_paths}},
+
+    def process_single_document(
+        self,
+        document_path: str,
+        temp_document_path: Optional[str] = None,
+        partition_strategy: str = "hi_res",
+        hi_res_model_name: str = "yolox",
+        extracted_image_block_types: Optional[List[str]] = EXTRACT_IMAGE_BLOCK_TYPES,
+        write_image_block_types_metadata: Optional[bool] = False,
+        elements_to_keep: List[str] = ["NarrativeText", "ListItem", "Title"],
+        chunk_hard_max_chars: int = CHUNK_HARD_MAX_CHARS,
+        chunk_soft_max_chars: int = CHUNK_SOFT_MAX_CHARS,
+        overlap_size: int = OVERLAP_SIZE,
+        combine_text_under_n_chars: int = COMBINE_TEXT_UNDER_N_CHARS,
+        multipage_sections: bool = MULTIPAGE_SECTIONS,
+        chunk_type: str = "title",
+        write_to_file: bool = True,
+    ) -> List[Dict[str,Any]]:
+        
+        document_name = os.path.splitext(os.path.basename(document_path))[0]
+        artifacts_dir = os.path.join(self.output_path, document_name, "artifacts")
+        extracted_images_dir = os.path.join(artifacts_dir, "extracted_images")
+        os.makedirs(extracted_images_dir, exist_ok=True)
+        chunks_dir = os.path.join(artifacts_dir, "chunks")
+        os.makedirs(chunks_dir, exist_ok=True)
+        jsonl_dir = os.path.join(artifacts_dir, "jsonl")
+        os.makedirs(jsonl_dir, exist_ok=True)
+
+        # extract elements from PDF
+        logger.info(f"Partitioning pdf for {document_name}")
+        elements = partition_pdf(
+            filename=document_path,
+            strategy=partition_strategy,
+            languages=["eng"],
+            infer_table_structure=False,
+            extract_image_block_types=extracted_image_block_types,
+            extract_image_block_output_dir=extracted_images_dir,
+            hi_res_model_name=hi_res_model_name,
         )
 
-        if "document_splitter" in output:
-            for doc in output["document_splitter"]["documents"]:
-                doc.meta.pop("split_id", None)
-                doc.meta.pop("split_idx_start", None)
-                doc.meta.pop("_split_overlap", None)
-                doc.meta[doc_id_field] = doc.meta["source_id"]
-        elif "document_cleaner" in output:
-            for doc in output["document_cleaner"]["documents"]:
-                doc.meta[doc_id_field] = str(uuid.uuid4())
+        # write image metadata to document metadata file
+        if write_image_block_types_metadata:
+            metadata_fpath = os.path.join(
+                artifacts_dir, "metadata_for_extracted_images.txt"
+            )
+            self.write_image_block_metadata(
+                elements, metadata_fpath, document_path, extracted_image_block_types
+            )
 
-        documents = output[
-            "document_cleaner" if "document_cleaner" in output else "document_splitter"
-        ]["documents"]
-        self.write_chunks_to_index_pipeline.run(
-            {"document_embedder": {"documents": documents}}
+        # filter file elements before chunking, only keeping specific element types
+        clean_elements = []
+        for element in elements:
+            if element.category in elements_to_keep:
+                clean_elements.append(element)
+
+        # specify arguments for chunking then pivot on chunking type
+        basic_kwargs = {
+            "max_characters": chunk_hard_max_chars,
+            "new_after_n_chars": chunk_soft_max_chars,
+            "overlap": overlap_size,
+        }
+        title_kwargs = {
+            "combine_text_under_n_chars": combine_text_under_n_chars,
+            "multipage_sections": multipage_sections,
+            **basic_kwargs,
+        }
+        chunks_basic_template = "type_{chunk_type}_soft_lim_{soft_max}_hard_lim_{hard_max}_overlap_{overlap_size}.txt"
+        chunks_title_template = (
+            os.path.splitext(chunks_basic_template)[0]
+            + "_element_soft_lim_{combine_text_under_n}_multipage_{multipage_ok}.txt"
         )
+        logger.info(f"Chunking pdf elements for {document_name}")
+        
+        # create chunks based on type of chunking specified
+        if chunk_type == "title":
+            # chunk by title
+            chunks = chunk_by_title(clean_elements, **title_kwargs)
+            if write_to_file:
+                # create the filenames and export chunks
+                chunks_title_fname = chunks_title_template.format(
+                    chunk_type=chunk_type,
+                    soft_max=chunk_soft_max_chars,
+                    hard_max=chunk_hard_max_chars,
+                    overlap_size=overlap_size,
+                    combine_text_under_n=combine_text_under_n_chars,
+                    multipage_ok=multipage_sections,
+                )
+                # write chunks to text
+                self.save_chunks_to_txt(
+                    chunks, 
+                    os.path.join(chunks_dir, chunks_title_fname), 
+                    document_name
+                )
+                self.save_chunks_to_jsonl(
+                    chunks, 
+                    os.path.join(jsonl_dir, f"{document_name}-title.jsonl"), 
+                    document_name
+                )
+
+        elif chunk_type == "basic":
+            # create chunks
+            chunks = chunk_elements(clean_elements, **basic_kwargs)
+            if write_to_file:
+                # create the filenames and export chunks
+                chunks_basic_fname = chunks_basic_template.format(
+                    chunk_type=chunk_type,
+                    soft_max=chunk_soft_max_chars,
+                    hard_max=chunk_hard_max_chars,
+                    overlap_size=overlap_size,
+                )
+                # write chunks to text
+                self.save_chunks_to_txt(
+                    chunks, 
+                    os.path.join(chunks_dir, chunks_basic_fname), 
+                    document_name
+                )
+                self.save_chunks_to_jsonl(
+                    chunks,
+                    os.path.join(jsonl_dir, f"{document_name}-basic.jsonl"),
+                    document_name,
+                    doc_path=document_path if temp_document_path else None,
+                )
+
+        else:
+            chunks = []
+        
+        output = []
+        for i, chunk in enumerate(chunks):
+            metadata_inputs = {
+                "chunk_metadata": chunk.metadata,
+                "identifier": f"{document_name}-{i}",
+                "file_dir": os.path.dirname(document_path), 
+                "file_name": document_name
+            }
+            chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
+            chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
+            output.append(chunk_dict)
+
+        return output
+    
+
+    def prepare_chunk_metadata(
+        self,
+        chunk_metadata: "ElementMetadata",
+        identifier: str,
+        file_dir: Optional[str] = None,
+        file_name: Optional[str] = None,
+    ) -> Dict[str, str]:
+        metadata = {
+            "file_directory": (file_dir if file_dir else chunk_metadata.file_directory),
+            "filename": file_name if file_name else chunk_metadata.filename,
+            "page_number": chunk_metadata.page_number,
+            "chunk_id": identifier,
+        }
+        return metadata
 
 
-def load_or_create_db(collection_name: str, persist_path: str):
-    client = chromadb.PersistentClient(path=persist_path)
-    document_store = client.get_or_create_collection(name=collection_name)
+    def save_chunks_to_txt(
+        self,
+        chunks: List["Element"], 
+        fname: str, 
+        identifier: str
+    ) -> None:
+        logger.info(f"Saving chunks to {fname}")
+        with open(fname, "w", encoding="utf-8") as f:
+            f.write(f"Identifier: {identifier}\n\n")
+            for chunk in chunks:
+                f.write(f"{str(chunk)}\n\n")
+                f.write(
+                    "----------------------------------------------------------------------------------------------------\n"
+                )
 
-    return document_store
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process and store documents for RAG.")
-    parser.add_argument(
-        "--use_local",
-        action="store_true",
-        help="Whether to use a local embedding model",
-    )
-    parser.add_argument(
-        "--use_splitter",
-        action="store_true",
-        help="Whether to use the DocumentSplitter",
-    )
-    parser.add_argument(
-        "--split_by",
-        type=str,
-        default="word",
-        choices=["word", "sentence", "passage", "page"],
-        help="Method to split documents",
-    )
-    parser.add_argument(
-        "--split_length", type=int, default=128, help="Length of each split chunk"
-    )
-    parser.add_argument(
-        "--split_overlap", type=int, default=0, help="Overlap between chunks"
-    )
-    parser.add_argument(
-        "--split_threshold",
-        type=int,
-        default=0,
-        help="Minimum length of a document fragment",
-    )
-    parser.add_argument(
-        "--directory",
-        type=str,
-        default="docs",
-        help="Directory where the documents are stored",
-    )
-    parser.add_argument(
-        "--collection-name",
-        type=str,
-        default="rag_docs",
-        help="Name of Chroma Collection that holds all the documents for RAG. Chroma is a vector database used to store and retrieve document embeddings.",
-    )
-    parser.add_argument(
-        "--persist-path",
-        type=str,
-        default="./rag_docs",
-        help="Path to persist the Chroma Collection",
-    )
-    args = parser.parse_args()
-
-    # document_store = ChromaDocumentStore(
-    #     collection_name="testing_doc",
-    #     persist_path="./testing_doc",
-    # )
-
-    document_store = load_or_create_db(
-        collection_name=args.collection_name, persist_path=args.persist_path
-    )
-
-    doc_upload = ProcessDocuments(
-        document_store=document_store,
-        use_local=args.use_local,
-        use_splitter=args.use_splitter,
-        split_by=args.split_by,
-        split_length=args.split_length,
-        split_overlap=args.split_overlap,
-        split_threshold=args.split_threshold,
-    )
-    doc_upload.run_document_process(directory=args.directory)
+    def save_chunks_to_jsonl(
+        self,
+        chunks: List["Element|CompositeElement"],
+        fname: str,
+        identifier: str,
+        doc_path: Optional[str] = None,
+    ) -> None:
+        file_info = {}
+        if doc_path is not None:
+            file_dir, file_name = os.path.split(doc_path)
+            file_info.update({"file_dir": file_dir, "file_name": file_name})
+        
+        logger.info(f"Saving chunks to {fname}")
+        with open(fname, "w", encoding="utf-8") as f:
+            for chunk in chunks:
+                metadata_inputs = {
+                    "chunk_metadata": chunk.metadata,
+                    "identifier": identifier,
+                }
+                if file_info:
+                    metadata_inputs.update(file_info)
+                chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
+                chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
+                f.write(json.dumps(chunk_dict) + "\n")

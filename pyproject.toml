@@ -47,6 +47,7 @@ dependencies = [
     "vllm>=0.9.1",
     "pydantic-settings>=2.10.1",
     "python-dotenv>=1.1.1",
+    "unstructured[pdf]>=0.18.15",
 ]
 
 [dependency-groups]
@@ -161,7 +162,7 @@ reportUnknownArgumentType = false
 # skip = "foo.py,bar.py"
 
 [tool.pytest.ini_options]
-python_files = ["*.py"]
+pythonpath = ["alue"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 testpaths = [

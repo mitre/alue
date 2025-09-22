@@ -2,9 +2,9 @@ import argparse
 import os
 from datetime import datetime
 
-from evaluation import RAGEval
-from inference import RAGInference
-from io_utilities import get_rag_examples
+from alue.evaluation import RAGEval
+from alue.inference import RAGInference
+from alue.io_utilities import get_rag_examples
 
 NOW = datetime.now().strftime("%Y%m%d_%H%M%S")
 
