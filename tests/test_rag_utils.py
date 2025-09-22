@@ -11,4 +11,6 @@ def test_single_document():
     processor = DocumentProcessor(None, output_dir)
     
     chunks = processor.process_single_document(test_document)
+    print(f"Length of chunks {len(chunks)}")
+
     assert(len(chunks) > 0)

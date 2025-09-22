@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from pprint import pformat
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any
 
 from unstructured.chunking.basic import chunk_elements
 from unstructured.chunking.title import chunk_by_title
@@ -85,14 +85,16 @@ class DocumentProcessor:
         multipage_sections: bool = MULTIPAGE_SECTIONS,
         chunk_type: str = "title",
         write_to_file: bool = True,
-    ):
+    ) -> List[Dict[str,Any]]:
+        
+        chunks = []
         for dirpath, _, filenames in os.walk(self.document_directory_path):
             logger.info(f"Processing documents in {dirpath}")
 
             for filename in filenames:
                 document_path = os.path.join(dirpath, filename)
                 logger.info(f"Processing document {document_path}")
-                self.process_single_document(
+                doc_chunks = self.process_single_document(
                     document_path,
                     temp_document_path,
                     partition_strategy,
@@ -108,6 +110,11 @@ class DocumentProcessor:
                     chunk_type,
                     write_to_file,
                 )
+                logger.info(f"Retrieved {len(doc_chunks)} chunks from {document_path}")
+                chunks.extend(doc_chunks)
+
+        logger.info(f"Returning {len(chunks)} chunks from documents in {self.document_directory_path}")
+        return chunks
         
 
     def write_image_block_metadata(
@@ -147,7 +154,7 @@ class DocumentProcessor:
         multipage_sections: bool = MULTIPAGE_SECTIONS,
         chunk_type: str = "title",
         write_to_file: bool = True,
-    ) -> List["Element"]:
+    ) -> List[Dict[str,Any]]:
         
         document_name = os.path.splitext(os.path.basename(document_path))[0]
         artifacts_dir = os.path.join(self.output_path, document_name, "artifacts")
@@ -252,10 +259,23 @@ class DocumentProcessor:
                     document_name,
                     doc_path=document_path if temp_document_path else None,
                 )
+
         else:
             chunks = []
         
-        return chunks
+        output = []
+        for i, chunk in enumerate(chunks):
+            metadata_inputs = {
+                "chunk_metadata": chunk.metadata,
+                "identifier": f"{document_name}-{i}",
+                "file_dir": os.path.dirname(document_path), 
+                "file_name": document_name
+            }
+            chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
+            chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
+            output.append(chunk_dict)
+
+        return output
     
 
     def prepare_chunk_metadata(
