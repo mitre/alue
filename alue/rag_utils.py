@@ -162,7 +162,7 @@ class DocumentProcessor:
         os.makedirs(extracted_images_dir, exist_ok=True)
         chunks_dir = os.path.join(artifacts_dir, "chunks")
         os.makedirs(chunks_dir, exist_ok=True)
-        jsonl_dir = os.path.join(artifacts_dir, "jsonl")
+        jsonl_dir = os.path.join(artifacts_dir, "json")
         os.makedirs(jsonl_dir, exist_ok=True)
 
         # extract elements from PDF
