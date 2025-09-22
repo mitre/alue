@@ -309,7 +309,7 @@ class DocumentProcessor:
                     "----------------------------------------------------------------------------------------------------\n"
                 )
 
-
+    
     def save_chunks_to_jsonl(
         self,
         chunks: List["Element|CompositeElement"],
@@ -324,10 +324,10 @@ class DocumentProcessor:
         
         logger.info(f"Saving chunks to {fname}")
         with open(fname, "w", encoding="utf-8") as f:
-            for chunk in chunks:
+            for i,chunk in enumerate(chunks):
                 metadata_inputs = {
                     "chunk_metadata": chunk.metadata,
-                    "identifier": identifier,
+                    "identifier": f"{identifier}-{i}",
                 }
                 if file_info:
                     metadata_inputs.update(file_info)
