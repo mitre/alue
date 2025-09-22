@@ -1,24 +1,21 @@
-
 from typing import Optional
-
-try:
-    from pydantic_settings import BaseSettings
-except ImportError:
-    from pydantic import BaseSettings
-
+from pathlib import Path
 from pydantic import Field, SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class ALUESettings(BaseSettings):
     """ALUE settings with validation and security best practices."""
 
-    endpoint_type: Optional[str] = Field(None, env="ALUE_ENDPOINT_TYPE")
-    endpoint_url: Optional[str] = Field(None, env="ALUE_ENDPOINT_URL") 
-    model_name: Optional[str] = Field(None, env="ALUE_MODEL_NAME")
-    openai_api_key: Optional[SecretStr] = Field(None, env=["ALUE_OPENAI_API_KEY", "OPENAI_API_KEY"])
+    endpoint_type: Optional[str] = Field(None, alias="ALUE_ENDPOINT_TYPE")
+    endpoint_url: Optional[str] = Field(None, alias="ALUE_ENDPOINT_URL") 
+    openai_api_key: Optional[SecretStr] = Field(None, alias="ALUE_OPENAI_API_KEY")
 
-    class Config:
-        env_file = "~/.env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+        extra="ignore"
+    )
 
     @property
     def openai_api_key_str(self) -> Optional[str]:

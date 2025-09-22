@@ -37,7 +37,7 @@ dependencies = [
     "torch>=2.1.2",
     "clean-text",
     "pydantic",
-    "outlines>=0.1.11",
+    "outlines>1.0.0",
     "sentencepiece",
     "accelerate",
     "sentence-transformers",
@@ -45,6 +45,8 @@ dependencies = [
     "seqeval",
     "peft",
     "vllm>=0.9.1",
+    "pydantic-settings>=2.10.1",
+    "python-dotenv>=1.1.1",
 ]
 
 [dependency-groups]

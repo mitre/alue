@@ -4,8 +4,8 @@ import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
-from alue.config import MODELS
-from alue.settings import get_settings
+from .config import MODELS
+from .settings import get_settings
 
 
 class BaseInferenceEngine(ABC):
@@ -27,14 +27,7 @@ class BaseInferenceEngine(ABC):
 
     def _get_model_name(self) -> str:
         """Get model name for API calls."""
-        if self.model_type in MODELS:
-            config = MODELS[self.model_type]
-            return (
-                config.get("api_model_name") or
-                config.get("model_name") or
-                self.model_type
-            )
-        return self.settings.model_name or self.model_type
+        return self.model_type
 
     def _apply_chat_template(self, messages: List[Dict[str, str]]) -> str:
         """Convert messages to prompt string."""
@@ -112,14 +105,14 @@ class APIEngine(BaseInferenceEngine):
         )
         return response.choices[0].message.content
 
-    def generate_structured(self, messages: List[Dict[str, str]], schema: Dict[str, Any], **kwargs) -> str:
+    def generate_structured(self, messages: List[Dict[str, str]], schema, **kwargs) -> str:
         try:
             if self.backend_type == "vllm":
                 # vLLM supports guided_json
                 response = self.client.chat.completions.create(
                     model=self._get_model_name(),
                     messages=messages,
-                    extra_body={"guided_json": schema},
+                    extra_body={"guided_json": schema.model_json_schema()},
                     **self._convert_kwargs(kwargs)
                 )
             elif self.backend_type == "ollama":
@@ -277,11 +270,9 @@ class ModelEngine:
     def _create_engine(self, **kwargs) -> BaseInferenceEngine:
         """Create the appropriate engine based on configuration."""
         # Check settings for backend type
-        backend_type = (
-            kwargs.get("backend_type") or
-            self.settings.endpoint_type or
-            self._get_config_backend()
-        )
+        backend_type = self.settings.endpoint_type
+
+        print(f"backend type: {backend_type}")
 
         if backend_type == "openai":
             return OpenAIEngine(self.model_type)

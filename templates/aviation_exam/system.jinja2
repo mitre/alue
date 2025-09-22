@@ -1,0 +1,11 @@
+Based on the given question and options, select the correct answer. Choose only one option that best answers the question.
+
+{% if examples %}
+Here are some examples:
+{% for example in examples %}
+    Question: {{ example.input }}
+    Answer: {{ example.output }}
+{% endfor %}
+{% endif %}
+
+Choose only one option that best answers the question
