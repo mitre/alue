@@ -230,10 +230,11 @@ class DocumentProcessor:
                     os.path.join(chunks_dir, chunks_title_fname), 
                     document_name
                 )
-                self.save_chunks_to_jsonl(
+                self.save_chunks_to_json(
                     chunks, 
                     os.path.join(jsonl_dir, f"{document_name}-title.jsonl"), 
-                    document_name
+                    document_name,
+                    doc_path=document_path,
                 )
 
         elif chunk_type == "basic":
@@ -253,29 +254,19 @@ class DocumentProcessor:
                     os.path.join(chunks_dir, chunks_basic_fname), 
                     document_name
                 )
-                self.save_chunks_to_jsonl(
+                self.save_chunks_to_json(
                     chunks,
                     os.path.join(jsonl_dir, f"{document_name}-basic.jsonl"),
                     document_name,
-                    doc_path=document_path if temp_document_path else None,
+                    doc_path=document_path,
                 )
 
         else:
             chunks = []
         
-        output = []
-        for i, chunk in enumerate(chunks):
-            metadata_inputs = {
-                "chunk_metadata": chunk.metadata,
-                "identifier": f"{document_name}-{i}",
-                "file_dir": os.path.dirname(document_path), 
-                "file_name": document_name
-            }
-            chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
-            chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
-            output.append(chunk_dict)
+        output_chunks = self.to_json(chunks, document_name, document_path)
 
-        return output
+        return output_chunks
     
 
     def prepare_chunk_metadata(
@@ -310,27 +301,40 @@ class DocumentProcessor:
                 )
 
     
-    def save_chunks_to_jsonl(
+    def to_json(
         self,
         chunks: List["Element|CompositeElement"],
-        fname: str,
         identifier: str,
         doc_path: Optional[str] = None,
-    ) -> None:
+    ) -> List[Dict[str,Any]]:
         file_info = {}
         if doc_path is not None:
             file_dir, file_name = os.path.split(doc_path)
             file_info.update({"file_dir": file_dir, "file_name": file_name})
         
+        output = []
+        for i,chunk in enumerate(chunks):
+            metadata_inputs = {
+                "chunk_metadata": chunk.metadata,
+                "identifier": f"{identifier}-{i}",
+            }
+            if file_info:
+                metadata_inputs.update(file_info)
+            chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
+            chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
+            output.append(chunk_dict)
+        
+        return output
+
+
+    def save_chunks_to_json(
+        self,
+        chunks: List["Element"],
+        fname: str,
+        identifier: str,
+        doc_path: Optional[str] = None,
+    ) -> None:
+        output_chunks = self.to_json(chunks, identifier, doc_path)
         logger.info(f"Saving chunks to {fname}")
         with open(fname, "w", encoding="utf-8") as f:
-            for i,chunk in enumerate(chunks):
-                metadata_inputs = {
-                    "chunk_metadata": chunk.metadata,
-                    "identifier": f"{identifier}-{i}",
-                }
-                if file_info:
-                    metadata_inputs.update(file_info)
-                chunk_metadata = self.prepare_chunk_metadata(**metadata_inputs)
-                chunk_dict = {"text": chunk.text, "metadata": chunk_metadata}
-                f.write(json.dumps(chunk_dict) + "\n")
+            json.dump(output_chunks, f, indent=4)
