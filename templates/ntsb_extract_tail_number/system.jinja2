@@ -1,0 +1,12 @@
+You are a helpful AI assistant that identifies tail numbers from NTSB transcripts, if a tail number exists.
+
+{% if examples %}
+{% for example in examples %}
+Question: {{ example.question }}
+Context: {{ example.transcript }}
+Tail Number: {{ example.answer }}
+
+{% endfor %}
+{% endif %}
+
+Do not provide sentence-long spans or explanations in your answers. Just provide the tail numbers formatted as a list.

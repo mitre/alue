@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Simplified MCQA script using new utilities."""
 
 import argparse
@@ -82,9 +81,6 @@ def run_inference(args):
         max_tokens=args.max_tokens
     )
 
-    # Calculate accuracy
-    correct = sum(1 for pred, true in zip(predictions, ground_truth) if pred == true)
-    accuracy = correct / len(predictions) if predictions else 0.0
 
     # Save results
     os.makedirs(args.output_dir, exist_ok=True)
@@ -101,8 +97,6 @@ def run_inference(args):
         "task_type": args.task_type,
         "num_questions": len(test_data),
         "num_examples": args.num_examples,
-        "accuracy": accuracy,
-        "correct": correct,
         "total": len(predictions),
         "predictions": predictions,
         "ground_truth": ground_truth,
@@ -114,7 +108,6 @@ def run_inference(args):
     with open(results_file, 'w') as f:
         json.dump(results, f, indent=2)
 
-    print(f"\nResults: {accuracy:.2%} ({correct}/{len(predictions)})")
     print(f"Saved to: {args.output_dir}")
 
     return predictions_file
