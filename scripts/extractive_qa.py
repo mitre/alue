@@ -3,336 +3,237 @@ import os
 from datetime import datetime
 from typing import Any
 
-from evaluation import ExtractiveQAEval
-from haystack.components.builders import PromptBuilder
-from inference import ExtractiveQAInference
-from io_utilities import get_qa_examples
+from alue.data_utils import load_data
+from alue.prompt_utils import build_messages
 
-from alue import config
+from alue.evaluation import ExtractiveQAEval
+from alue.output_normalizations import normalize_tail_extraction_predictions
 
 
-def run_extractive_qa_evaluation(args):
+import argparse
+import json
+import os
+from datetime import datetime
+
+from alue.data_utils import load_data
+from alue.prompt_utils import build_messages
+from alue.inference import run_llm_inference
+
+import sys
+
+
+def load_schema(schema_class_name: str):
+    """Load Pydantic schema class dynamically."""
+    if not schema_class_name:
+        return None
+        
+    try:
+        module_name, class_name = schema_class_name.rsplit('.', 1)
+        module = __import__(module_name, fromlist=[class_name])
+        schema = getattr(module, class_name)
+        print(f"Using schema: {schema.__name__}")
+        return schema
+        
+    except Exception as e:
+        print(f"Warning: Could not import schema {schema_class_name}: {e}")
+        return None
+    
+def load_normalizer(normalizer_name: str):
+    """Load normalization function dynamically."""
+    if not normalizer_name:
+        return None
+        
+    try:
+        if '.' in normalizer_name:
+            # Full module path provided
+            module_name, func_name = normalizer_name.rsplit('.', 1)
+        else:
+            # Just function name, use default path
+            module_name = "alue.output_normalizations"
+            func_name = normalizer_name
+
+        module = __import__(module_name, fromlist=[func_name])
+        normalizer_func = getattr(module, func_name)
+        print(f"Using normalizer: {normalizer_func.__name__}")
+        return normalizer_func
+        
+    except Exception as e:
+        print(f"Warning: Could not import normalizer {normalizer_name}: {e}")
+        return None
+    
+
+def run_inference(args):
+    """Run Extractive QA Inference"""
+
+    print("Loading data...")
+    loader = load_data(args.input_data_json_path)
+    examples = loader.get_examples(num_examples=args.num_examples)
+    test_data = loader.get_test_data()
+
+    if args.num_questions:
+        test_data = test_data[:args.num_questions]
+
+    print(f"Loaded {len(test_data)} questions, using {len(examples)} examples")
+
+    # Build messages
+    print("Building messages...")
+    messages = []
+    ground_truth = []
+    question_ids = []
+
+    for item in test_data:
+        message = build_messages(
+            task_type=args.task_type,
+            system_kwargs={'examples': examples},
+            user_kwargs={
+                'query': item['input'],
+                'context': item['context']}
+        )
+        messages.append(message)
+        ground_truth.append(item['output'])
+        question_ids.append(item["metadata"]['id'])
+
+
+    # Load schema and run inference
+    schema = load_schema(args.schema_class)
+
+    print("Running inference...")
+    predictions = run_llm_inference(
+        messages=messages,
+        model_name=args.model_name,
+        backend_type=args.backend_type,
+        schema=schema,
+        field_to_extract=args.field_to_extract,
+        temperature=args.temperature,
+        max_tokens=args.max_tokens
+    )
+
+    # Save results
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    # Save predictions for evaluation
+    predictions_file = os.path.join(args.output_dir, "predictions.json")
+    with open(predictions_file, 'w') as f:
+        json.dump({str(qid): pred for qid, pred in zip(question_ids, predictions)}, f, indent=2)
+
+    # Save full results
+    results = {
+        "model": args.model_name,
+        "backend_type": args.backend_type,
+        "task_type": args.task_type,
+        "num_questions": len(test_data),
+        "num_examples": args.num_examples,
+        "total": len(predictions),
+        "predictions": predictions,
+        "ground_truth": ground_truth,
+        "questions": [item['input'] for item in test_data],
+        "temperature": args.temperature
+    }
+    
+    results_file = os.path.join(args.output_dir, "results.json")
+    with open(results_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    print(f"Saved to: {args.output_dir}")
+
+    return predictions_file
+
+
+def run_evaluation(args):
+    print("Running evaluation...")
+    
+    # Load normalizer function
+    normalizer_func = load_normalizer(args.normalizer_func) if hasattr(args, 'normalizer_func') and args.normalizer_func else None
+    
     eval = ExtractiveQAEval(
         data_file=args.input_data_json_path,
-        pred_file=args.predictions_filename,
-        out_dir=args.output_eval_res_dir,
-        llm_judge_model=args.llm_judge_model,
+        pred_file=args.predictions_file,
+        out_dir=args.output_dir,
+        normalizer_func=normalizer_func
     )
-    eval.perform_evaluation(llm_judge_examples=args.llm_judge_examples)
+    eval.perform_evaluation()
 
 
-def run_extractive_qa_inference(args):
-    generation_kwargs = {
-        "return_full_text": False,
-        "max_new_tokens": 20,
-        # "temperature": None,
-        "temperature": 0.000001,
-        # "pad_token_id": 2,
-        "do_sample": True,
-        # "early_stopping": True
-    }
-    print(f"Generation Args: {generation_kwargs}")
-    examples = get_qa_examples(
-        input_json_data_path=args.input_data_json_path,
-        nbr_examples=args.nbr_examples,
-        randomize_selection=args.randomize_selection,
-        randomize_order=args.randomize_order,
-        random_seed=args.random_seed,
-    )
-    inference_pipeline = ExtractiveQAInference(
-        model_type=args.model_type,
-        generation_kwargs=generation_kwargs,
-        prompt_template_path=args.prompt_template,
-        examples=examples,
-        use_aip=args.use_aip,
-        use_tgi=args.use_tgi,
-        vllm_offline=args.vllm_offline,
-        num_gpus=args.num_gpus,
-        quantized=args.quantized,
-        batch_size=args.batch_size,
-    )
-    inference_pipeline.full_inference(
-        input_data_json_path=args.input_data_json_path,
-        output_eval_res_dir=args.output_eval_res_dir,
-        batch_size=args.batch_size,
-    )
+
+def create_parser():
+    """Create argument parser with shared arguments."""
+    parser = argparse.ArgumentParser(description="Extractive QA script")
+    subparsers = parser.add_subparsers(dest="mode", required=True)
+
+    # Shared inference arguments
+    def add_inference_args(p):
+        p.add_argument("-i", "--input_data_json_path", required=True,
+                      help="Path to input JSON data file")
+        p.add_argument("-o", "--output_dir", required=True,
+                      help="Output directory for results")
+        p.add_argument("-m", "--model_name", required=True,
+                      help="Model name (e.g., gpt-4o-mini)")
+        p.add_argument("--backend_type", default="openai",
+                      help="Backend type (openai, tgi, etc.)")
+        p.add_argument("--task_type", default="aviation_exam",
+                      help="Task type for prompt templates")
+        p.add_argument("--num_examples", type=int, default=3,
+                      help="Number of few-shot examples")
+        p.add_argument("--num_questions", type=int,
+                      help="Limit number of questions (default: all)")
+        p.add_argument("--schema_class",
+                      help="Pydantic schema class (e.g., MCQAResponse)")
+        p.add_argument("--field_to_extract", default="answer",
+                      help="Field to extract from structured response")
+        p.add_argument("--temperature", type=float, default=0.1,
+                      help="Generation temperature")
+        p.add_argument("--max_tokens", type=int, default=150,
+                      help="Maximum tokens to generate")
+
+    # Shared evaluation arguments
+    def add_evaluation_args(p):
+        p.add_argument("--normalizer_func",
+                      help="Normalization function (e.g., normalize_tail_extraction_predictions)")
+
+    # Inference subparser
+    inf_parser = subparsers.add_parser("inference", help="Run inference only")
+    add_inference_args(inf_parser)
+
+    # Evaluation subparser  
+    eval_parser = subparsers.add_parser("evaluation", help="Run evaluation only")
+    eval_parser.add_argument("-i", "--input_data_json_path", required=True,
+                            help="Path to input JSON data file")
+    eval_parser.add_argument("-o", "--output_dir", required=True,
+                            help="Output directory for results")
+    eval_parser.add_argument("--predictions_file", required=True,
+                            help="Path to predictions JSON file")
+    add_evaluation_args(eval_parser)
+
+    # Both subparser
+    both_parser = subparsers.add_parser("both", help="Run inference + evaluation")
+    add_inference_args(both_parser)
+    add_evaluation_args(both_parser)  # <- This line was missing
+
+    return parser
 
 
-def run_extractive_qa_both(args):
-    run_extractive_qa_inference(args)
+def main():
+    """Main entry point."""
+    parser = create_parser()
+    args = parser.parse_args()
 
-    predictions_filename = os.path.join(args.output_eval_res_dir, "predictions.json")
-    args.predictions_filename = predictions_filename
+    # Add timestamp to output directory
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    args.output_dir = f"{args.output_dir}_{timestamp}"
 
-    run_extractive_qa_evaluation(args)
+    print(f"Mode: {args.mode}")
+    print(f"Output directory: {args.output_dir}")
 
-
-def get_model_info(
-    model_type: str,
-    prompt_template: str,
-    generation_kwargs: dict[str, Any] | None = None,
-    quantized: bool = False,
-    examples: list[dict[str, str]] | None = None,
-) -> dict[str, Any]:
-    """
-    Gets the generation_kwargs and model_path from the config file
-    and the prompt from prompt_templates.py based on the model_type.
-
-    Parameters
-    ----------
-    model_type : str
-        The type of model.
-    generation_kwargs : Optional[Dict[str, Any]]
-        Additional keyword arguments for the model generation. Defaults to None.
-    quantized: bool, optional
-        Whether or not a quantized model is used
-
-    Returns
-    -------
-    Dict[str, Any]
-        A dictionary containing generation_kwargs, model_path, and prompt.
-    """
-    model_path = config.MODELS[model_type]
-    builder = PromptBuilder(template=prompt_template)
-    prompt = builder.run(examples=examples)["prompt"]
-
-    model_info = {
-        "generation_kwargs": generation_kwargs if generation_kwargs else {},
-        "model_path": model_path,
-        "quantized": quantized,
-        "prompt": prompt,
-    }
-
-    return model_info
+    # Execute based on mode
+    if args.mode == "inference":
+        run_inference(args)
+    elif args.mode == "evaluation":
+        run_evaluation(args)
+    elif args.mode == "both":
+        predictions_file = run_inference(args)
+        args.predictions_file = predictions_file
+        run_evaluation(args)
 
 
 if __name__ == "__main__":
-    NOW = str(datetime.strftime(datetime.now(), "%Y%m%d_%H%M%S"))
-
-    parser = argparse.ArgumentParser(
-        description="Run extractive question answering evaluation"
-    )
-    subparsers = parser.add_subparsers(dest="mode", required=True)
-
-    # Inference subparser
-    inference_parser = subparsers.add_parser("inference", help="Perform inference")
-    inference_parser.add_argument(
-        "-i",
-        "--input_data_json_path",
-        type=str,
-        help="Path to the input JSON data file.",
-        required=True,
-    )
-    inference_parser.add_argument(
-        "-o",
-        "--output_eval_res_dir",
-        type=str,
-        help="Path to store evaluation results.",
-        required=True,
-    )
-    inference_parser.add_argument(
-        "-m", "--model_type", type=str, help="Model type", required=True
-    )
-    inference_parser.add_argument(
-        "-t",
-        "--use_tgi",
-        action="store_true",
-        help="whether to use TGI (default: False)",
-    )
-    inference_parser.add_argument(
-        "--tgi_endpoint",
-        type=str,
-        help="a specific TGI endpoint that is different from the default http://127.0.0.1:3000/generate (default: None)",
-    )
-    inference_parser.add_argument(
-        "--vllm_offline", action="store_true", help="whether to use vLLM offline"
-    )
-    inference_parser.add_argument(
-        "--num_gpus", type=int, help="number of GPUs to use for vLLM offline", default=1
-    )
-    inference_parser.add_argument(
-        "-a",
-        "--use_aip",
-        action="store_true",
-        help="whether to use AIP endpoint (default: False)",
-    )
-    inference_parser.add_argument(
-        "-q",
-        "--quantized",
-        action="store_true",
-        help="whether to use quantized model (bitsandbytes)",
-    )
-    inference_parser.add_argument(
-        "--prompt-template", type=str, help="path to prompt template file"
-    )
-    inference_parser.add_argument(
-        "--nbr_examples",
-        type=int,
-        help="specify number of examples to include in prompt",
-    )
-    inference_parser.add_argument(
-        "--randomize_selection",
-        action="store_true",
-        help="specify whether selection of examples should be randomized (default: False)",
-        default=False,
-        required=False,
-    )
-    inference_parser.add_argument(
-        "--randomize_order",
-        action="store_true",
-        help="specify whether ordering of examples should be randomized (default: False)",
-        default=False,
-        required=False,
-    )
-    inference_parser.add_argument(
-        "--random_seed",
-        type=int,
-        help="specify number with which to seed random selection of examples",
-        default=49,
-    )
-    inference_parser.add_argument(
-        "--batch_size", type=int, help="specify batch size", default=8
-    )
-
-    # Evaluation subparser
-    evaluation_parser = subparsers.add_parser("evaluation", help="Perform evaluation")
-    evaluation_parser.add_argument(
-        "-i",
-        "--input_data_json_path",
-        type=str,
-        help="Path to the input JSON data file.",
-        required=True,
-    )
-    evaluation_parser.add_argument(
-        "-o",
-        "--output_eval_res_dir",
-        type=str,
-        help="Path to the output evaluation results directory.",
-        required=True,
-    )
-    evaluation_parser.add_argument(
-        "--predictions_filename",
-        type=str,
-        help="Path to predictions JSON file",
-        required=True,
-    )
-    evaluation_parser.add_argument(
-        "--llm_judge_model",
-        type=str,
-        help="Name of the LLM Judge model (optional)",
-        required=False,
-    )
-    evaluation_parser.add_argument(
-        "--llm_judge_examples",
-        type=str,
-        help="Path to LLM Judge examples file (optional)",
-        required=False,
-    )
-
-    # Both subparser
-    both_parser = subparsers.add_parser(
-        "both", help="Perform both inference and evaluation"
-    )
-    both_parser.add_argument(
-        "-i",
-        "--input_data_json_path",
-        type=str,
-        help="Path to the input JSON data file.",
-        required=True,
-    )
-    both_parser.add_argument(
-        "-o",
-        "--output_eval_res_dir",
-        type=str,
-        help="Path to store evaluation results.",
-        required=True,
-    )
-    both_parser.add_argument(
-        "-m", "--model_type", type=str, help="Model type", required=True
-    )
-    both_parser.add_argument(
-        "-t",
-        "--use_tgi",
-        action="store_true",
-        help="whether to use TGI (default: False)",
-    )
-    both_parser.add_argument(
-        "--tgi_endpoint",
-        type=str,
-        help="a specific TGI endpoint that is different from the default http://127.0.0.1:3000/generate (default: None)",
-    )
-    both_parser.add_argument(
-        "--vllm_offline", action="store_true", help="whether to use vLLM offline"
-    )
-    both_parser.add_argument(
-        "--num_gpus", type=int, help="number of GPUs to use for vLLM offline", default=1
-    )
-    both_parser.add_argument(
-        "-a",
-        "--use_aip",
-        action="store_true",
-        help="whether to use AIP endpoint (default: False)",
-    )
-    both_parser.add_argument(
-        "-q",
-        "--quantized",
-        action="store_true",
-        help="whether to use quantized model (bitsandbytes)",
-    )
-    both_parser.add_argument(
-        "--prompt-template", type=str, help="path to prompt template file"
-    )
-    both_parser.add_argument(
-        "--nbr_examples",
-        type=int,
-        help="specify number of examples to include in prompt",
-    )
-    both_parser.add_argument(
-        "--randomize_selection",
-        action="store_true",
-        help="specify whether selection of examples should be randomized (default: False)",
-        default=False,
-        required=False,
-    )
-    both_parser.add_argument(
-        "--randomize_order",
-        action="store_true",
-        help="specify whether ordering of examples should be randomized (default: False)",
-        default=False,
-        required=False,
-    )
-    both_parser.add_argument(
-        "--random_seed",
-        type=int,
-        help="specify number with which to seed random selection of examples",
-        default=49,
-    )
-    both_parser.add_argument(
-        "--batch_size", type=int, help="specify batch size", default=8
-    )
-    both_parser.add_argument(
-        "--llm_judge_model",
-        type=str,
-        help="Name of the LLM Judge model (optional)",
-        required=False,
-    )
-    both_parser.add_argument(
-        "--llm_judge_examples",
-        type=str,
-        help="Path to LLM Judge examples file (optional)",
-        required=False,
-    )
-    args = parser.parse_args()
-
-    print(f"Args: {args}")
-    args.output_eval_res_dir = f"{args.output_eval_res_dir}_{NOW}"
-    print(args.output_eval_res_dir)
-    if not os.path.exists(args.output_eval_res_dir):
-        os.makedirs(args.output_eval_res_dir)
-    # Handle the different modes
-    if args.mode == "inference":
-        run_extractive_qa_inference(args)
-    elif args.mode == "evaluation":
-        run_extractive_qa_evaluation(args)
-    elif args.mode == "both":
-        run_extractive_qa_both(args)
+    main()

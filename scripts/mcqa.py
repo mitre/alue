@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Simplified MCQA script using new utilities."""
+"""MCQA script using new utilities."""
 
 import argparse
 import json
@@ -8,7 +7,7 @@ from datetime import datetime
 
 from alue.data_utils import load_data
 from alue.prompt_utils import build_messages
-from alue.inference import run_mcqa_inference
+from alue.inference import run_llm_inference
 from alue import evaluation
 
 
@@ -61,18 +60,19 @@ def run_inference(args):
     for item in test_data:
         message = build_messages(
             task_type=args.task_type,
-            input_data=item['input'],
-            examples=examples
+            system_kwargs={'examples': examples},
+            user_kwargs={'input': item['input']}
         )
         messages.append(message)
         ground_truth.append(item['output'])
+        qid = str(item.get('id', f"q_{len(messages)}"))
         question_ids.append(item['id'])
 
     # Load schema and run inference
     schema = load_schema(args.schema_class)
     
     print("Running inference...")
-    predictions = run_mcqa_inference(
+    predictions = run_llm_inference(
         messages=messages,
         model_name=args.model_name,
         backend_type=args.backend_type,
@@ -82,9 +82,6 @@ def run_inference(args):
         max_tokens=args.max_tokens
     )
 
-    # Calculate accuracy
-    correct = sum(1 for pred, true in zip(predictions, ground_truth) if pred == true)
-    accuracy = correct / len(predictions) if predictions else 0.0
 
     # Save results
     os.makedirs(args.output_dir, exist_ok=True)
@@ -101,8 +98,6 @@ def run_inference(args):
         "task_type": args.task_type,
         "num_questions": len(test_data),
         "num_examples": args.num_examples,
-        "accuracy": accuracy,
-        "correct": correct,
         "total": len(predictions),
         "predictions": predictions,
         "ground_truth": ground_truth,
@@ -114,7 +109,6 @@ def run_inference(args):
     with open(results_file, 'w') as f:
         json.dump(results, f, indent=2)
 
-    print(f"\nResults: {accuracy:.2%} ({correct}/{len(predictions)})")
     print(f"Saved to: {args.output_dir}")
 
     return predictions_file
@@ -133,7 +127,7 @@ def run_evaluation(args):
 
 def create_parser():
     """Create argument parser with shared arguments."""
-    parser = argparse.ArgumentParser(description="Simplified MCQA script")
+    parser = argparse.ArgumentParser(description="MCQA script")
     subparsers = parser.add_subparsers(dest="mode", required=True)
 
     # Shared inference arguments

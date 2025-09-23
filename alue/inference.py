@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 
 
-def run_mcqa_inference(
+def run_llm_inference(
     messages: List[str],
     model_name: str,
     schema: Optional[Type[BaseModel]] = None,
@@ -21,12 +21,11 @@ def run_mcqa_inference(
     **generation_kwargs
 ) -> List[str]:
     """
-    Execute MCQA inference on a batch of messages.
+    Execute inference using LLM.
 
     Args:
         messages: List of formatted messages ready for inference
         model_name: Model name for inference
-        backend_type: Backend type (openai, tgi, etc.)
         schema: Optional Pydantic model for structured output
         field_to_extract: Field name to extract from structured response (default: "answer")
         temperature: Generation temperature

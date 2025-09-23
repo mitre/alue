@@ -1,5 +1,6 @@
 import re
 import string
+from typing import Dict, Any
 
 TASK_SPECIFIC_PATTERNS = {
     "pirep_classification": {
@@ -229,3 +230,33 @@ def find_substring_indexes(sentence, substring):
 
     # If no match is found, return an empty list
     return []
+
+
+def normalize_tail_extraction_predictions(predictions: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalize tail number extraction predictions.
+    
+    Converts:
+    - [] -> "[NONE]"
+    - ["N66372"] -> "[N66372]"  
+    - "[NONE]" -> "[NONE]" (unchanged)
+    - "[N66372]" -> "[N66372]" (unchanged)
+    """
+    normalized = {}
+    
+    for qid, pred in predictions.items():
+        if isinstance(pred, list):
+            # Structured format
+            if len(pred) == 0:
+                normalized[qid] = "[NONE]"
+            else:
+                # Convert list to string format
+                normalized[qid] = str(pred).replace("'", "").replace(" ", "")
+        elif isinstance(pred, str):
+            # Unstructured format - use as-is
+            normalized[qid] = pred
+        else:
+            # Fallback
+            normalized[qid] = str(pred)
+    
+    return normalized

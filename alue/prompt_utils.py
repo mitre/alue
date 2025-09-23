@@ -16,14 +16,19 @@ def render_prompt(template_str: str, **kwargs) -> str:
     return Template(template_str).render(**kwargs)
 
 
-def build_messages(task_type: str, input_data: str, examples: Optional[List[Dict[str, Any]]] = None, **kwargs) -> List[Dict[str, str]]:
+def build_messages(
+    task_type: str,
+    system_kwargs: Optional[Dict[str, Any]] = None,
+    user_kwargs: Optional[Dict[str, Any]] = None,
+    shared_kwargs: Optional[Dict[str, Any]] = None
+) -> List[Dict[str, str]]:
     """Build messages format from clean templates.
 
     Args:
-        task_type: Type of task (e.g., 'aviation_exam_clean', 'rag_clean', 'classification_clean')
-        input_data: The actual input/question to process
-        examples: Optional list of examples to include as instructions
-        **kwargs: Additional template variables (e.g., context, domain, instructions, etc.)
+        task_type: Type of task
+        system_kwargs: Variables only for system template
+        user_kwargs: Variables only for user template
+        shared_kwargs: Variables for both templates
 
     Returns:
         List of message dictionaries with 'role' and 'content' keys
@@ -33,11 +38,22 @@ def build_messages(task_type: str, input_data: str, examples: Optional[List[Dict
     system_template = load_template(template_dir / "system.jinja2")
     user_template = load_template(template_dir / "user.jinja2")
 
-    # Render system prompt with examples as instructions and any additional kwargs
-    system_content = render_prompt(system_template, examples=examples, **kwargs)
+    # Build kwargs for each template
+    system_vars = {}
+    if shared_kwargs:
+        system_vars.update(shared_kwargs)
+    if system_kwargs:
+        system_vars.update(system_kwargs)
 
-    # Render user prompt with the actual input and any additional kwargs
-    user_content = render_prompt(user_template, input=input_data, **kwargs)
+    user_vars = {}
+    if shared_kwargs:
+        user_vars.update(shared_kwargs)
+    if user_kwargs:
+        user_vars.update(user_kwargs)
+
+    # Render templates
+    system_content = render_prompt(system_template, **system_vars)
+    user_content = render_prompt(user_template, **user_vars)
 
     return [
         {"role": "system", "content": system_content},
