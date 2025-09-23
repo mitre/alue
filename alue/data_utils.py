@@ -33,14 +33,38 @@ class DataLoader:
         """Extract examples section (never test data)."""
         if "examples" in self.raw_data:
             return self._normalize_items(self.raw_data["examples"])
+        
+        if "data" in self.raw_data and isinstance(self.raw_data["data"], list):
+            for item in self.raw_data["data"]:
+                if "examples" in item:
+                    return self._normalize_items(item["examples"])
         return []
 
     def _extract_test_data(self) -> List[Dict[str, Any]]:
-        """Extract test data section."""
+        """Extract test data section.""" 
+        # Handle nested SQuAD format with paragraphs
+        if "data" in self.raw_data and isinstance(self.raw_data["data"], list):
+            test_items = []
+            for item in self.raw_data["data"]:
+                if "paragraphs" in item:
+                    # Flatten paragraph QA pairs into individual items
+                    for para in item["paragraphs"]:
+                        context = para.get("context", "")
+                        for qa in para.get("qas", []):
+                            test_items.append({
+                                "input": qa.get("question", ""),
+                                "output": qa.get("answers", [{}])[0].get("text", ""),
+                                "context": context,
+                                "metadata": {"format": "squad", "id": qa.get("id", "")}
+                            })
+                    return test_items
+        
+        # Original logic for other formats
         if "data" in self.raw_data and isinstance(self.raw_data["data"], list):
             return self._normalize_items(self.raw_data["data"])
         elif isinstance(self.raw_data, list):
             return self._normalize_items(self.raw_data)
+        
         return []
 
     def _normalize_items(self, items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

@@ -5,12 +5,14 @@ import json
 import logging
 import os
 import re
+import tempfile
 
 import numpy as np
 # import output_normalizations
 import pandas as pd
-# import squad_evaluation as squad_eval
+from . import squad_evaluation as squad_eval
 from .config import MODELS
+from .output_normalizations import normalize_tail_extraction_predictions
 # from doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
 # from haystack.components.builders import PromptBuilder
 # from huggingface_hub import InferenceClient
@@ -22,270 +24,133 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from schemas.extractive_qa.adjudicator_schema import Score
+from typing import Optional, Callable, Any, Dict
 
 
-# class ExtractiveQAEval:
-#     """
-#     A class used to evaluate the performance of an extractive question answering model.
-#     ...
+class ExtractiveQAEval:
+    """
+    A class used to evaluate the performance of an extractive question answering model.
+    ...
 
-#     Attributes
-#     ----------
-#     data_file : str
-#         the file containing the ground truth data
-#     pred_file : str
-#         the file containing the model's predictions
-#     out_dir : str
-#         the directory where the evaluation results will be saved
-#     na_prob_file : str, optional
-#         the file containing the probabilities of no answer being correct
-#     na_prob_thresh : int, optional
-#         the threshold for considering a no answer prediction correct
-#     out_image_dir : str, optional
-#         the directory where evaluation images will be saved
-#     verbose : bool, optional
-#         whether to print verbose output
+    Attributes
+    ----------
+    data_file : str
+        the file containing the ground truth data
+    pred_file : str
+        the file containing the model's predictions
+    out_dir : str
+        the directory where the evaluation results will be saved
+    na_prob_file : str, optional
+        the file containing the probabilities of no answer being correct
+    na_prob_thresh : int, optional
+        the threshold for considering a no answer prediction correct
+    out_image_dir : str, optional
+        the directory where evaluation images will be saved
+    verbose : bool, optional
+        whether to print verbose output
 
-#     Methods
-#     -------
-#     perform_evaluation():
-#         Performs the evaluation and saves the results to the specified output directory.
-#     """
+    Methods
+    -------
+    perform_evaluation():
+        Performs the evaluation and saves the results to the specified output directory.
+    """
 
-#     def __init__(
-#         self,
-#         data_file: str,
-#         pred_file: str,
-#         out_dir: str,
-#         na_prob_file: str = None,
-#         na_prob_thresh: float = 1.0,
-#         out_image_dir: str = None,
-#         verbose: bool = False,
-#         llm_judge_model: str = "",
-#     ) -> None:
-#         """
-#         Parameters
-#         ----------
-#         data_file : str
-#             The file containing the ground truth data
-#         pred_file : str
-#             The file containing the model's predictions
-#         out_dir : str
-#             The directory where the evaluation results will be saved
-#         na_prob_file : str, optional
-#             The file containing the probabilities of no answer being correct
-#         na_prob_thresh : int, optional
-#             The threshold for considering a no answer prediction correct
-#         out_image_dir : str, optional
-#             The directory where evaluation images will be saved
-#         verbose : bool, optional
-#             Whether to print verbose output
-#         """
-#         self.data_file = data_file
-#         self.pred_file = pred_file
-#         self.out_dir = out_dir
-#         self.na_prob_file = na_prob_file
-#         self.na_prob_thresh = na_prob_thresh
-#         self.out_image_dir = out_image_dir
-#         self.verbose = verbose
-#         self.llm_judge_model = llm_judge_model
-#         squad_eval.OPTS = argparse.Namespace(
-#             data_file=self.data_file,
-#             pred_file=self.pred_file,
-#             out_file=self.out_dir,
-#             na_prob_file=self.na_prob_file,
-#             na_prob_thresh=self.na_prob_thresh,
-#             out_image_dir=self.out_image_dir,
-#             verbose=self.verbose,
-#         )
+    def __init__(
+        self,
+        data_file: str,
+        pred_file: str,
+        out_dir: str,
+        na_prob_file: str = None,
+        na_prob_thresh: float = 1.0,
+        out_image_dir: str = None,
+        verbose: bool = False,
+        normalizer_func: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None,
+    ) -> None:
+        """
+        Parameters
+        ----------
+        data_file : str
+            The file containing the ground truth data
+        pred_file : str
+            The file containing the model's predictions
+        out_dir : str
+            The directory where the evaluation results will be saved
+        na_prob_file : str, optional
+            The file containing the probabilities of no answer being correct
+        na_prob_thresh : int, optional
+            The threshold for considering a no answer prediction correct
+        out_image_dir : str, optional
+            The directory where evaluation images will be saved
+        verbose : bool, optional
+            Whether to print verbose output
+        """
+        self.data_file = data_file
+        self.pred_file = pred_file
+        self.out_dir = out_dir
+        self.na_prob_file = na_prob_file
+        self.na_prob_thresh = na_prob_thresh
+        self.out_image_dir = out_image_dir
+        self.verbose = verbose
+        self.normalizer_func = normalizer_func
 
-#         if self.llm_judge_model:
-#             self.client = self.load_llm_judge()
 
-#     def perform_squad_evaluation(self) -> None:
-#         """
-#         Performs the evaluation and saves the results to the specified output directory.
-#         """
-#         squad_eval.main()
+    def _normalize_predictions(self, pred_file: str) -> str:
+        """
+        Normalize predictions using the provided normalizer function.
+        If no normalizer is provided, predictions are used as-is.
+        
+        Returns path to normalized predictions file.
+        """
+        with open(pred_file, 'r') as f:
+            predictions = json.load(f)
+        
+        # Apply normalization if function is provided
+        if self.normalizer_func:
+            normalized_preds = self.normalizer_func(predictions)
+        else:
+            normalized_preds = predictions
+        
+        # Create temporary file with normalized predictions
+        temp_file = tempfile.NamedTemporaryFile(
+            mode='w', 
+            suffix='.json', 
+            delete=False, 
+            dir=os.path.dirname(pred_file)
+        )
+        
+        with temp_file as f:
+            json.dump(normalized_preds, f, indent=2)
+        
+        return temp_file.name
 
-#     def load_llm_judge(self):
-#         model_url = MODELS[self.llm_judge_model]["aip_endpoint"]
+    def perform_squad_evaluation(self) -> None:
+        """
+        Performs the evaluation and saves the results to the specified output directory.
+        """
+        # Normalize predictions first
+        normalized_pred_file = self._normalize_predictions(self.pred_file)
+        
+        try:
+            # Update OPTS with normalized predictions file
+            squad_eval.OPTS = argparse.Namespace(
+                data_file=self.data_file,
+                pred_file=normalized_pred_file,
+                out_file=self.out_dir,
+                na_prob_file=self.na_prob_file,
+                na_prob_thresh=self.na_prob_thresh,
+                out_image_dir=self.out_image_dir,
+                verbose=self.verbose,
+            )
+            
+            squad_eval.main()
+            
+        finally:
+            # Clean up temporary file
+            if os.path.exists(normalized_pred_file):
+                os.unlink(normalized_pred_file)
 
-#         client = OpenAI(base_url=model_url, api_key=OPENAI_API_KEY)
-#         return client
-
-#     def perform_llm_judge_evaluation(self, llm_judge_model: str, llm_judge_examples):
-#         """
-#         Performs the evaluation using LLM Judge and saves the results to the specified output directory.
-
-#         Parameters
-#         ----------
-#         llm_judge_schema : str
-#             The path to the LLM Judge schema file
-#         llm_judge_examples : str
-#             The path to the LLM Judge examples file
-#         """
-#         system_prompt = """
-#         You are an expert evaluation system designed to assess the accuracy of generated answer provided by a question answering chatbot. You are given the following components: a question, a reference answer, and a generated answer. Your task is to evaluate the generated answer's correctness based on the reference answer. Assign a score of 1 if the generated answer is correct, or 0 if it is incorrect. Provide a single score that reflects a comprehensive evaluation.
-#         A score of 1 indicates a correct answer. A score of 0 indicates a wrong answer.
-
-#         Here are a few examples:
-#         {% for example in examples %}
-#         Question: {{ example.question }}
-#         Transcript: {{ example.transcript }}
-#         Reference answer: {{ example.answer }}
-#         Generated answer: {{ example.predicted_answer }}
-#         Correctness score: {{ example.correctness_score }}
-#         {% endfor %}
-#         """
-
-#         user_prompt = """
-#         Question: {{ question }}
-#         Transcript: {{ transcript }}
-#         Reference answer: {{ answer }}
-#         Generated answer: {{ predicted_answer }}
-#         """
-
-#         # Load examples file
-#         with open(llm_judge_examples) as f:
-#             examples = json.load(f)
-
-#         # Render system prompt using examples
-#         system_template_prompt = Template(system_prompt)
-#         system_prompt = system_template_prompt.render(examples=examples)
-
-#         # Load dataset file
-#         with open(self.data_file) as f:
-#             dataset_json = json.load(f)
-
-#         dataset = dataset_json["data"]
-
-#         # Load predictions file
-#         with open(self.pred_file) as f:
-#             preds_json = json.load(f)
-
-#         # Loop through the dataset and predictions
-#         evaluation_data = []
-#         evaluation_results = {}
-#         for entry in dataset:
-#             paragraphs = entry.get("paragraphs", [])
-#             for paragraph in paragraphs:
-#                 context = paragraph.get("context", "")
-#                 qas = paragraph.get("qas", [])
-#                 for qa in qas:
-#                     question = qa.get("question", "")
-#                     answers = qa.get("answers", [])
-#                     answer = answers[0].get("text", "") if answers else ""
-#                     qa_id = str(
-#                         qa.get("id", "")
-#                     )  # Convert ID to string to match predictions JSON
-
-#                     # Get the predicted answer from predictions file
-#                     predicted_answer = preds_json.get(qa_id, "")
-
-#                     # Append the evaluation example
-#                     evaluation_data.append(
-#                         {
-#                             "question": question,
-#                             "transcript": context,
-#                             "answer": answer,
-#                             "id": qa_id,
-#                             "predicted_answer": predicted_answer,
-#                         }
-#                     )
-
-#         user_template_prompt = Template(user_prompt)
-#         for data in evaluation_data:
-#             print(f"data: {data}")
-#             user_prompt = user_template_prompt.render(
-#                 question=data["question"],
-#                 transcript=data["transcript"],
-#                 answer=data["answer"],
-#                 predicted_answer=data["predicted_answer"],
-#             )
-
-#             # Send the prompt to the LLM Judge model
-#             response = self.client.beta.chat.completions.parse(
-#                 model=llm_judge_model,
-#                 messages=[
-#                     {"role": "system", "content": system_prompt},
-#                     {"role": "user", "content": user_prompt},
-#                 ],
-#                 response_format={
-#                     "type": "json",
-#                     "value": json.dumps(Score.model_json_schema()),
-#                 },
-#                 seed=42,
-#                 timeout=120,
-#             )
-#             print(f"judge response: {response}")
-#             response = json.loads(response.choices[0].message.content)
-#             score = response["score"]
-
-#             evaluation_results[data["id"]] = score
-
-#         return evaluation_results
-
-#     def perform_evaluation(self, llm_judge_examples=None):
-#         """
-#         Performs the evaluation. If `self.llm_judge_model` is set, runs both
-#         `perform_squad_evaluation` and `perform_llm_judge_evaluation` in parallel.
-#         Otherwise, only runs `perform_squad_evaluation`.
-#         """
-#         if self.llm_judge_model:
-#             # Run both evaluations in parallel
-#             with concurrent.futures.ThreadPoolExecutor() as executor:
-#                 # Submit tasks to the executor
-#                 squad_future = executor.submit(self.perform_squad_evaluation)
-#                 llm_judge_future = executor.submit(
-#                     self.perform_llm_judge_evaluation,
-#                     llm_judge_model=self.llm_judge_model,
-#                     llm_judge_examples=llm_judge_examples,
-#                 )
-
-#                 # Wait for both tasks to complete
-#                 squad_result = (  # noqa: F841
-#                     squad_future.result()
-#                 )  # Wait for SQuAD evaluation to finish
-#                 llm_judge_result = (
-#                     llm_judge_future.result()
-#                 )  # Wait for LLM Judge evaluation to finish
-
-#                 # Optionally, process or save the results
-#                 print("SQuAD evaluation completed.")
-#                 print("LLM Judge evaluation completed.")
-#                 print("LLM Judge results:", llm_judge_result)
-
-#                 # Calculate the final correctness score (average of all scores)
-#                 scores = list(llm_judge_result.values())
-#                 final_correctness_score = sum(scores) / len(scores) if scores else 0
-
-#                 # Add the final correctness score to the results
-#                 llm_judge_result["final_correctness_score"] = final_correctness_score
-
-#                 # Save LLM Judge results to a file
-#                 llm_judge_output_file = os.path.join(
-#                     self.out_dir, "llm_judge_results.json"
-#                 )
-#                 with open(llm_judge_output_file, "w") as f:
-#                     json.dump(llm_judge_result, f, indent=4)
-
-#                 llm_summary_file = os.path.join(
-#                     self.out_dir, "llm_judge_results_summary.json"
-#                 )
-#                 with open(llm_summary_file, "w") as f:
-#                     json.dump(
-#                         {"final_correctness_score": final_correctness_score},
-#                         f,
-#                         indent=4,
-#                     )
-#                     # Save the final correctness score to a file
-
-#                 print(f"LLM Judge results saved to {llm_judge_output_file}")
-
-#         else:
-#             # Only run SQuAD evaluation
-#             self.perform_squad_evaluation()
+    def perform_evaluation(self):
+        self.perform_squad_evaluation()
 
 
 # class SequenceClassificationEval:
@@ -892,12 +757,14 @@ class MCQAEval:
         predictions = []
 
         for item in data:
-            question_id = item["id"]
-            gt_answer = item["output"]
-            pred_answer = pred[str(question_id)]
+            question_id = str(item["id"])
 
-            ground_truth.append(gt_answer)
-            predictions.append(pred_answer)
+            if question_id in pred:
+                gt_answer = item["output"]
+                pred_answer = pred[question_id]
+
+                ground_truth.append(gt_answer)
+                predictions.append(pred_answer)
 
         # Calculate metrics using the same logic as mcqa_simplified.py
         correct = sum(1 for pred_ans, true_ans in zip(predictions, ground_truth) if pred_ans == true_ans)
