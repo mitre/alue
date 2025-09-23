@@ -9,6 +9,8 @@ class ALUESettings(BaseSettings):
     endpoint_type: Optional[str] = Field(None, alias="ALUE_ENDPOINT_TYPE")
     endpoint_url: Optional[str] = Field(None, alias="ALUE_ENDPOINT_URL") 
     openai_api_key: Optional[SecretStr] = Field(None, alias="ALUE_OPENAI_API_KEY")
+    embedding_api_key: Optional[SecretStr] = Field(None, alias="EMBEDDING_API_KEY")
+    hf_token: Optional[SecretStr] = Field(None, alias="HF_TOKEN")
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -21,6 +23,15 @@ class ALUESettings(BaseSettings):
     def openai_api_key_str(self) -> Optional[str]:
         """Get the actual API key string."""
         return self.openai_api_key.get_secret_value() if self.openai_api_key else None
+    
+    @property
+    def embedding_api_key_str(self) -> Optional[str]:
+        return self.embedding_api_key.get_secret_value() if self.embedding_api_key else None
+
+    @property
+    def hf_token_str(self) -> Optional[str]:
+        """Get the HuggingFace token string."""
+        return self.hf_token.get_secret_value() if self.hf_token else None
 
 def get_settings() -> ALUESettings:
     """Get settings."""

@@ -3,6 +3,7 @@ import logging
 import os
 from pprint import pformat
 from typing import Optional, List, Dict, Any, Tuple
+import argparse
 
 from chromadb import (
     Collection,
@@ -21,6 +22,7 @@ from unstructured.documents.elements import (
     CompositeElement,
 )
 from unstructured.partition.pdf import partition_pdf
+from .settings import get_settings
 
 def setup_logger(name: str) -> logging.Logger:
     """Set up and configure a logger with console output.
@@ -381,8 +383,12 @@ class ChromaInterface:
 
     @staticmethod
     def get_openai_embedding_function(model="text-embedding-3-small"):
+        settings = get_settings()
+        api_key = settings.openai_api_key_str
+        if not api_key:
+            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
         return embedding_functions.OpenAIEmbeddingFunction(
-            api_key=os.getenv("OPENAI_API_KEY"),
+            api_key=api_key,
             model_name=model
         )
 
@@ -397,8 +403,12 @@ class ChromaInterface:
 
     @staticmethod
     def get_hf_embedding_function(model="sentence-transformers/all-MiniLM-L6-v2"):
+        settings = get_settings()
+        api_key = settings.hf_token_str
+        if not api_key:
+            raise ValueError("HuggingFace token not found. Set HF_TOKEN environment variable.")
         return embedding_functions.HuggingFaceEmbeddingFunction(
-            api_key=os.getenv("HF_TOKEN"),
+            api_key=api_key,
             model_name=model
         )
 
@@ -411,7 +421,11 @@ class ChromaInterface:
 
 
     @staticmethod
-    def get_openai_compatible_embedding_function(base_url, model="default", api_key="dummy"):
+    def get_openai_compatible_embedding_function(base_url, model="default"):
+        settings = get_settings()
+        api_key = settings.embedding_api_key_str
+        if not api_key:
+            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
         return embedding_functions.OpenAIEmbeddingFunction(
             api_key=api_key,
             model_name=model,
@@ -489,3 +503,85 @@ class ChromaInterface:
         )
 
         return collection
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Process documents and load into ChromaDB")
+    
+    # Basic paths and names
+    parser.add_argument("--document-directory", type=str, required=True,
+                       help="Directory containing PDF documents to process")
+    parser.add_argument("--database-path", type=str, default="./chroma_db",
+                       help="Path to store ChromaDB database")
+    parser.add_argument("--collection-name", type=str, default="documents",
+                       help="Name for the ChromaDB collection")
+    parser.add_argument("--output-path", type=str, default="./output",
+                       help="Path to store processing artifacts")
+    
+    # Document processing options
+    parser.add_argument("--partition-strategy", type=str, default="hi_res",
+                       choices=["hi_res", "fast", "ocr_only", "auto"],
+                       help="PDF partitioning strategy: 'fast' for lightweight processing, 'hi_res' for detailed extraction")
+    parser.add_argument("--chunk-hard-max", type=int, default=1200,
+                       help="Maximum characters per chunk (hard limit)")
+    parser.add_argument("--chunk-soft-max", type=int, default=700,
+                       help="Preferred characters per chunk (soft limit)")
+    parser.add_argument("--overlap-size", type=int, default=50,
+                       help="Character overlap between chunks")
+    
+    # Embedding provider selection
+    parser.add_argument("--embedding-provider", type=str, default="local",
+                       choices=["openai", "ollama", "hf", "local", "openai-compatible"],
+                       help="Embedding provider to use")
+    parser.add_argument("--embedding-model", type=str, default=None,
+                       help="Specific model name (optional)")
+    parser.add_argument("--embedding-url", type=str, default="http://localhost:11434",
+                       help="URL for Ollama or OpenAI-compatible endpoints")
+    
+    args = parser.parse_args()
+    
+    # Create document processor with chunking parameters
+    doc_processor = DocumentProcessor(
+        document_directory_path=args.document_directory,
+        output_path=args.output_path,
+        partition_strategy=args.partition_strategy,
+        chunk_hard_max_chars=args.chunk_hard_max,
+        chunk_soft_max_chars=args.chunk_soft_max,
+        overlap_size=args.overlap_size
+    )
+    
+    # Process documents
+    print(f"Processing documents from {args.document_directory}...")
+    chunks = doc_processor.process_document_directory()
+    print(f"Generated {len(chunks)} chunks")
+    
+    # Create ChromaDB interface
+    chroma = ChromaInterface(database_path=args.database_path)
+    
+    # Get embedding function based on provider
+    if args.embedding_provider == "openai":
+        embedding_function = chroma.get_openai_embedding_function(args.embedding_model or "text-embedding-3-small")
+    elif args.embedding_provider == "ollama":
+        embedding_function = chroma.get_ollama_embedding_function(args.embedding_model or "nomic-embed-text", args.embedding_url)
+    elif args.embedding_provider == "hf":
+        embedding_function = chroma.get_hf_embedding_function(args.embedding_model or "sentence-transformers/all-MiniLM-L6-v2")
+    elif args.embedding_provider == "local":
+        embedding_function = chroma.get_local_embedding_function(args.embedding_model or "all-MiniLM-L6-v2")
+    elif args.embedding_provider == "openai-compatible":
+        embedding_function = chroma.get_openai_compatible_embedding_function(args.embedding_url, args.embedding_model or "default")
+    else:
+        raise ValueError(f"Unknown embedding provider: {args.embedding_provider}")
+    
+    # Load into ChromaDB
+    print(f"Loading chunks into ChromaDB collection '{args.collection_name}'...")
+    collection = chroma.add_document_chunks(
+        collection_name=args.collection_name,
+        embedding_function=embedding_function,
+        document_chunks=chunks
+    )
+    
+    print(f"Successfully loaded {len(chunks)} chunks into ChromaDB")
+    print(f"Collection '{args.collection_name}' now has {collection.count()} total documents")
+
+if __name__ == "__main__":
+    main()
