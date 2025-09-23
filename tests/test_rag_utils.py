@@ -7,27 +7,27 @@ from rag_utils import (
 )
 
     
-# def test_single_document():
-#     current_dir = os.path.dirname(__file__)
-#     test_document = os.path.join(current_dir, "resources", "FAA_Order_8040.1C.pdf")
-#     output_dir = os.path.join(current_dir, "output")
+def test_single_document():
+    current_dir = os.path.dirname(__file__)
+    test_document = os.path.join(current_dir, "resources", "FAA_Order_8040.1C.pdf")
+    output_dir = os.path.join(current_dir, "output")
     
-#     # create document processor and process test document
-#     processor = DocumentProcessor(
-#         document_directory_path=None, 
-#         output_path=output_dir
-#     )
-#     chunks = processor.process_single_document(
-#         document_path=test_document
-#     )
-#     print(f"Length of chunks {len(chunks)}")
+    # create document processor and process test document
+    processor = DocumentProcessor(
+        document_directory_path=None, 
+        output_path=output_dir
+    )
+    chunks = processor.process_single_document(
+        document_path=test_document
+    )
+    print(f"Length of chunks {len(chunks)}")
 
-#     assert(len(chunks) == 9)
-#     assert(chunks[8]["text"] == "FAA Form 1320-19 (8-89)(Representation)")
-#     assert(chunks[8]["metadata"]["file_directory"] == "/hawes/projects/AVIATION_NLP/fy25/users/chen/repos/gitlab-alue/alue/tests/resources")
-#     assert(chunks[8]["metadata"]["filename"] == "FAA_Order_8040.1C.pdf")
-#     assert(chunks[8]["metadata"]["page_number"] == 4)
-#     assert(chunks[8]["metadata"]["chunk_id"] == "FAA_Order_8040.1C-8")
+    assert(len(chunks) == 9)
+    assert(chunks[8]["text"] == "FAA Form 1320-19 (8-89)(Representation)")
+    assert(chunks[8]["metadata"]["file_directory"] == "/hawes/projects/AVIATION_NLP/fy25/users/chen/repos/gitlab-alue/alue/tests/resources")
+    assert(chunks[8]["metadata"]["filename"] == "FAA_Order_8040.1C.pdf")
+    assert(chunks[8]["metadata"]["page_number"] == 4)
+    assert(chunks[8]["metadata"]["chunk_id"] == "FAA_Order_8040.1C-8")
 
 
 def test_database_creation():

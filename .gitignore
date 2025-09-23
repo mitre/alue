@@ -6,3 +6,4 @@ roberta_*_test
 __pycache__/
 mypy.ini
 .env 
+tests/output/
