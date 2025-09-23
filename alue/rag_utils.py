@@ -482,7 +482,7 @@ class ChromaInterface:
         # map chunks from DocumentProcessor to required sublists
         (ids, documents, metadatas) = self.organize_document_chunks(document_chunks)
         # load into database collection
-        collection.add(
+        collection.upsert(
             ids=ids,
             documents=documents,
             metadatas=metadatas,
