@@ -22,7 +22,7 @@ from unstructured.documents.elements import (
     CompositeElement,
 )
 from unstructured.partition.pdf import partition_pdf
-from .settings import get_settings
+from settings import get_settings
 
 def setup_logger(name: str) -> logging.Logger:
     """Set up and configure a logger with console output.
@@ -437,19 +437,20 @@ class ChromaInterface:
         collection_name: str,
         embedding_function: Optional[EmbeddingFunction[Embeddable]] = None,
     ) -> Collection:
-        # create client if it does not exist
-        self.load_or_create_db()
+        
 
         if embedding_function is None:
-            embedding_function = ChromaInterface.get_local_embedding_function()
+            embedding_function = get_embedding_function("local")
         
+        if self.client is None:
+            # create client if it does not exist
+            self.load_or_create_db()
+
         collection = self.client.get_or_create_collection(
             name=collection_name,
             embedding_function=embedding_function)
-
-        
+                
         return collection
-
 
 
     def organize_document_chunks(

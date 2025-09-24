@@ -4,6 +4,7 @@ import os
 from rag_utils import (
     DocumentProcessor, 
     ChromaInterface,
+    get_embedding_function
 )
 
     
@@ -50,14 +51,12 @@ def test_database_creation():
     )
     chroma_interface.add_document_chunks(
         collection_name="test_collection", 
-        embedding_function=ChromaInterface.get_local_embedding_function(),
+        embedding_function=get_embedding_function("local"),
         document_chunks=chunks
     )
 
-    
-
-    # read from database
-    collection = chroma_interface.get_collection(collection_name="test_collection")
+        # read from database
+    collection = chroma_interface.get_or_create_collection(collection_name="test_collection")
     getResult = collection.get(ids=["FAA_Order_8040.1C-8"])
     queryResult = collection.query(query_texts=["disposition of records"], n_results=1)
     # assert presence of collection and contents
