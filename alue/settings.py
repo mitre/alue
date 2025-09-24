@@ -11,6 +11,7 @@ class ALUESettings(BaseSettings):
     openai_api_key: Optional[SecretStr] = Field(None, alias="ALUE_OPENAI_API_KEY")
     embedding_api_key: Optional[SecretStr] = Field(None, alias="EMBEDDING_API_KEY")
     hf_token: Optional[SecretStr] = Field(None, alias="HF_TOKEN")
+    local_llm_path: Optional[str] = Field(None, alias="ALUE_LOCAL_LLM_PATH")
 
     model_config = SettingsConfigDict(
         env_file=".env",

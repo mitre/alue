@@ -3,6 +3,7 @@
 import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
+from pathlib import Path
 
 from .settings import get_settings
 
@@ -249,12 +250,11 @@ class TransformersEngine(BaseInferenceEngine):
 
     def _get_model_path(self) -> str:
         """Get model path."""
-        if self.model_type in MODELS:
-            config = MODELS[self.model_type]
-            if "local_path" in config and config["local_path"]:
-                return config["local_path"]
-            if "model_name" in config:
-                return config["model_name"]
+        # Check if local model path is provided and exists
+        if self.settings.local_model_path and Path(self.settings.local_model_path).exists():
+            return self.settings.local_model_path
+        
+        # Otherwise use model_type (should be HuggingFace model name)
         return self.model_type
 
 
@@ -281,11 +281,6 @@ class ModelEngine:
             # Default to transformers
             return TransformersEngine(self.model_type, **kwargs)
 
-    def _get_config_backend(self) -> str:
-        """Get backend from model config."""
-        if self.model_type in MODELS:
-            return MODELS[self.model_type].get("backend", "transformers")
-        return "transformers"
 
     def generate_unstructured(self, messages: List[Dict[str, str]], **kwargs) -> str:
         """Generate unstructured response."""

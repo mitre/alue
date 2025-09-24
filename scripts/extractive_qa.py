@@ -103,7 +103,7 @@ def run_inference(args):
         model_name=args.model_name,
         backend_type=args.backend_type,
         schema=schema,
-        field_to_extract=args.field_to_extract,
+        fields_to_extract=args.field_to_extract,
         temperature=args.temperature,
         max_tokens=args.max_tokens
     )

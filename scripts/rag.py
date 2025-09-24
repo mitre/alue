@@ -59,9 +59,13 @@ def run_inference(args):
     messages = []
     ground_truth = []
     question_ids = []
+    all_retrieved_doc_ids = []  
+    questions = []
+    ground_truth_answers = []
 
     for item in test_data:
-     
+        print(item)
+        
         question = item["input"]
         retrieved_docs = chroma.query_collection(
             query=question,
@@ -69,6 +73,7 @@ def run_inference(args):
             embedding_function=embedding_function,
             n_results=args.top_k
         )
+        
 
         context_parts = []
         for i, doc in enumerate(retrieved_docs):
@@ -84,6 +89,9 @@ def run_inference(args):
         messages.append(message)
         ground_truth.append(item['output'])
         question_ids.append(item["metadata"]['id'])
+        all_retrieved_doc_ids.append([doc["id"] for doc in retrieved_docs]) 
+        questions.append(question)
+        ground_truth_answers.append(item["output"])
 
     # Load schema and run inference
     schema = load_schema(args.schema_class)
@@ -94,7 +102,7 @@ def run_inference(args):
         model_name=args.model_name,
         backend_type=args.backend_type,
         schema=schema,
-        field_to_extract=args.field_to_extract,
+        fields_to_extract=args.field_to_extract,
         temperature=args.temperature,
         max_tokens=args.max_tokens
     )
@@ -103,12 +111,21 @@ def run_inference(args):
     # Save results
     os.makedirs(args.output_dir, exist_ok=True)
     
-    # Save predictions for evaluation
+    # Save predictions with document IDs and questions in the desired format
+    predictions_dict = {}
+    for i, (pred, doc_ids, question, gt_answer) in enumerate(zip(predictions, all_retrieved_doc_ids, questions, ground_truth_answers)):
+        predictions_dict[str(i)] = {  # Use index as key like in your example
+            "answer": pred,
+            "ground_truth_answer": gt_answer,
+            "predicted_doc_ids": doc_ids,  # Already extracted document IDs
+            "question": question
+        }
+    
     predictions_file = os.path.join(args.output_dir, "predictions.json")
     with open(predictions_file, 'w') as f:
-        json.dump({str(qid): pred for qid, pred in zip(question_ids, predictions)}, f, indent=2)
+        json.dump(predictions_dict, f, indent=2)
 
-    # Save full results
+    # Save full results (keeping the original format for other purposes)
     results = {
         "model": args.model_name,
         "backend_type": args.backend_type,
@@ -129,7 +146,6 @@ def run_inference(args):
     print(f"Saved to: {args.output_dir}")
 
     return predictions_file
-
 
 def create_parser():
     """Create argument parser with shared arguments."""

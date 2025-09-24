@@ -441,7 +441,7 @@ class ChromaInterface:
         self.load_or_create_db()
 
         if embedding_function is None:
-            embedding_function = ChromaInterface.get_local_embedding_function()
+            embedding_function = get_embedding_function(provider="local")
         
         collection = self.client.get_or_create_collection(
             name=collection_name,
@@ -513,7 +513,8 @@ class ChromaInterface:
             formatted_results.append({
                 "text": results["documents"][0][i],
                 "metadata": results["metadatas"][0][i],
-                "distance": results["distances"][0][i] if results["distances"] else None
+                "distance": results["distances"][0][i] if results["distances"] else None,
+                "id": results["ids"][0][i]
             })
         
         return formatted_results
