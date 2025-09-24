@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from .data_utils import load_data
 from .prompt_utils import build_messages
 from .model_utils import create_model_engine
+from .rag_utils import ChromaInterface
 from tqdm import tqdm
 
 

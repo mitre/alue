@@ -54,6 +54,8 @@ def test_database_creation():
         document_chunks=chunks
     )
 
+    
+
     # read from database
     collection = chroma_interface.get_collection(collection_name="test_collection")
     getResult = collection.get(ids=["FAA_Order_8040.1C-8"])
@@ -62,5 +64,9 @@ def test_database_creation():
     assert(collection.count() == 9)
     assert(getResult["documents"][0] == "FAA Form 1320-19 (8-89)(Representation)")
     assert(queryResult["ids"][0][0] == "FAA_Order_8040.1C-6")
+
+
+
+
 
 

@@ -43,6 +43,50 @@ def setup_logger(name: str) -> logging.Logger:
 
 logger = setup_logger(__name__)
 
+def get_embedding_function(provider: str, model: str = None, url: str = None):
+    settings = get_settings()
+    if provider == "openai":
+        api_key = settings.openai_api_key_str
+        if not api_key:
+            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
+        return embedding_functions.OpenAIEmbeddingFunction(
+            api_key=api_key,
+            model_name=model or "text-embedding-3-small"
+        )
+
+    elif provider == "ollama":
+        embedding_functions.OllamaEmbeddingFunction(
+            model_name=model or "nomic-embed-text",
+            url=f"{url or 'http://localhost:11434'}/api/embeddings"
+        )
+
+    elif provider == "hf":
+        api_key = settings.hf_token_str
+        if not api_key:
+            raise ValueError("HuggingFace token not found. Set HF_TOKEN environment variable.")
+        return embedding_functions.HuggingFaceEmbeddingFunction(
+            api_key=api_key,
+            model_name=model or "sentence-transformers/all-MiniLM-L6-v2"
+        )
+
+    elif provider == "local":
+        return embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name=model or "all-MiniLM-L6-v2"
+        )
+
+    elif provider == "openai-compatible":
+        api_key = settings.embedding_api_key_str
+        if not api_key:
+            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
+        return embedding_functions.OpenAIEmbeddingFunction(
+            api_key=api_key,
+            model_name=model or "default",
+            api_base=url
+        )
+    
+    else:
+        raise ValueError(f"Unknown embedding provider: {provider}")
+
 
 class DocumentProcessor:
 
@@ -381,58 +425,6 @@ class ChromaInterface:
         self.database_path = database_path
 
 
-    @staticmethod
-    def get_openai_embedding_function(model="text-embedding-3-small"):
-        settings = get_settings()
-        api_key = settings.openai_api_key_str
-        if not api_key:
-            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
-        return embedding_functions.OpenAIEmbeddingFunction(
-            api_key=api_key,
-            model_name=model
-        )
-
-
-    @staticmethod
-    def get_ollama_embedding_function(model="nomic-embed-text", url="http://localhost:11434"):
-        return embedding_functions.OllamaEmbeddingFunction(
-            model_name=model,
-            url=f"{url}/api/embeddings"
-        )
-    
-
-    @staticmethod
-    def get_hf_embedding_function(model="sentence-transformers/all-MiniLM-L6-v2"):
-        settings = get_settings()
-        api_key = settings.hf_token_str
-        if not api_key:
-            raise ValueError("HuggingFace token not found. Set HF_TOKEN environment variable.")
-        return embedding_functions.HuggingFaceEmbeddingFunction(
-            api_key=api_key,
-            model_name=model
-        )
-
-
-    @staticmethod
-    def get_local_embedding_function(model="all-MiniLM-L6-v2"):
-        return embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name=model
-        )
-
-
-    @staticmethod
-    def get_openai_compatible_embedding_function(base_url, model="default"):
-        settings = get_settings()
-        api_key = settings.embedding_api_key_str
-        if not api_key:
-            raise ValueError("Embedding API key not found. Set EMBEDDING_API_KEY environment variable.")
-        return embedding_functions.OpenAIEmbeddingFunction(
-            api_key=api_key,
-            model_name=model,
-            api_base=base_url
-        )
-
-
     def load_or_create_db(
         self,
     ) -> None:
@@ -446,29 +438,18 @@ class ChromaInterface:
         embedding_function: Optional[EmbeddingFunction[Embeddable]] = None,
     ) -> Collection:
         # create client if it does not exist
-        if self.client is None:
-            self.load_or_create_db()
+        self.load_or_create_db()
 
         if embedding_function is None:
             embedding_function = ChromaInterface.get_local_embedding_function()
         
-        return self.client.get_or_create_collection(
+        collection = self.client.get_or_create_collection(
             name=collection_name,
-            embedding_function=embedding_function
-        )
+            embedding_function=embedding_function)
 
+        print(f"embedding function: {collection._embedding_function}")
+        return collection
 
-    def get_collection(
-        self,
-        collection_name: str,
-    ) -> Optional[Collection]:
-        # create client if it does not exist
-        if self.client is None:
-            self.load_or_create_db()
-
-        return self.client.get_or_create_collection(
-            name=collection_name,
-        )
 
 
     def organize_document_chunks(
@@ -492,6 +473,7 @@ class ChromaInterface:
         document_chunks: List[Dict[str,Any]]
     ) -> Collection:
         # get collection
+        print(f"using embedding function: {embedding_function}")
         collection = self.get_or_create_collection(collection_name, embedding_function)
         # map chunks from DocumentProcessor to required sublists
         (ids, documents, metadatas) = self.organize_document_chunks(document_chunks)
@@ -503,6 +485,39 @@ class ChromaInterface:
         )
 
         return collection
+    
+
+    def query_collection(
+        self,
+        query: str,
+        collection_name: str,
+        embedding_function,
+        n_results: int = 5,
+        where: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        """Query ChromaDB collection and return formatted results."""
+        collection = self.get_or_create_collection(collection_name, embedding_function)
+        
+        # Build query parameters
+        query_params = {
+            "query_texts": [query],
+            "n_results": n_results
+        }
+        if where:
+            query_params["where"] = where
+        
+        results = collection.query(**query_params)
+        
+        # Format results
+        formatted_results = []
+        for i in range(len(results["documents"][0])):
+            formatted_results.append({
+                "text": results["documents"][0][i],
+                "metadata": results["metadatas"][0][i],
+                "distance": results["distances"][0][i] if results["distances"] else None
+            })
+        
+        return formatted_results
 
 
 def main():
@@ -558,19 +573,11 @@ def main():
     # Create ChromaDB interface
     chroma = ChromaInterface(database_path=args.database_path)
     
-    # Get embedding function based on provider
-    if args.embedding_provider == "openai":
-        embedding_function = chroma.get_openai_embedding_function(args.embedding_model or "text-embedding-3-small")
-    elif args.embedding_provider == "ollama":
-        embedding_function = chroma.get_ollama_embedding_function(args.embedding_model or "nomic-embed-text", args.embedding_url)
-    elif args.embedding_provider == "hf":
-        embedding_function = chroma.get_hf_embedding_function(args.embedding_model or "sentence-transformers/all-MiniLM-L6-v2")
-    elif args.embedding_provider == "local":
-        embedding_function = chroma.get_local_embedding_function(args.embedding_model or "all-MiniLM-L6-v2")
-    elif args.embedding_provider == "openai-compatible":
-        embedding_function = chroma.get_openai_compatible_embedding_function(args.embedding_url, args.embedding_model or "default")
-    else:
-        raise ValueError(f"Unknown embedding provider: {args.embedding_provider}")
+    embedding_function = get_embedding_function(
+        args.embedding_provider,
+        args.embedding_model,
+        args.embedding_url
+    )
     
     # Load into ChromaDB
     print(f"Loading chunks into ChromaDB collection '{args.collection_name}'...")
