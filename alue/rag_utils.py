@@ -447,7 +447,7 @@ class ChromaInterface:
             name=collection_name,
             embedding_function=embedding_function)
 
-        print(f"embedding function: {collection._embedding_function}")
+        
         return collection
 
 
@@ -473,7 +473,6 @@ class ChromaInterface:
         document_chunks: List[Dict[str,Any]]
     ) -> Collection:
         # get collection
-        print(f"using embedding function: {embedding_function}")
         collection = self.get_or_create_collection(collection_name, embedding_function)
         # map chunks from DocumentProcessor to required sublists
         (ids, documents, metadatas) = self.organize_document_chunks(document_chunks)

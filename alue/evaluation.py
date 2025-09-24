@@ -11,7 +11,6 @@ import numpy as np
 # import output_normalizations
 import pandas as pd
 from . import squad_evaluation as squad_eval
-from .config import MODELS
 from .output_normalizations import normalize_tail_extraction_predictions
 # from doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
 # from haystack.components.builders import PromptBuilder

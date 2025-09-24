@@ -65,7 +65,6 @@ def run_inference(args):
         )
         messages.append(message)
         ground_truth.append(item['output'])
-        qid = str(item.get('id', f"q_{len(messages)}"))
         question_ids.append(item['id'])
 
     # Load schema and run inference
