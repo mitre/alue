@@ -11,8 +11,8 @@ from .settings import get_settings
 class BaseInferenceEngine(ABC):
     """Base class for all inference engines."""
 
-    def __init__(self, model_type: str):
-        self.model_type = model_type
+    def __init__(self, model_name: str):
+        self.model_name = model_name
         self.settings = get_settings()
 
     @abstractmethod
@@ -27,7 +27,7 @@ class BaseInferenceEngine(ABC):
 
     def _get_model_name(self) -> str:
         """Get model name for API calls."""
-        return self.model_type
+        return self.model_name
 
     def _apply_chat_template(self, messages: List[Dict[str, str]]) -> str:
         """Convert messages to prompt string."""
@@ -50,11 +50,16 @@ class BaseInferenceEngine(ABC):
 class OpenAIEngine(BaseInferenceEngine):
     """OpenAI API inference engine."""
 
-    def __init__(self, model_type: str):
-        super().__init__(model_type)
+    def __init__(self, model_name: str, judge_mode: bool = False):
+        super().__init__(model_name)
         from openai import OpenAI
+
+        if judge_mode:
+            api_key = self.settings.llm_judge_openai_api_key_str
+        else:
+            api_key = self.settings.openai_api_key_str
        
-        self.client = OpenAI(api_key=self.settings.openai_api_key_str)
+        self.client = OpenAI(api_key=api_key)
 
     def generate_unstructured(self, messages: List[Dict[str, str]], **kwargs) -> str:
         response = self.client.chat.completions.create(
@@ -88,13 +93,21 @@ class OpenAIEngine(BaseInferenceEngine):
 class APIEngine(BaseInferenceEngine):
     """Generic OpenAI-compatible API engine (TGI, vLLM online, Ollama)."""
 
-    def __init__(self, model_type: str, backend_type: str):
-        super().__init__(model_type)
+    def __init__(self, model_name: str, backend_type: str, judge_mode: bool = False):
+        super().__init__(model_name)
         self.backend_type = backend_type
         from openai import OpenAI
+
+        if judge_mode:
+            base_url = self.settings.llm_judge_endpoint_url
+            api_key = self.settings.llm_judge_openai_api_key_str
+        else:
+            base_url = self.settings.endpoint_url
+            api_key = self.settings.openai_api_key_str
+        
         self.client = OpenAI(
-            base_url=self.settings.endpoint_url,
-            api_key=self.settings.openai_api_key_str or "EMPTY"
+            base_url=base_url,
+            api_key=api_key or "EMPTY"
         )
 
     def generate_unstructured(self, messages: List[Dict[str, str]], **kwargs) -> str:
@@ -148,8 +161,8 @@ class APIEngine(BaseInferenceEngine):
 class TransformersEngine(BaseInferenceEngine):
     """Local transformers inference engine."""
 
-    def __init__(self, model_type: str, **kwargs):
-        super().__init__(model_type)
+    def __init__(self, model_name: str, **kwargs):
+        super().__init__(model_name)
         self.use_structured = kwargs.get("use_structured_generation", True)
         self._load_model(**kwargs)
 
@@ -158,11 +171,10 @@ class TransformersEngine(BaseInferenceEngine):
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
-        model_path = self._get_model_path()
         quantized = kwargs.get("quantized", False)
 
         # Load tokenizer
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
@@ -175,25 +187,23 @@ class TransformersEngine(BaseInferenceEngine):
                 bnb_4bit_compute_dtype=torch.bfloat16,
             )
             self.model = AutoModelForCausalLM.from_pretrained(
-                model_path, quantization_config=config, device_map="auto"
+                self.model_name, quantization_config=config, device_map="auto"
             )
         else:
             self.model = AutoModelForCausalLM.from_pretrained(
-                model_path, device_map="auto", torch_dtype=torch.float16
+                self.model_name, device_map="auto", torch_dtype=torch.float16
             )
 
         # For structured generation, wrap with outlines
         if self.use_structured:
             import outlines
-            self.structured_model = outlines.models.transformers(model_path)
+            self.structured_model = outlines.models.transformers(self.model_name)
 
     def generate_unstructured(self, messages: List[Dict[str, str]], **kwargs) -> str:
         prompt = self._apply_chat_template_with_tokenizer(messages)
         return self._generate_with_transformers(prompt, **kwargs)
 
     def generate_structured(self, messages: List[Dict[str, str]], schema: Dict[str, Any], **kwargs) -> str:
-        if not self.use_structured:
-            return self.generate_unstructured(messages, **kwargs)
 
         try:
             import outlines
@@ -248,38 +258,35 @@ class TransformersEngine(BaseInferenceEngine):
         generated_tokens = outputs[0][inputs.input_ids.shape[-1]:]
         return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
 
-    def _get_model_path(self) -> str:
-        """Get model path."""
-        # Check if local model path is provided and exists
-        if self.settings.local_model_path and Path(self.settings.local_model_path).exists():
-            return self.settings.local_model_path
-        
-        # Otherwise use model_type (should be HuggingFace model name)
-        return self.model_type
 
 
 class ModelEngine:
     """Unified interface for all inference engines."""
 
-    def __init__(self, model_type: str, **kwargs):
-        self.model_type = model_type
+    def __init__(self, model_name: str, judge_mode: bool = False,  **kwargs):
+        self.model_name = model_name
+        self.judge_mode = judge_mode
         self.settings = get_settings()
         self.engine = self._create_engine(**kwargs)
 
     def _create_engine(self, **kwargs) -> BaseInferenceEngine:
         """Create the appropriate engine based on configuration."""
         # Check settings for backend type
-        backend_type = self.settings.endpoint_type
+        if self.judge_mode:
+            backend_type = self.settings.llm_judge_endpoint_type
+
+        else:
+            backend_type = self.settings.endpoint_type
 
         print(f"backend type: {backend_type}")
 
         if backend_type == "openai":
-            return OpenAIEngine(self.model_type)
+            return OpenAIEngine(self.model_name, judge_mode=self.judge_mode)
         elif backend_type in ["vllm", "tgi", "ollama"]:
-            return APIEngine(self.model_type, backend_type)
+            return APIEngine(self.model_name, backend_type, judge_mode=self.judge_mode)
         else:
             # Default to transformers
-            return TransformersEngine(self.model_type, **kwargs)
+            return TransformersEngine(self.model_name, **kwargs)
 
 
     def generate_unstructured(self, messages: List[Dict[str, str]], **kwargs) -> str:
@@ -298,12 +305,12 @@ class ModelEngine:
     def get_model_info(self) -> Dict[str, Any]:
         """Get model information."""
         return {
-            "model_type": self.model_type,
+            "model_name": self.model_name,
             "engine_type": type(self.engine).__name__,
             "model_name": self.engine._get_model_name(),
         }
 
 
-def create_model_engine(model_type: str, **kwargs) -> ModelEngine:
+def create_model_engine(model_name: str, judge_mode: bool = False, **kwargs) -> ModelEngine:
     """Convenience function to create a model engine."""
-    return ModelEngine(model_type, **kwargs)
+    return ModelEngine(model_name, judge_mode=judge_mode, **kwargs)

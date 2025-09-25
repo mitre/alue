@@ -19,6 +19,7 @@ def run_llm_inference(
     schema: Optional[Type[BaseModel]] = None,
     fields_to_extract: Optional[Union[str, List[str]]] = None,
     temperature: float = 0.1,
+    judge_mode: bool = False,
     **generation_kwargs
 ) -> List[str]:
     """
@@ -32,12 +33,13 @@ def run_llm_inference(
                           Can be a string for single field, list for multiple fields, 
                           or None for full response
         temperature: Generation temperature
+        judge_mode: Use llm judge
         **generation_kwargs: Additional generation parameters
 
     Returns:
         List of prediction strings
     """
-    engine = create_model_engine(model_name)
+    engine = create_model_engine(model_name, judge_mode=judge_mode)
 
     gen_kwargs = {"temperature": temperature, "max_tokens": 150, **generation_kwargs}
     predictions = []

@@ -78,7 +78,8 @@ class BaseLLMJudge(ABC):
                 schema=Claim,
                 fields_to_extract="claim_list",
                 temperature=0.1,
-                max_tokens=300
+                max_tokens=300,
+                judge_mode=True
             )
             import sys
             print(f"decompose preds: {predictions}")
@@ -120,7 +121,8 @@ class BaseLLMJudge(ABC):
                 schema=schema,
                 fields_to_extract=None,
                 temperature=0.1,
-                max_tokens=200
+                max_tokens=200,
+                judge_mode=True
             )
             
             claim_contained_in_context = predictions[0] if predictions and predictions[0] != "ERROR" else {"score": 0}
@@ -238,7 +240,8 @@ class ContextRelevancyJudge(BaseLLMJudge):
                         schema=schema,
                         fields_to_extract=None,
                         temperature=0.1,
-                        max_tokens=200
+                        max_tokens=200,
+                        judge_mode=True
                     )
                     
                     resp = predictions[0] if predictions and predictions[0] != "ERROR" else {"score": 0}
@@ -335,7 +338,8 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
                 fields_to_extract=None,
                 schema=schema,
                 temperature=0.1,
-                max_tokens=200
+                max_tokens=200,
+                judge_mode=True
             )
             
             main_idea = predictions[0] if predictions and predictions[0] != "ERROR" else {"score": 0}
@@ -373,7 +377,8 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
                 schema=schema,
                 fields_to_extract=None,
                 temperature=0.1,
-                max_tokens=200
+                max_tokens=200,
+                judge_mode=True
             )
             
             claim_contained = predictions[0] if predictions and predictions[0] != "ERROR" else {"score": 0}
@@ -409,7 +414,8 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
                 schema=schema,
                 fields_to_extract=None,
                 temperature=0.1,
-                max_tokens=200
+                max_tokens=200,
+                judge_mode=True
             )
             
             claim_contradicts = predictions[0] if predictions and predictions[0] != "ERROR" else {"score": 0}
@@ -811,35 +817,4 @@ class ClaimDecompositionJudge(BaseLLMJudge):
 
     """Judge for evaluating composite correctness in RAG Q&A systems"""
 
-
-
-# ========================================
-# USAGE EXAMPLES
-# ========================================
-
-if __name__ == "__main__":
-    judge = ContextRelevancyJudge(
-        model_name="llama_instruct",
-        collection_name="test-collection-fast4",  # Update with your actual collection name
-        database_path="/Users/ssingh/alue/test_chroma_db",   # Update with your actual Chroma database path
-        explanations=True  # Set to True if you want explanations
-    )
-    print(f"judge: {judge}")
-
-    results = judge.evaluate(
-        filename="/Users/ssingh/alue/results_rag_20250924_123652/predictions.json",
-        store_output=True,
-        output_path="test_context_relevancy_exp.json"
-    )
-
-    judge = CompositeCorrectnessJudge(
-        model_name="llama_instruct",  # Update with your actual model name
-        explanations=True  # Set to True to see detailed explanations
-    )
-
-    results = judge.evaluate(
-        dataset=results,
-        store_output=True,
-        output_path="sample_composite_correctness.json"
-    )
 
