@@ -22,7 +22,9 @@ from unstructured.documents.elements import (
     CompositeElement,
 )
 from unstructured.partition.pdf import partition_pdf
+
 from .settings import get_settings
+
 
 def setup_logger(name: str) -> logging.Logger:
     """Set up and configure a logger with console output.
@@ -43,8 +45,13 @@ def setup_logger(name: str) -> logging.Logger:
 
 logger = setup_logger(__name__)
 
-def get_embedding_function(provider: str, model: str = None, url: str = None):
+
+def get_embedding_function(model: str = None):
     settings = get_settings()
+    
+    provider = settings.embedding_endpoint_type
+    url = settings.embedding_endpoint_url
+
     if provider == "openai":
         api_key = settings.openai_api_key_str
         if not api_key:
@@ -526,33 +533,28 @@ def main():
     
     # Basic paths and names
     parser.add_argument("--document-directory", type=str, required=True,
-                       help="Directory containing PDF documents to process")
+                        help="Directory containing PDF documents to process")
     parser.add_argument("--database-path", type=str, default="./chroma_db",
-                       help="Path to store ChromaDB database")
+                        help="Path to store ChromaDB database")
     parser.add_argument("--collection-name", type=str, default="documents",
-                       help="Name for the ChromaDB collection")
+                        help="Name for the ChromaDB collection")
     parser.add_argument("--output-path", type=str, default="./output",
-                       help="Path to store processing artifacts")
+                        help="Path to store processing artifacts")
     
     # Document processing options
     parser.add_argument("--partition-strategy", type=str, default="hi_res",
-                       choices=["hi_res", "fast", "ocr_only", "auto"],
-                       help="PDF partitioning strategy: 'fast' for lightweight processing, 'hi_res' for detailed extraction")
+                        choices=["hi_res", "fast", "ocr_only", "auto"],
+                        help="PDF partitioning strategy: 'fast' for lightweight processing, 'hi_res' for detailed extraction")
     parser.add_argument("--chunk-hard-max", type=int, default=1200,
-                       help="Maximum characters per chunk (hard limit)")
+                        help="Maximum characters per chunk (hard limit)")
     parser.add_argument("--chunk-soft-max", type=int, default=700,
-                       help="Preferred characters per chunk (soft limit)")
+                        help="Preferred characters per chunk (soft limit)")
     parser.add_argument("--overlap-size", type=int, default=50,
-                       help="Character overlap between chunks")
+                        help="Character overlap between chunks")
     
     # Embedding provider selection
-    parser.add_argument("--embedding-provider", type=str, default="local",
-                       choices=["openai", "ollama", "hf", "local", "openai-compatible"],
-                       help="Embedding provider to use")
     parser.add_argument("--embedding-model", type=str, default=None,
-                       help="Specific model name (optional)")
-    parser.add_argument("--embedding-url", type=str, default="http://localhost:11434",
-                       help="URL for Ollama or OpenAI-compatible endpoints")
+                        help="Specific model name (optional)")
     
     args = parser.parse_args()
     
@@ -574,11 +576,7 @@ def main():
     # Create ChromaDB interface
     chroma = ChromaInterface(database_path=args.database_path)
     
-    embedding_function = get_embedding_function(
-        args.embedding_provider,
-        args.embedding_model,
-        args.embedding_url
-    )
+    embedding_function = get_embedding_function(args.embedding_model)
     
     # Load into ChromaDB
     print(f"Loading chunks into ChromaDB collection '{args.collection_name}'...")
@@ -590,6 +588,7 @@ def main():
     
     print(f"Successfully loaded {len(chunks)} chunks into ChromaDB")
     print(f"Collection '{args.collection_name}' now has {collection.count()} total documents")
+
 
 if __name__ == "__main__":
     main()
