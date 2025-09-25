@@ -46,9 +46,9 @@ def setup_logger(name: str) -> logging.Logger:
 logger = setup_logger(__name__)
 
 
-def get_embedding_function(model: str = None):
+def get_embedding_function(model: Optional[str] = None):
     settings = get_settings()
-    
+
     provider = settings.embedding_endpoint_type
     url = settings.embedding_endpoint_url
 
@@ -447,7 +447,7 @@ class ChromaInterface:
         
 
         if embedding_function is None:
-            embedding_function = get_embedding_function("local")
+            embedding_function = get_embedding_function()
         
         if self.client is None:
             # create client if it does not exist

@@ -126,7 +126,7 @@ def test_query_collection(current_dir, hi_res_doc_processor, chroma_interface):
     chroma_client = chroma_interface
     chroma_client.add_document_chunks(
         collection_name="test_collection", 
-        embedding_function=get_embedding_function("local"),
+        embedding_function=get_embedding_function(),
         document_chunks=chunks
     )
 

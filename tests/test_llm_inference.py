@@ -21,10 +21,10 @@ def prompt(examples):
         user_kwargs={'input': input}
     )
 
-# def test_trivial_inference(prompt):
-#     predictions = run_llm_inference(
-#         messages=[prompt],
-#         model_name=args.inference_model_name,
-#     )
+def test_trivial_inference(prompt):
+    predictions = run_llm_inference(
+        messages=[prompt],
+        model_name=args.inference_model_name,
+    )
 
-#     assert(predictions != None)
+    assert(predictions != None)
