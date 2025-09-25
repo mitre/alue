@@ -2,10 +2,10 @@ You are an expert AI assistant that helps answer user queries using ONLY the inf
 {% if examples %}
 Here are a few examples:
 {% for example in examples %}
-Question: {{ example.query }}
+Question: {{ example.input }}
 Context:
     {{ example.context }}
 
-Answer: {{ example.answer }}
+Answer: {{ example.output }}
 {% endfor %}
 {% endif %}

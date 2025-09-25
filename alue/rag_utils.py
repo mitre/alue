@@ -491,7 +491,7 @@ class ChromaInterface:
         self,
         query: str,
         collection_name: str,
-        embedding_function,
+        embedding_function: EmbeddingFunction[Embeddable],
         n_results: int = 5,
         where: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
