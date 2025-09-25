@@ -7,24 +7,27 @@ from alue.prompt_utils import build_messages
 @pytest.fixture(scope="module")
 def examples():
     return [{
-        "input": "example_input",
-        "output": "example_output",
+        "input": "What is the unit of measure for airspeed?\r\nA) knots\r\nB) AOA\r\nC) rate of climb",
+        "output": "A",
     }]
 
 
 @pytest.fixture(scope="module")
 def prompt(examples):
-    input = "test_input"
+    input = "What is the unit of measure for altitude?\r\nA) feet\r\nB) feet per minute\r\nC) flight level\r\nD) both A and C"
     return build_messages(
         task_type="aviation_exam",
         system_kwargs={'examples': examples},
         user_kwargs={'input': input}
     )
 
+
+
 def test_trivial_inference(prompt):
     predictions = run_llm_inference(
         messages=[prompt],
-        model_name=args.inference_model_name,
+        model_name="nvidia/Llama-3_3-Nemotron-Super-49B-v1",
     )
 
-    assert(predictions != None)
+    print(predictions)
+    assert(predictions != "")

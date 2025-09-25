@@ -3,7 +3,6 @@
 import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
-from pathlib import Path
 
 from .settings import get_settings
 
@@ -257,7 +256,6 @@ class TransformersEngine(BaseInferenceEngine):
 
         generated_tokens = outputs[0][inputs.input_ids.shape[-1]:]
         return self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
-
 
 
 class ModelEngine:
