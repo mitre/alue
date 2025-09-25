@@ -12,7 +12,8 @@ import numpy as np
 import pandas as pd
 from . import squad_evaluation as squad_eval
 from .output_normalizations import normalize_tail_extraction_predictions
-# from doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
+from .llm_judge_metrics import ContextRelevancyJudge, CompositeCorrectnessJudge
+from .doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
 # from haystack.components.builders import PromptBuilder
 # from huggingface_hub import InferenceClient
 # from inference import load_prompt_from_file
@@ -550,111 +551,241 @@ class ExtractiveQAEval:
 #             json.dump(predictions_summary, file)
 
 
-# class RAGEval(ExtractiveQAEval):
-#     def __init__(
-#         self,
-#         data_file: str,
-#         pred_file: str,
-#         out_dir: str,
-#         na_prob_file: str = None,
-#         na_prob_thresh: float = 1.0,
-#         out_image_dir: str = None,
-#         verbose: bool = False,
-#         k: int = 5,
-#     ) -> None:
-#         """
-#         A class used to evaluate the performance of the RAG pipeline.
-#         ...
+class RAGEval:
+    def __init__(
+        self,
+        pred_file: str, 
+        out_dir: str,
+        model_name: str,
+        data_file: str = None,  
+        database_path: str = None,  
+        collection_name: str = None,  
+        evaluate_retrieval: bool = True,
+        evaluate_generation: bool = True,
+        use_recall_k: bool = False,  # Only if document_ids available
+        k: int = 5,
+        verbose: bool = False
+    ):
+        """
+        A class used to evaluate the performance of the RAG pipeline.
+        ...
 
-#         Attributes
-#         ----------
-#         data_file : str
-#             the file containing the ground truth data
-#         pred_file : str
-#             the file containing the model's predictions
-#         out_dir : str
-#             the directory where the evaluation results will be saved
-#         na_prob_file : str, optional
-#             the file containing the probabilities of no answer being correct
-#         na_prob_thresh : int, optional
-#             the threshold for considering a no answer prediction correct
-#         out_image_dir : str, optional
-#             the directory where evaluation images will be saved
-#         verbose : bool, optional
-#             whether to print verbose output
-#         k: int, optional
-#             top_k value for doc retrieval, default is 5
+        Attributes
+        ----------
+        data_file : str
+            the file containing the ground truth data
+        pred_file : str
+            the file containing the model's predictions
+        out_dir : str
+            the directory where the evaluation results will be saved
+        na_prob_file : str, optional
+            the file containing the probabilities of no answer being correct
+        na_prob_thresh : int, optional
+            the threshold for considering a no answer prediction correct
+        out_image_dir : str, optional
+            the directory where evaluation images will be saved
+        verbose : bool, optional
+            whether to print verbose output
+        k: int, optional
+            top_k value for doc retrieval, default is 5
 
 
-#         Methods
-#         -------
-#         perform_evaluation():
-#             Performs the evaluation of the qa and saves the results to the specified output directory.
+        Methods
+        -------
+        perform_evaluation():
+            Performs the evaluation of the qa and saves the results to the specified output directory.
 
-#         evaluate_recall_at_k():
-#             Performs evaluation for document retrieval aspect of rag pipeline
-#         """
-#         super().__init__(
-#             data_file,
-#             pred_file,
-#             out_dir,
-#             na_prob_file,
-#             na_prob_thresh,
-#             out_image_dir,
-#             verbose,
-#         )
-#         self.k = k
-#         self.out_dir = out_dir
+        evaluate_recall_at_k():
+            Performs evaluation for document retrieval aspect of rag pipeline
+        """
+        
+        self.k = k
+        self.out_dir = out_dir
+        self.use_recall_k = use_recall_k
+        self.verbose = verbose
+        self.pred_file = pred_file
+        self.data_file = data_file
+        self.model_name = model_name
+        self.database_path = database_path
+        self.collection_name = collection_name
+        self.evaluate_retrieval = evaluate_retrieval
+        self.evaluate_generation = evaluate_generation
 
-#     def perform_evaluation(self) -> None:
-#         """
-#         Performs the evaluation of qa and saves the results to the specified output directory.
-#         """
-#         super().perform_evaluation()
-#         self.evaluate_recall_at_k()
+    def perform_evaluation(self) -> None:
+        """
+        Performs the evaluation of qa and saves the results to the specified output directory.
+        """
+        results = {}
 
-#     def evaluate_recall_at_k(self):
-#         """
-#         Performs the evaluation for retrieval and saves the results to the specified output directory.
-#         """
-#         with open(self.data_file) as f:
-#             ground_truth_data = json.load(f)
-#         with open(self.pred_file) as f:
-#             predicted_data = json.load(f)
+        if self.evaluate_retrieval:
+            results.update(self.evaluate_retrieval_metrics())
+        
+        if self.evaluate_generation:
+            results.update(self.evaluate_generation_metrics())
 
-#         ground_truth_ids = []
-#         predicted_ids = []
-#         ground_truth_data = ground_truth_data["data"]
+        with open(os.path.join(self.out_dir, "rag_evaluation_summary.json"), "w") as f:
+            json.dump(results, f, indent=2)
 
-#         for data in ground_truth_data:
-#             paragraphs = data["paragraphs"]
-#             for paragraph in paragraphs:
-#                 qas = paragraph["qas"]
-#                 for qa in qas:
-#                     ground_truth_ids.extend(
-#                         [answer["document_id"] for answer in qa["answers"]]
-#                     )
-#                     qid = qa["id"]
-#                     if (
-#                         isinstance(predicted_data[qid], dict)
-#                         and "predicted_doc_ids" in predicted_data[qid]
-#                     ):
-#                         predicted_ids.append(
-#                             list(set(predicted_data[qid]["predicted_doc_ids"]))
-#                         )
-#                     else:
-#                         predicted_ids.append([])
 
-#         recall_values = recall_at_k_per_query(ground_truth_ids, predicted_ids)
-#         overall_recall = overall_recall_at_k(recall_values)
+    def evaluate_retrieval_metrics(self):
+        """
+        Evaluate retrieval performance using Context Relevancy and optionally Recall@K.
+        
+        Returns:
+            dict: Dictionary containing retrieval evaluation results
+        """
+        retrieval_results = {}
+        
+        # Always evaluate context relevancy using LLM judge
+        if self.database_path and self.collection_name:
+            print("[RAGEval] Running Context Relevancy evaluation...")
+            
+            context_judge = ContextRelevancyJudge(
+                model_name=self.model_name,
+                collection_name=self.collection_name,
+                database_path=self.database_path,
+                explanations=False
+            )
 
-#         doc_retrieval_metrics_file = "doc_retrieval.json"
+            self.cr_output_path = os.path.join(self.out_dir, "context_relevancy.json")
+            
+            context_results = context_judge.evaluate(
+                filename=self.pred_file,
+                store_output=True,
+                output_path=self.cr_output_path
+            )
+            
+            # Calculate average context relevancy per question, then average those
+            question_scores = []
+            for item in context_results:
+                question_relevant = sum(context["context_relevancy"] for context in item["context"])
+                question_avg = question_relevant / len(item["context"])
+                question_scores.append(question_avg)
+            
+            avg_context_relevancy = sum(question_scores) / len(question_scores)
+            
+            retrieval_results["context_relevancy"] = {
+                "average_score": avg_context_relevancy,
+                "total_questions": len(question_scores)
+            }
+            
+            print(f"[RAGEval] Average Context Relevancy: {avg_context_relevancy:.3f}")
+            
+            # Store context results for generation evaluation
+            self.context_evaluation_results = context_results
+            
+        else:
+            print("[RAGEval] Skipping Context Relevancy - database_path or collection_name not provided")
+            self.context_evaluation_results = None
+        
+        # Optionally evaluate recall@k if document IDs are available
+        if self.use_recall_k:
+            print(f"[RAGEval] Running Recall@{self.k} evaluation...")
+            recall_results = self._evaluate_recall_at_k()
+            retrieval_results["recall_at_k"] = recall_results
+    
+        return retrieval_results
 
-#         with open(os.path.join(self.out_dir, doc_retrieval_metrics_file), "w") as f:
-#             recall_k = {"k": self.k, "recall@k": overall_recall}
-#             json.dump(recall_k, f)
+    def _evaluate_recall_at_k(self):
+        """
+        Performs the evaluation for retrieval and saves the results to the specified output directory.
+        """
+        with open(self.data_file) as f:
+            ground_truth_data = json.load(f)
+        with open(self.pred_file) as f:
+            predicted_data = json.load(f)
 
-#         print(f"Overall recall@{self.k}: {overall_recall}")
+        ground_truth_ids = []
+        predicted_ids = []
+        ground_truth_data = ground_truth_data["data"]
+
+        for data in ground_truth_data:
+            paragraphs = data["paragraphs"]
+            for paragraph in paragraphs:
+                qas = paragraph["qas"]
+                for qa in qas:
+                    ground_truth_ids.extend(
+                        [answer["document_id"] for answer in qa["answers"]]
+                    )
+                    qid = qa["id"]
+                    if (
+                        isinstance(predicted_data[qid], dict)
+                        and "predicted_doc_ids" in predicted_data[qid]
+                    ):
+                        predicted_ids.append(
+                            list(set(predicted_data[qid]["predicted_doc_ids"]))
+                        )
+                    else:
+                        predicted_ids.append([])
+
+        recall_values = recall_at_k_per_query(ground_truth_ids, predicted_ids)
+        overall_recall = overall_recall_at_k(recall_values)
+
+        doc_retrieval_metrics_file = "doc_retrieval.json"
+
+        with open(os.path.join(self.out_dir, doc_retrieval_metrics_file), "w") as f:
+            recall_k = {"k": self.k, "recall@k": overall_recall}
+            json.dump(recall_k, f)
+
+        print(f"Overall recall@{self.k}: {overall_recall}")
+
+
+    def evaluate_generation_metrics(self):
+        """
+        Evaluate generation performance using Composite Correctness.
+        
+        Returns:
+            dict: Dictionary containing generation evaluation results
+        """
+        generation_results = {}
+        
+        # Use context evaluation results if available, otherwise load from predictions file
+        if hasattr(self, 'context_evaluation_results') and self.context_evaluation_results:
+            print("[RAGEval] Using context evaluation results for generation metrics...")
+            dataset = self.context_evaluation_results
+        else:
+            print("[RAGEval] Loading predictions file for generation metrics...")
+            # If no context evaluation was run, we need to load and format the data
+            dataset = self._load_cr_predictions_for_generation()
+        
+        # Run Composite Correctness evaluation
+        print("[RAGEval] Running Composite Correctness evaluation...")
+        
+        correctness_judge = CompositeCorrectnessJudge(
+            model_name=self.model_name,
+            explanations=False if not self.verbose else True  # Set to True if you want detailed explanations
+        )
+        
+        correctness_results = correctness_judge.evaluate(
+            dataset=dataset,
+            store_output=True,
+            output_path=os.path.join(self.out_dir, "composite_correctness.json")
+        )
+        
+        # Extract the average composite correctness score
+        avg_composite_correctness = correctness_results.get("composite_correctness_average", 0)
+        
+        generation_results["composite_correctness"] = {
+            "average_score": avg_composite_correctness,
+            "total_questions": len(dataset)
+        }
+        
+        print(f"[RAGEval] Average Composite Correctness: {avg_composite_correctness:.3f}")
+        
+        return generation_results
+
+    def _load_cr_predictions_for_generation(self, cr_output_path: str = None):
+        """
+        Load predictions file and format for generation evaluation when context evaluation wasn't run.
+        This would need to be implemented based on your predictions file format.
+        """
+        
+        if cr_output_path:
+            self.cr_output_path = cr_output_path
+        with open(self.cr_output_path, 'r') as f:
+            dataset = json.load(f)
+     
+        return dataset
 
 
 # class GlossaryTermsEval:

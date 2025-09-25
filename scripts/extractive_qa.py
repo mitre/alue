@@ -19,47 +19,9 @@ from alue.data_utils import load_data
 from alue.prompt_utils import build_messages
 from alue.inference import run_llm_inference
 
+from .utils import load_schema, load_normalizer, parse_fields_to_extract
 import sys
 
-
-def load_schema(schema_class_name: str):
-    """Load Pydantic schema class dynamically."""
-    if not schema_class_name:
-        return None
-        
-    try:
-        module_name, class_name = schema_class_name.rsplit('.', 1)
-        module = __import__(module_name, fromlist=[class_name])
-        schema = getattr(module, class_name)
-        print(f"Using schema: {schema.__name__}")
-        return schema
-        
-    except Exception as e:
-        print(f"Warning: Could not import schema {schema_class_name}: {e}")
-        return None
-    
-def load_normalizer(normalizer_name: str):
-    """Load normalization function dynamically."""
-    if not normalizer_name:
-        return None
-        
-    try:
-        if '.' in normalizer_name:
-            # Full module path provided
-            module_name, func_name = normalizer_name.rsplit('.', 1)
-        else:
-            # Just function name, use default path
-            module_name = "alue.output_normalizations"
-            func_name = normalizer_name
-
-        module = __import__(module_name, fromlist=[func_name])
-        normalizer_func = getattr(module, func_name)
-        print(f"Using normalizer: {normalizer_func.__name__}")
-        return normalizer_func
-        
-    except Exception as e:
-        print(f"Warning: Could not import normalizer {normalizer_name}: {e}")
-        return None
     
 
 def run_inference(args):
@@ -101,9 +63,8 @@ def run_inference(args):
     predictions = run_llm_inference(
         messages=messages,
         model_name=args.model_name,
-        backend_type=args.backend_type,
         schema=schema,
-        field_to_extract=args.field_to_extract,
+        fields_to_extract=args.field_to_extract,
         temperature=args.temperature,
         max_tokens=args.max_tokens
     )
@@ -119,7 +80,6 @@ def run_inference(args):
     # Save full results
     results = {
         "model": args.model_name,
-        "backend_type": args.backend_type,
         "task_type": args.task_type,
         "num_questions": len(test_data),
         "num_examples": args.num_examples,
@@ -168,8 +128,6 @@ def create_parser():
                       help="Output directory for results")
         p.add_argument("-m", "--model_name", required=True,
                       help="Model name (e.g., gpt-4o-mini)")
-        p.add_argument("--backend_type", default="openai",
-                      help="Backend type (openai, tgi, etc.)")
         p.add_argument("--task_type", default="aviation_exam",
                       help="Task type for prompt templates")
         p.add_argument("--num_examples", type=int, default=3,
@@ -178,8 +136,8 @@ def create_parser():
                       help="Limit number of questions (default: all)")
         p.add_argument("--schema_class",
                       help="Pydantic schema class (e.g., MCQAResponse)")
-        p.add_argument("--field_to_extract", default="answer",
-                      help="Field to extract from structured response")
+        p.add_argument("--field_to_extract", type=parse_fields_to_extract, default="answer",
+                       help="Field(s) to extract from structured response. Can be single field, comma-separated list, or 'none' for full response")
         p.add_argument("--temperature", type=float, default=0.1,
                       help="Generation temperature")
         p.add_argument("--max_tokens", type=int, default=150,

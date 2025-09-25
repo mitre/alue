@@ -8,33 +8,17 @@ from alue.data_utils import load_data
 from alue.prompt_utils import build_messages
 from alue.rag_utils import ChromaInterface, get_embedding_function
 from alue.inference import run_llm_inference
-from alue import evaluation
+from alue.evaluation import RAGEval
+
+from .utils import load_schema, parse_fields_to_extract
+
 import sys
 
 
-def load_schema(schema_class_name: str):
-    """Load Pydantic schema class dynamically."""
-    if not schema_class_name:
-        return None
-        
-    try:
-        if '.' in schema_class_name:
-            # Full module path provided
-            module_name, class_name = schema_class_name.rsplit('.', 1)
-
-        module = __import__(module_name, fromlist=[class_name])
-        schema = getattr(module, class_name)
-        print(f"Using schema: {schema.__name__}")
-        return schema
-        
-    except Exception as e:
-        print(f"Warning: Could not import schema {schema_class_name}: {e}")
-        return None
     
-
 def run_inference(args):
     """Run RAG inference."""
-    print(f"RAG Inference: {args.model_name}")
+    print(f"RAG Inference: {args.inference_model_name}")
     print("=" * 50)
     chroma = ChromaInterface(database_path=args.database_path)
     embedding_function = get_embedding_function(
@@ -59,9 +43,13 @@ def run_inference(args):
     messages = []
     ground_truth = []
     question_ids = []
+    all_retrieved_doc_ids = []  
+    questions = []
+    ground_truth_answers = []
 
     for item in test_data:
-     
+        print(item)
+        
         question = item["input"]
         retrieved_docs = chroma.query_collection(
             query=question,
@@ -69,6 +57,7 @@ def run_inference(args):
             embedding_function=embedding_function,
             n_results=args.top_k
         )
+        
 
         context_parts = []
         for i, doc in enumerate(retrieved_docs):
@@ -84,6 +73,9 @@ def run_inference(args):
         messages.append(message)
         ground_truth.append(item['output'])
         question_ids.append(item["metadata"]['id'])
+        all_retrieved_doc_ids.append([doc["id"] for doc in retrieved_docs]) 
+        questions.append(question)
+        ground_truth_answers.append(item["output"])
 
     # Load schema and run inference
     schema = load_schema(args.schema_class)
@@ -91,10 +83,9 @@ def run_inference(args):
     print("Running inference...")
     predictions = run_llm_inference(
         messages=messages,
-        model_name=args.model_name,
-        backend_type=args.backend_type,
+        model_name=args.inference_model_name,
         schema=schema,
-        field_to_extract=args.field_to_extract,
+        fields_to_extract=args.field_to_extract,
         temperature=args.temperature,
         max_tokens=args.max_tokens
     )
@@ -103,15 +94,23 @@ def run_inference(args):
     # Save results
     os.makedirs(args.output_dir, exist_ok=True)
     
-    # Save predictions for evaluation
+    # Save predictions with document IDs and questions in the desired format
+    predictions_dict = {}
+    for i, (pred, doc_ids, question, gt_answer) in enumerate(zip(predictions, all_retrieved_doc_ids, questions, ground_truth_answers)):
+        predictions_dict[str(i)] = {  # Use index as key like in your example
+            "answer": pred,
+            "ground_truth_answer": gt_answer,
+            "predicted_doc_ids": doc_ids,  # Already extracted document IDs
+            "question": question
+        }
+    
     predictions_file = os.path.join(args.output_dir, "predictions.json")
     with open(predictions_file, 'w') as f:
-        json.dump({str(qid): pred for qid, pred in zip(question_ids, predictions)}, f, indent=2)
+        json.dump(predictions_dict, f, indent=2)
 
-    # Save full results
+    # Save full results (keeping the original format for other purposes)
     results = {
-        "model": args.model_name,
-        "backend_type": args.backend_type,
+        "model": args.inference_model_name,
         "task_type": args.task_type,
         "num_questions": len(test_data),
         "num_examples": args.num_examples,
@@ -131,6 +130,25 @@ def run_inference(args):
     return predictions_file
 
 
+def run_evaluation(args):
+    """Run MCQA evaluation."""
+    print("Running evaluation...")
+    eval_engine = RAGEval(
+        data_file=args.input_data_json_path,
+        pred_file=args.predictions_file,
+        out_dir=args.output_dir,
+        model_name=args.llm_judge_model_name,
+        database_path=args.database_path,
+        collection_name=args.collection_name,
+        evaluate_retrieval=args.evaluate_retrieval,
+        evaluate_generation=args.evaluate_generation,
+        use_recall_k=args.use_recall_k,
+        k=args.top_k,
+        verbose=args.verbose
+    )
+    eval_engine.perform_evaluation()
+
+
 def create_parser():
     """Create argument parser with shared arguments."""
     parser = argparse.ArgumentParser(description="MCQA script")
@@ -142,11 +160,9 @@ def create_parser():
                       help="Path to input JSON data file")
         p.add_argument("-o", "--output_dir", required=True,
                       help="Output directory for results")
-        p.add_argument("-m", "--model_name", required=True,
+        p.add_argument("-m", "--inference_model_name", required=True,
                       help="Model name (e.g., gpt-4o-mini)")
-        p.add_argument("--backend_type", default="openai",
-                      help="Backend type (openai, tgi, etc.)")
-        p.add_argument("--task_type", default="aviation_exam",
+        p.add_argument("--task_type", default="rag",
                       help="Task type for prompt templates")
         p.add_argument("--num_examples", type=int, default=3,
                       help="Number of few-shot examples")
@@ -154,8 +170,8 @@ def create_parser():
                       help="Limit number of questions (default: all)")
         p.add_argument("--schema_class",
                       help="Pydantic schema class (e.g., MCQAResponse)")
-        p.add_argument("--field_to_extract", default="answer",
-                      help="Field to extract from structured response")
+        p.add_argument("--field_to_extract", type=parse_fields_to_extract, default="answer",
+                       help="Field(s) to extract from structured response. Can be single field, comma-separated list, or 'none' for full response")
         p.add_argument("--temperature", type=float, default=0.1,
                       help="Generation temperature")
         p.add_argument("--max_tokens", type=int, default=150,
@@ -186,10 +202,37 @@ def create_parser():
                             help="Output directory for results")
     eval_parser.add_argument("--predictions_file", required=True,
                             help="Path to predictions JSON file")
+    eval_parser.add_argument("--llm_judge_model_name", required=True,
+                            help="Model name for LLM judges")
+    eval_parser.add_argument("--database-path", type=str,
+                        help="Path to ChromaDB database (for context relevancy)")
+    eval_parser.add_argument("--collection-name", type=str,
+                        help="Name for the ChromaDB collection (for context relevancy)")
+    eval_parser.add_argument("--evaluate_retrieval", action="store_true", default=True,
+                        help="Evaluate retrieval metrics")
+    eval_parser.add_argument("--evaluate_generation", action="store_true", default=True,
+                        help="Evaluate generation metrics")
+    eval_parser.add_argument("--use_recall_k", action="store_true",
+                        help="Calculate recall@k if document IDs available")
+    eval_parser.add_argument("--top-k", type=int, default=5,
+                        help="Number of documents for recall@k")
+    eval_parser.add_argument("--verbose", action="store_true",
+                        help="Verbose output with explanations")
 
     # Both subparser
     both_parser = subparsers.add_parser("both", help="Run inference + evaluation")
     add_inference_args(both_parser)
+    # Add evaluation-specific arguments
+    both_parser.add_argument("--llm_judge_model_name", required=True,
+                            help="Model name for LLM judges")
+    both_parser.add_argument("--evaluate_retrieval", action="store_true", default=True,
+                        help="Evaluate retrieval metrics")
+    both_parser.add_argument("--evaluate_generation", action="store_true", default=True,
+                        help="Evaluate generation metrics")
+    both_parser.add_argument("--use_recall_k", action="store_true",
+                        help="Calculate recall@k if document IDs available")
+    both_parser.add_argument("--verbose", action="store_true",
+                        help="Verbose output with explanations")
 
     return parser
 
@@ -209,13 +252,15 @@ def main():
     # Execute based on mode
     if args.mode == "inference":
         run_inference(args)
-    # elif args.mode == "evaluation":
-    #     run_evaluation(args)
-    # elif args.mode == "both":
-    #     predictions_file = run_inference(args)
-    #     args.predictions_file = predictions_file
-    #     run_evaluation(args)
+    elif args.mode == "evaluation":
+        run_evaluation(args)
+    elif args.mode == "both":
+        predictions_file = run_inference(args)
+        args.predictions_file = predictions_file
+        run_evaluation(args)
 
 
 if __name__ == "__main__":
     main()
+
+
