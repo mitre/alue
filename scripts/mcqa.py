@@ -1,14 +1,15 @@
 """MCQA script using new utilities."""
 
 import argparse
+from datetime import datetime
 import json
 import os
-from datetime import datetime
 
 from alue.data_utils import load_data
 from alue.prompt_utils import build_messages
 from alue.inference import run_llm_inference
 from alue.evaluation import MCQAEval
+
 from .utils import load_schema, parse_fields_to_extract
 
 

@@ -1,8 +1,9 @@
 
 import argparse
+from datetime import datetime
 import json
 import os
-from datetime import datetime
+import sys
 
 from alue.data_utils import load_data
 from alue.prompt_utils import build_messages
@@ -11,9 +12,6 @@ from alue.inference import run_llm_inference
 from alue.evaluation import RAGEval
 
 from .utils import load_schema, parse_fields_to_extract
-
-import sys
-
 
     
 def run_inference(args):
@@ -181,7 +179,7 @@ def create_parser():
         p.add_argument("--collection-name", type=str, default="documents",
                        help="Name for the ChromaDB collection")
         p.add_argument("--top-k", type=int, default=5,
-               help="Number of documents to retrieve")
+                       help="Number of documents to retrieve")
         p.add_argument("--embedding-provider", type=str, default="local",
                        choices=["openai", "ollama", "hf", "local", "openai-compatible"],
                        help="Embedding provider to use")

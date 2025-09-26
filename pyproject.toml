@@ -162,7 +162,7 @@ reportUnknownArgumentType = false
 # skip = "foo.py,bar.py"
 
 [tool.pytest.ini_options]
-pythonpath = ["alue"]
+pythonpath = ["."]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 testpaths = [

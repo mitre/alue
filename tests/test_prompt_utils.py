@@ -1,17 +1,13 @@
 import pytest
 import os
 
-from data_utils import (
-    load_task_data,
-    DataLoader,
-)
-from prompt_utils import (
-    build_messages
-)
+from alue.prompt_utils import build_messages
+
 
 @pytest.fixture(scope="module")
 def current_dir():
     return os.path.dirname(__file__)
+
 
 @pytest.fixture(scope="module")
 def rag_examples():
@@ -21,6 +17,7 @@ def rag_examples():
         "context": "example_context",
     }]
 
+
 @pytest.fixture(scope="module")
 def examples():
     return [{
@@ -28,12 +25,14 @@ def examples():
         "output": "example_output",
     }]
 
+
 @pytest.fixture(scope="module")
 def classification_examples():
     return [{
         "input": "example_input",
         "output": "example_output",
     }]
+
 
 def test_rag_prompt(rag_examples):
     # mock examples and input

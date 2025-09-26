@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from rag_utils import (
+from alue.rag_utils import (
     DocumentProcessor, 
     ChromaInterface,
     get_embedding_function
@@ -99,7 +99,7 @@ def test_database_creation(current_dir, hi_res_doc_processor, chroma_interface):
     chroma_client = chroma_interface
     chroma_client.add_document_chunks(
         collection_name="test_collection", 
-        embedding_function=get_embedding_function("local"),
+        embedding_function=get_embedding_function(),
         document_chunks=chunks
     )
 
@@ -126,7 +126,7 @@ def test_query_collection(current_dir, hi_res_doc_processor, chroma_interface):
     chroma_client = chroma_interface
     chroma_client.add_document_chunks(
         collection_name="test_collection", 
-        embedding_function=get_embedding_function("local"),
+        embedding_function=get_embedding_function(),
         document_chunks=chunks
     )
 
@@ -134,7 +134,7 @@ def test_query_collection(current_dir, hi_res_doc_processor, chroma_interface):
     formatted_results = chroma_client.query_collection(
         query="disposition of records", 
         collection_name="test_collection",
-        embedding_function=get_embedding_function("local"),
+        embedding_function=get_embedding_function(),
         n_results=1
     )
     

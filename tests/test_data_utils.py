@@ -210,11 +210,14 @@ def test_ntrs_rag_data_loader(current_dir):
 
 def test_ntsb_damage_classification_data_loader(current_dir):
 
-    data_path = os.path.join(current_dir, "../data/", "ntsb_damage_classification/ntsb_damage_classification.json")
+    data_path = os.path.join(current_dir, "../data/", "ntsb_damage_classification/ntsb_damage_classification_v2.json")
     examples, test_data = load_task_data(data_path)
 
+    print(examples[0])
+    print(test_data[0])
+
     assert(len(examples) == 5)
-    assert(examples[0]['Input'][0] == (
+    assert(examples[0]['input'] == (
         "The pilot reported that during the night flight, and prior to landing, he discovered that both landing "
         "lights were burned out.  During the landing, the nose of the right skid contacted the ground and the "
         "helicopter bounced back into the air and rotated to the right resulting in the tail rotor striking a "
@@ -222,9 +225,9 @@ def test_ntsb_damage_classification_data_loader(current_dir):
         "substantial damage to the tail rotor gearbox attachment point.  The pilot reported no other abnormalities "
         "with the helicopter prior to the accident."
     ))
-    assert(examples[0]['Output'] == "SUBS")
+    assert(examples[0]['output'] == "SUBS")
     assert(len(test_data) == 1994)
-    assert(test_data[0]['qas'][0]['text_input'][0] == (
+    assert(test_data[0]['input'] == (
         "The pilot reported while making an approach to a hover about 15 feet above ground level (agl), he "
         "applied power to stop the decent rate and the helicopter began to yaw to the right.  Despite the "
         "pilot adding left anti-torque pedal and increasing power, the helicopter continued to yaw to the "
@@ -234,7 +237,7 @@ def test_ntsb_damage_classification_data_loader(current_dir):
         "of the helicopter revealed that the tail boom and firewall sustained substantial damage.  No "
         "mechanical anomalies were noted during the examination."
     ))
-    assert(test_data[0]['qas'][0]['labels'] == "SUBS")
+    assert(test_data[0]['output'] == "SUBS")
 
 
 def test_ntsb_tail_extraction_data_loader(current_dir):
