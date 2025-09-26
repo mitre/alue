@@ -10,10 +10,10 @@ import tempfile
 import numpy as np
 # import output_normalizations
 import pandas as pd
-from . import squad_evaluation as squad_eval
-from .output_normalizations import normalize_tail_extraction_predictions
-from .llm_judge_metrics import ContextRelevancyJudge, CompositeCorrectnessJudge
-from .doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
+from alue import squad_evaluation as squad_eval
+from alue.output_normalizations import normalize_tail_extraction_predictions
+from alue.llm_judge_metrics import ContextRelevancyJudge, CompositeCorrectnessJudge, ClaimDecompositionJudge
+from alue.doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
 # from haystack.components.builders import PromptBuilder
 # from huggingface_hub import InferenceClient
 # from inference import load_prompt_from_file
@@ -788,87 +788,6 @@ class RAGEval:
         return dataset
 
 
-# class GlossaryTermsEval:
-#     def __init__(
-#         self,
-#         data_file: str,
-#         pred_file: str,
-#         out_dir: str,
-#         correctness_template_path: str,
-#         schema_path: str,
-#         llm_adjudicator_name: str,
-#     ):
-#         self.out_dir = out_dir
-#         self.dataset = get_definitions_terms_dataset(input_excel_sheet=data_file)
-#         self.correctness_tempalate_path = load_prompt_from_file(
-#             correctness_template_path
-#         )
-#         self.schema_path = schema_path
-#         with open(pred_file) as f:
-#             self.predictions = json.load(f)
-#         model_url = MODELS[llm_adjudicator_name]["aip_endpoint"]
-
-#         self.llm_adjudicator = InferenceClient(model=model_url, token=False)
-
-#     def perform_evaluation(self):
-#         prompt_builder = PromptBuilder(self.correctness_tempalate_path)
-
-#         with open(self.schema_path) as f:
-#             schema = json.load(f)
-
-#         schema_str = json.dumps(schema)
-
-#         eval_results = []
-
-#         overall_correctness_score = 0
-#         for row in self.dataset:
-#             term_id = row["id"]
-#             term = row["term"]
-#             ground_truth_definition = row["ground_truth_definition"]
-#             predicted_definition = self.predictions[str(term_id)]["answer"][
-#                 "definition"
-#             ]
-
-#             prompt = prompt_builder.run(
-#                 judge_schema_json=schema_str,
-#                 user_query=term,
-#                 reference_answer=ground_truth_definition,
-#                 generated_answer=predicted_definition,
-#             )["prompt"]
-
-#             score_with_schema = self.llm_adjudicator.text_generation(
-#                 prompt,
-#                 max_new_tokens=225,  # 25
-#                 seed=42,
-#                 grammar={"type": "json", "value": schema},
-#             )
-#             score_with_schema = json.loads(score_with_schema)
-#             eval_results.append(
-#                 {
-#                     "term_id": term_id,
-#                     "term": term,
-#                     "ground_truth_definition": ground_truth_definition,
-#                     "predicted_definition": predicted_definition,
-#                     "score_with_schema": score_with_schema,
-#                 }
-#             )
-#             overall_correctness_score += score_with_schema["score"]
-
-#         overall_correctness_score = overall_correctness_score / len(self.dataset)
-#         metrics_dict = {"overall_correctness_score": overall_correctness_score}
-
-#         eval_results_path = os.path.join(self.out_dir, "eval_results.json")
-#         metrics_path = os.path.join(self.out_dir, "metrics.json")
-
-#         with open(eval_results_path, "w") as f:
-#             json.dump(eval_results, f)
-
-#         with open(metrics_path, "w") as f:
-#             json.dump(metrics_dict, f)
-
-#         return eval_results
-
-
 class MCQAEval:
     def __init__(self, data_file, pred_file, out_dir):
         self.data_file = data_file
@@ -912,8 +831,88 @@ class MCQAEval:
             json.dump(eval_metrics, f)
 
         return eval_metrics
+    
 
+class SummarizationEval:
+    """
+    A class used to evaluate the performance of a summarization model using claim decomposition metrics.
+    """
 
+    def __init__(
+        self,
+        pred_file: str,
+        out_dir: str,
+        model_name: str,
+        verbose: bool = False
+    ) -> None:
+        """
+        Parameters
+        ----------
+        pred_file : str
+            The file containing the model's predictions in the expected format
+        out_dir : str
+            The directory where the evaluation results will be saved
+        model_name : str
+            The name of the model to use for LLM judge evaluation
+        verbose : bool, optional
+            Whether to print verbose output
+        """
+        self.pred_file = pred_file
+        self.out_dir = out_dir
+        self.model_name = model_name
+        self.verbose = verbose
+
+    def perform_evaluation(self) -> dict:
+        """
+        Performs the evaluation and saves the results to the specified output directory.
+        """
+        # Create output directory if it doesn't exist
+        os.makedirs(self.out_dir, exist_ok=True)
+        
+        claim_judge = ClaimDecompositionJudge(
+            model_name=self.model_name,
+            explanations=self.verbose
+        )
+        
+        # Run claim decomposition evaluation
+        print("[SummarizationEval] Running claim decomposition evaluation...")
+        claim_results_path = os.path.join(self.out_dir, "claim_decomposition_detailed.json")
+        
+        claim_results = claim_judge.evaluate(
+            filename=self.pred_file,
+            store_output=True,
+            output_path=claim_results_path
+        )
+        
+        # Calculate summary metrics
+        print("[SummarizationEval] Calculating summary metrics...")
+        precisions = []
+        recalls = []
+        
+        for item_data in claim_results.values():
+            if "precision" in item_data and "recall" in item_data:
+                precisions.append(item_data["precision"])
+                recalls.append(item_data["recall"])
+        
+        avg_precision = sum(precisions) / len(precisions) if precisions else 0.0
+        avg_recall = sum(recalls) / len(recalls) if recalls else 0.0
+        avg_f1 = (2 * avg_precision * avg_recall) / (avg_precision + avg_recall) if (avg_precision + avg_recall) > 0 else 0.0
+        
+        summary_metrics = {
+            "average_precision": avg_precision,
+            "average_recall": avg_recall,
+            "average_f1": avg_f1,
+            "total_samples": len(precisions)
+        }
+
+        # Save summary metrics to file
+        summary_path = os.path.join(self.out_dir, "summarization_metrics.json")
+        with open(summary_path, 'w') as f:
+            json.dump(summary_metrics, f, indent=2)
+        
+        print(f"[SummarizationEval] Summary metrics saved to: {summary_path}")
+        
+        return summary_metrics
 # class BinaryClassificationEval:
 #     """
 #     A class used to evaluate the performance of a binary classification model.

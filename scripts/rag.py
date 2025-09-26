@@ -129,7 +129,7 @@ def run_inference(args):
 
 
 def run_evaluation(args):
-    """Run MCQA evaluation."""
+    """Run RAG evaluation."""
     print("Running evaluation...")
     eval_engine = RAGEval(
         data_file=args.input_data_json_path,
