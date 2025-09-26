@@ -816,5 +816,3 @@ class ClaimDecompositionJudge(BaseLLMJudge):
         return evaluated_output
 
     """Judge for evaluating composite correctness in RAG Q&A systems"""
-
-

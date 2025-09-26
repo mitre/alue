@@ -1,3 +1,11 @@
+"""RAG utilities for document processing and vector database management.
+
+This module provides tools for processing PDF documents into chunks and managing
+them in ChromaDB for retrieval-augmented generation (RAG) applications. It supports
+multiple embedding providers and flexible chunking strategies.
+"""
+
+
 import json
 import logging
 import os
@@ -46,7 +54,30 @@ def setup_logger(name: str) -> logging.Logger:
 logger = setup_logger(__name__)
 
 
-def get_embedding_function(model: Optional[str] = None):
+def get_embedding_function(model: Optional[str] = None) -> EmbeddingFunction[Embeddable]:
+    """Get an embedding function based on configured provider.
+    
+    Supports multiple embedding providers including OpenAI, Ollama, HuggingFace,
+    local Sentence Transformers, and OpenAI-compatible APIs.
+    
+    Args:
+        model: Optional model name to use. If None, uses provider-specific defaults:
+            - OpenAI: 'text-embedding-3-small'
+            - Ollama: 'nomic-embed-text'
+            - HuggingFace: 'sentence-transformers/all-MiniLM-L6-v2'
+            - Local: 'all-MiniLM-L6-v2'
+            
+    Returns:
+        An embedding function compatible with ChromaDB.
+        
+    Raises:
+        ValueError: If the embedding provider is unknown or required credentials
+            are missing.
+            
+    Example:
+        >>> emb_fn = get_embedding_function()
+        >>> emb_fn = get_embedding_function(model='text-embedding-3-large')
+    """
     settings = get_settings()
 
     provider = settings.embedding_endpoint_type
@@ -62,7 +93,7 @@ def get_embedding_function(model: Optional[str] = None):
         )
 
     elif provider == "ollama":
-        embedding_functions.OllamaEmbeddingFunction(
+        return embedding_functions.OllamaEmbeddingFunction(
             model_name=model or "nomic-embed-text",
             url=f"{url or 'http://localhost:11434'}/api/embeddings"
         )
@@ -96,6 +127,29 @@ def get_embedding_function(model: Optional[str] = None):
 
 
 class DocumentProcessor:
+    """Process PDF documents into chunks suitable for vector storage.
+    
+    This class handles PDF partitioning, element extraction, filtering, and
+    chunking using the unstructured library. It supports multiple chunking
+    strategies and can extract images and tables from documents.
+    
+    Attributes:
+        document_directory_path: Path to directory containing PDFs to process.
+        output_path: Path to store processing artifacts (chunks, images, metadata).
+        temp_document_path: Optional temporary path for intermediate files.
+        partition_strategy: PDF partitioning strategy ('hi_res', 'fast', 'ocr_only', 'auto').
+        hi_res_model_name: Model name for hi-res partitioning (default: 'yolox').
+        extracted_image_block_types: List of element types to extract as images.
+        write_image_block_types_metadata: Whether to write image metadata to file.
+        elements_to_keep: List of element types to retain after filtering.
+        chunk_hard_max_chars: Hard maximum characters per chunk.
+        chunk_soft_max_chars: Soft maximum characters per chunk (preferred size).
+        overlap_size: Character overlap between consecutive chunks.
+        combine_text_under_n_chars: Minimum characters before creating new chunk (title strategy).
+        multipage_sections: Whether to allow chunks spanning multiple pages (title strategy).
+        chunk_type: Chunking strategy ('title' or 'basic').
+        write_to_file: Whether to write chunks to disk.
+    """
 
     # Define block types to keep
     EXTRACT_IMAGE_BLOCK_TYPES: List[str] = ["Image", "Table"]
@@ -154,6 +208,33 @@ class DocumentProcessor:
         chunk_type: str = "title",
         write_to_file: bool = True,
     ):
+        
+        """Initialize the DocumentProcessor with configuration parameters.
+        
+        Args:
+            document_directory_path: Path to directory containing PDF documents.
+                Can be None if processing single documents.
+            output_path: Path to store processing artifacts.
+            temp_document_path: Optional temporary storage path.
+            partition_strategy: PDF partitioning strategy. Options: 'hi_res' (detailed),
+                'fast' (quick), 'ocr_only', 'auto'. Defaults to 'hi_res'.
+            hi_res_model_name: Model for hi-res partitioning. Defaults to 'yolox'.
+            extracted_image_block_types: Element types to extract as images.
+                Defaults to ["Image", "Table"].
+            write_image_block_types_metadata: Whether to write image metadata.
+                Defaults to False.
+            elements_to_keep: Element types to retain. Defaults to
+                ["NarrativeText", "ListItem", "Title"].
+            chunk_hard_max_chars: Hard maximum characters per chunk. Defaults to 1200.
+            chunk_soft_max_chars: Soft maximum characters per chunk. Defaults to 700.
+            overlap_size: Character overlap between chunks. Defaults to 50.
+            combine_text_under_n_chars: Minimum chars before new chunk (title strategy).
+                Defaults to 500.
+            multipage_sections: Allow chunks spanning pages (title strategy).
+                Defaults to True.
+            chunk_type: Chunking strategy ('title' or 'basic'). Defaults to 'title'.
+            write_to_file: Whether to save chunks to disk. Defaults to True.
+        """
         self.document_directory_path = document_directory_path
         self.output_path = output_path
         self.temp_document_path = temp_document_path
@@ -174,7 +255,20 @@ class DocumentProcessor:
     def process_document_directory(
         self
     ) -> List[Dict[str,Any]]:
+        """Process all PDF documents in the configured directory.
         
+        Walks through the document directory, processes each PDF file,
+        and aggregates all chunks.
+        
+        Returns:
+            List of chunk dictionaries, each containing 'text' and 'metadata' keys.
+            Returns empty list if document_directory_path is not set.
+            
+        Example:
+            >>> processor = DocumentProcessor('/path/to/pdfs', '/output')
+            >>> chunks = processor.process_document_directory()
+            >>> print(f"Generated {len(chunks)} chunks")
+        """
         chunks = []
         if self.document_directory_path:
             for dirpath, _, filenames in os.walk(self.document_directory_path):
@@ -202,7 +296,15 @@ class DocumentProcessor:
         document_path: str,
         extracted_image_block_types: Optional[List[str]] = EXTRACT_IMAGE_BLOCK_TYPES,
     ) -> None:
-        """Write image metadata to metadata file."""
+        """Write metadata for extracted image blocks to a file.
+        
+        Args:
+            elements: List of document elements from partitioning.
+            metadata_fpath: Path to write metadata file.
+            document_path: Original document path (for reference in metadata).
+            extracted_image_block_types: Element types to include in metadata.
+                Defaults to EXTRACT_IMAGE_BLOCK_TYPES.
+        """
         logger.info(f"Writing image block metadata to: {metadata_fpath}")
         with open(metadata_fpath, "w", encoding="utf-8") as f:
             f.write(f"Metadata for extracted image blocks from {document_path}\n")
@@ -219,8 +321,26 @@ class DocumentProcessor:
     def process_single_document(
         self,
         document_path: str
-    ) -> List[Dict[str,Any]]:
+        ) -> List[Dict[str,Any]]:
+        """Process a single PDF document into chunks.
         
+        This method:
+        1. Partitions the PDF into elements
+        2. Optionally extracts images and writes metadata
+        3. Filters elements by type
+        4. Chunks the filtered elements
+        5. Optionally writes chunks to disk
+        
+        Args:
+            document_path: Path to the PDF file to process.
+            
+        Returns:
+            List of chunk dictionaries with 'text' and 'metadata' keys.
+            
+        Note:
+            Creates output directories for artifacts, images, chunks, and JSON
+            under output_path/{document_name}/artifacts/.
+        """
         document_name = os.path.splitext(os.path.basename(document_path))[0]
         artifacts_dir = os.path.join(self.output_path, document_name, "artifacts")
         extracted_images_dir = os.path.join(artifacts_dir, "extracted_images")
@@ -340,6 +460,13 @@ class DocumentProcessor:
         fname: str, 
         identifier: str
     ) -> None:
+        """Save chunks to a text file with separators.
+        
+        Args:
+            chunks: List of document element chunks.
+            fname: Output file path.
+            identifier: Document identifier to include in file header.
+        """
         logger.info(f"Saving chunks to {fname}")
         with open(fname, "w", encoding="utf-8") as f:
             f.write(f"Identifier: {identifier}\n\n")
@@ -357,6 +484,17 @@ class DocumentProcessor:
         file_dir: Optional[str] = None,
         file_name: Optional[str] = None,
     ) -> Dict[str, str]:
+        """Prepare metadata dictionary for a chunk.
+        
+        Args:
+            chunk_metadata: Original element metadata from unstructured.
+            identifier: Unique chunk identifier.
+            file_dir: Optional file directory to override chunk_metadata value.
+            file_name: Optional filename to override chunk_metadata value.
+            
+        Returns:
+            Dictionary containing file_directory, filename, page_number, and chunk_id.
+        """
         metadata = {
             "file_directory": (file_dir if file_dir else chunk_metadata.file_directory),
             "filename": file_name if file_name else chunk_metadata.filename,
@@ -372,7 +510,16 @@ class DocumentProcessor:
         identifier: str,
         doc_path: Optional[str] = None,
     ) -> List[Dict[str,Any]]:
+        """Convert chunks to JSON-serializable format.
         
+        Args:
+            chunks: List of document element chunks.
+            identifier: Document identifier for chunk IDs.
+            doc_path: Optional document path to extract file info from.
+            
+        Returns:
+            List of dictionaries with 'text' and 'metadata' keys.
+        """
         file_info = {}
         if doc_path is not None:
             file_dir, file_name = os.path.split(doc_path)
@@ -401,7 +548,15 @@ class DocumentProcessor:
         fname: str,
         identifier: str,
         doc_path: Optional[str] = None,
-    ) -> None:
+        ) -> None:
+        """Save chunks to a JSON file.
+        
+        Args:
+            chunks: List of document element chunks.
+            fname: Output JSON file path.
+            identifier: Document identifier for chunk IDs.
+            doc_path: Optional document path for metadata.
+        """
         output_chunks = self.to_json(chunks, identifier, doc_path)
         logger.info(f"Saving chunks to {fname}")
         with open(fname, "w", encoding="utf-8") as f:
@@ -412,6 +567,14 @@ class DocumentProcessor:
     def load_chunks_from_json(
         file_path: str,
     ) -> List[Dict[str,Any]]:
+        """Save chunks to a JSON file.
+        
+        Args:
+            chunks: List of document element chunks.
+            fname: Output JSON file path.
+            identifier: Document identifier for chunk IDs.
+            doc_path: Optional document path for metadata.
+        """
         chunks = []
         with open(file_path, "r", encoding="utf-8") as f:
             chunks.extend(json.load(f))
@@ -419,6 +582,15 @@ class DocumentProcessor:
 
 
 class ChromaInterface:
+    """Interface for ChromaDB operations.
+    
+    Provides methods for creating collections, adding documents, and querying
+    a ChromaDB vector database.
+    
+    Attributes:
+        client: ChromaDB client instance (created on first use).
+        database_path: Path to the persistent ChromaDB storage.
+    """
 
     client: Optional[ClientAPI]  
     database_path: str
@@ -428,6 +600,11 @@ class ChromaInterface:
         self,
         database_path: str,
     ):
+        """Initialize ChromaDB interface.
+        
+        Args:
+            database_path: Path where ChromaDB should store its data.
+        """
         self.client = None
         self.database_path = database_path
 
@@ -435,6 +612,10 @@ class ChromaInterface:
     def load_or_create_db(
         self,
     ) -> None:
+        """Initialize the ChromaDB client if not already created.
+        
+        Creates a PersistentClient using the configured database_path.
+        """
         if self.client is None and self.database_path:
             self.client = PersistentClient(path=self.database_path)
 
@@ -444,7 +625,19 @@ class ChromaInterface:
         collection_name: str,
         embedding_function: Optional[EmbeddingFunction[Embeddable]] = None,
     ) -> Collection:
+        """Get or create a ChromaDB collection.
         
+        Args:
+            collection_name: Name of the collection.
+            embedding_function: Optional embedding function. If None, uses
+                default from get_embedding_function().
+                
+        Returns:
+            ChromaDB Collection instance.
+            
+        Note:
+            Automatically initializes the client if not already created.
+        """
 
         if embedding_function is None:
             embedding_function = get_embedding_function()
@@ -464,6 +657,16 @@ class ChromaInterface:
         self,
         document_chunks: List[Dict[str,Any]]
     ) -> Tuple[List[str], List[str], List[Metadata]]:
+        """Organize document chunks into ChromaDB-compatible format.
+        
+        Extracts IDs, text content, and metadata from chunk dictionaries.
+        
+        Args:
+            document_chunks: List of chunk dictionaries with 'text' and 'metadata' keys.
+            
+        Returns:
+            Tuple of (ids, documents, metadatas) ready for ChromaDB insertion.
+        """
         ids = []
         documents = []
         metadatas = []
@@ -480,6 +683,19 @@ class ChromaInterface:
         embedding_function: EmbeddingFunction[Embeddable],
         document_chunks: List[Dict[str,Any]]
     ) -> Collection:
+        """Add document chunks to a ChromaDB collection.
+        
+        Args:
+            collection_name: Name of the collection to add to.
+            embedding_function: Embedding function to use for the collection.
+            document_chunks: List of chunk dictionaries from DocumentProcessor.
+            
+        Returns:
+            The updated Collection instance.
+            
+        Note:
+            Uses upsert to allow updating existing chunks with same IDs.
+        """
         # get collection
         collection = self.get_or_create_collection(collection_name, embedding_function)
         # map chunks from DocumentProcessor to required sublists
@@ -502,7 +718,34 @@ class ChromaInterface:
         n_results: int = 5,
         where: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
-        """Query ChromaDB collection and return formatted results."""
+        """Query ChromaDB collection and return formatted results.
+        
+        Args:
+            query: Query text to search for.
+            collection_name: Name of the collection to query.
+            embedding_function: Embedding function used by the collection.
+            n_results: Number of results to return. Defaults to 5.
+            where: Optional metadata filter dictionary. Defaults to None.
+            
+        Returns:
+            List of result dictionaries containing:
+                - text: The chunk text
+                - metadata: The chunk metadata
+                - distance: Similarity distance (lower is more similar)
+                - id: The chunk ID
+                
+        Example:
+            >>> chroma = ChromaInterface('./db')
+            >>> emb_fn = get_embedding_function()
+            >>> results = chroma.query_collection(
+            ...     "What is machine learning?",
+            ...     "documents",
+            ...     emb_fn,
+            ...     n_results=3
+            ... )
+            >>> for result in results:
+            ...     print(f"{result['distance']}: {result['text'][:100]}")
+        """
         collection = self.get_or_create_collection(collection_name, embedding_function)
         
         # Build query parameters

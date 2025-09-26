@@ -20,8 +20,6 @@ def run_inference(args):
     print("=" * 50)
     chroma = ChromaInterface(database_path=args.database_path)
     embedding_function = get_embedding_function(
-        provider=args.embedding_provider,
-        url=args.embedding_url,
         model=args.embedding_model
     )
 
@@ -180,13 +178,8 @@ def create_parser():
                        help="Name for the ChromaDB collection")
         p.add_argument("--top-k", type=int, default=5,
                        help="Number of documents to retrieve")
-        p.add_argument("--embedding-provider", type=str, default="local",
-                       choices=["openai", "ollama", "hf", "local", "openai-compatible"],
-                       help="Embedding provider to use")
         p.add_argument("--embedding-model", type=str, default=None,
                         help="Specific model name (optional)")
-        p.add_argument("--embedding-url", type=str, default="http://localhost:11434",
-                        help="URL for Ollama or OpenAI-compatible endpoints")
 
     # Inference subparser
     inf_parser = subparsers.add_parser("inference", help="Run inference only")
