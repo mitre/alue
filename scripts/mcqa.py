@@ -1,4 +1,9 @@
-"""MCQA script using new utilities."""
+"""Entry point script for Multiple Choice Question Answering tasks.
+
+This module provides a command-line interface for running inference and evaluation
+on MCQA tasks. It supports running inference only, evaluation only, or both in
+sequence.
+"""
 
 import argparse
 from datetime import datetime
@@ -13,8 +18,34 @@ from alue.evaluation import MCQAEval
 from .utils import load_schema, parse_fields_to_extract
 
 
-def run_inference(args):
-    """Run MCQA inference."""
+def run_inference(args: argparse.Namespace) -> str:
+    """Run multiple choice QA inference on a dataset.
+    
+    Loads data, builds prompts with few-shot examples, runs LLM inference,
+    and saves predictions and results to the output directory.
+    
+    Args:
+        args: Parsed command-line arguments containing:
+            - input_data_json_path: Path to input data file
+            - output_dir: Directory to save results
+            - model_name: Model identifier for inference
+            - task_type: Task type for template selection
+            - num_examples: Number of few-shot examples
+            - num_questions: Optional limit on questions to process
+            - schema_class: Optional Pydantic schema for structured output
+            - field_to_extract: Field(s) to extract from structured response
+            - temperature: Sampling temperature
+            - max_tokens: Maximum tokens to generate
+            
+    Returns:
+        Path to the saved predictions JSON file.
+        
+    Example:
+        >>> args = parser.parse_args(['inference', '-i', 'mcqa.json', ...])
+        >>> predictions_file = run_inference(args)
+        >>> print(f"Predictions saved to {predictions_file}")
+    """
+    
     print(f"MCQA Inference: {args.model_name}")
     print("=" * 50)
 
@@ -89,8 +120,23 @@ def run_inference(args):
     return predictions_file
 
 
-def run_evaluation(args):
-    """Run MCQA evaluation."""
+def run_evaluation(args: argparse.Namespace) -> None:
+    """Run evaluation on MCQA prediction results.
+    
+    Loads predictions and ground truth data, and computes evaluation metrics
+    specific to multiple choice questions (accuracy, per-class metrics, etc.).
+    
+    Args:
+        args: Parsed command-line arguments containing:
+            - input_data_json_path: Path to input data file with ground truth
+            - predictions_file: Path to predictions JSON file
+            - output_dir: Directory to save evaluation results
+            
+    Example:
+        >>> args = parser.parse_args(['evaluation', '-i', 'mcqa.json', ...])
+        >>> run_evaluation(args)
+        Evaluation complete. Results saved to output_dir/
+    """
     print("Running evaluation...")
     eval_engine = MCQAEval(
         data_file=args.input_data_json_path,
@@ -100,33 +146,85 @@ def run_evaluation(args):
     eval_engine.perform_evaluation()
 
 
-def create_parser():
-    """Create argument parser with shared arguments."""
+def add_inference_args(parser: argparse.ArgumentParser) -> None:
+    """Add inference-related arguments to an argument parser.
+    
+    Args:
+        parser: ArgumentParser to add arguments to.
+    """
+    parser.add_argument(
+        "-i", "--input_data_json_path",
+        required=True,
+        help="Path to input JSON data file"
+    )
+    parser.add_argument(
+        "-o", "--output_dir",
+        required=True,
+        help="Output directory for results"
+    )
+    parser.add_argument(
+        "-m", "--model_name",
+        required=True,
+        help="Model name (e.g., gpt-4o-mini)"
+    )
+    parser.add_argument(
+        "--task_type",
+        default="aviation_exam",
+        help="Task type for prompt templates"
+    )
+    parser.add_argument(
+        "--num_examples",
+        type=int,
+        default=3,
+        help="Number of few-shot examples"
+    )
+    parser.add_argument(
+        "--num_questions",
+        type=int,
+        help="Limit number of questions (default: all)"
+    )
+    parser.add_argument(
+        "--schema_class",
+        help="Pydantic schema class (e.g., MCQAResponse)"
+    )
+    parser.add_argument(
+        "--field_to_extract",
+        type=parse_fields_to_extract,
+        default="answer",
+        help="Field(s) to extract from structured response. Can be single field, "
+             "comma-separated list, or 'none' for full response"
+    )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.1,
+        help="Generation temperature"
+    )
+    parser.add_argument(
+        "--max_tokens",
+        type=int,
+        default=150,
+        help="Maximum tokens to generate"
+    )
+
+
+def create_parser() -> argparse.ArgumentParser:
+    """Create argument parser with subcommands for inference and evaluation.
+    
+    Creates a parser with three subcommands:
+    - inference: Run inference only
+    - evaluation: Run evaluation only
+    - both: Run inference followed by evaluation
+    
+    Returns:
+        Configured ArgumentParser with all subcommands.
+        
+    Example:
+        >>> parser = create_parser()
+        >>> args = parser.parse_args(['both', '-i', 'mcqa.json', ...])
+    """
     parser = argparse.ArgumentParser(description="MCQA script")
     subparsers = parser.add_subparsers(dest="mode", required=True)
-
-    # Shared inference arguments
-    def add_inference_args(p):
-        p.add_argument("-i", "--input_data_json_path", required=True,
-                      help="Path to input JSON data file")
-        p.add_argument("-o", "--output_dir", required=True,
-                      help="Output directory for results")
-        p.add_argument("-m", "--model_name", required=True,
-                      help="Model name (e.g., gpt-4o-mini)")
-        p.add_argument("--task_type", default="aviation_exam",
-                      help="Task type for prompt templates")
-        p.add_argument("--num_examples", type=int, default=3,
-                      help="Number of few-shot examples")
-        p.add_argument("--num_questions", type=int,
-                      help="Limit number of questions (default: all)")
-        p.add_argument("--schema_class",
-                      help="Pydantic schema class (e.g., MCQAResponse)")
-        p.add_argument("--field_to_extract", type=parse_fields_to_extract, default="answer",
-                       help="Field(s) to extract from structured response. Can be single field, comma-separated list, or 'none' for full response")
-        p.add_argument("--temperature", type=float, default=0.1,
-                      help="Generation temperature")
-        p.add_argument("--max_tokens", type=int, default=150,
-                      help="Maximum tokens to generate")
 
     # Inference subparser
     inf_parser = subparsers.add_parser("inference", help="Run inference only")
@@ -134,22 +232,55 @@ def create_parser():
 
     # Evaluation subparser  
     eval_parser = subparsers.add_parser("evaluation", help="Run evaluation only")
-    eval_parser.add_argument("-i", "--input_data_json_path", required=True,
-                            help="Path to input JSON data file")
-    eval_parser.add_argument("-o", "--output_dir", required=True,
-                            help="Output directory for results")
-    eval_parser.add_argument("--predictions_file", required=True,
-                            help="Path to predictions JSON file")
+    eval_parser.add_argument(
+        "-i", "--input_data_json_path",
+        required=True,
+        help="Path to input JSON data file"
+    )
+    eval_parser.add_argument(
+        "-o", "--output_dir",
+        required=True,
+        help="Output directory for results"
+    )
+    eval_parser.add_argument(
+        "--predictions_file",
+        required=True,
+        help="Path to predictions JSON file"
+    )
 
     # Both subparser
-    both_parser = subparsers.add_parser("both", help="Run inference + evaluation")
+    both_parser = subparsers.add_parser(
+        "both",
+        help="Run inference + evaluation"
+    )
     add_inference_args(both_parser)
 
     return parser
 
 
-def main():
-    """Main entry point."""
+def main() -> None:
+    """Main entry point for the MCQA script.
+    
+    Parses command-line arguments, adds timestamp to output directory,
+    and executes the requested mode (inference, evaluation, or both).
+    
+    The script supports three modes:
+    1. inference: Generate predictions from a model
+    2. evaluation: Evaluate existing predictions
+    3. both: Run inference then evaluation in sequence
+    
+    Example:
+        Run inference only:
+        $ python mcqa.py inference -i mcqa_data.json -o results -m gpt-4
+        
+        Run evaluation only:
+        $ python mcqa.py evaluation -i mcqa_data.json -o results \\
+            --predictions_file results_20240101_120000/predictions.json
+        
+        Run both:
+        $ python mcqa.py both -i mcqa_data.json -o results -m gpt-4 \\
+            --schema_class MCQAResponse --field_to_extract answer
+    """
     parser = create_parser()
     args = parser.parse_args()
 

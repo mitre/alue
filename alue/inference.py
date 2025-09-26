@@ -10,7 +10,7 @@ from typing import List, Optional, Type, Union, Dict, Any
 
 from pydantic import BaseModel
 
-from .model_utils import create_model_engine
+from alue.model_utils import create_model_engine
 from tqdm import tqdm
 
 

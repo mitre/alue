@@ -9,7 +9,7 @@ import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
-from .settings import get_settings
+from alue.settings import get_settings
 
 
 class BaseInferenceEngine(ABC):

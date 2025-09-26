@@ -1,18 +1,27 @@
+"""LLM-based judges for evaluating RAG and summarization systems.
+
+This module provides various judges that use LLMs to evaluate the quality of
+generated responses, including context relevancy, composite correctness, and
+claim decomposition metrics. All judges use structured generation for reliable
+scoring.
+"""
+
+
 # General Imports
 import json
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, List
 
 import numpy as np
 import outlines
-from dotenv import load_dotenv
+
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
 # LLM Specific Imports
 from pydantic import BaseModel, conlist
 from tqdm import tqdm
-from .inference import run_llm_inference
-from .rag_utils import ChromaInterface
+from alue.inference import run_llm_inference
+from alue.rag_utils import ChromaInterface
 
 outlines.disable_cache()
 
@@ -37,22 +46,58 @@ class Claim(BaseModel):
 
 
 class BaseLLMJudge(ABC):
-    """Abstract base class for all LLM-based evaluation judges"""
+    """Abstract base class for all LLM-based evaluation judges.
+    
+    Provides common functionality for decomposing text into claims and
+    checking claim support. Concrete judge classes should inherit from
+    this and implement the evaluate() method.
+    
+    Attributes:
+        model_name: Name or identifier of the LLM to use for judging.
+        task_type: Type of task being evaluated (e.g., 'RAG', 'summarization').
+    """
 
     def __init__(
         self,
         model_name: str,  
         task_type: str = "RAG",
     ):
-        load_dotenv()
+        """Initialize the base LLM judge.
+        
+        Args:
+            model_name: Model identifier for the judge LLM.
+            task_type: Type of task being evaluated. Defaults to 'RAG'.
+        """
+    
         print(f"[BaseLLMJudge] Initializing {self.__class__.__name__}")
 
         self.model_name = model_name
         self.task_type = task_type
 
 
-    def decompose_claims(self, input_text: str) -> list[str]:
-        """Decompose claims from input text using structured generation"""
+    def decompose_claims(self, 
+                         input_text: str) -> List[str]:
+        """Decompose input text into individual atomic claims.
+        
+        Uses structured generation to break down text into 1-10 independent,
+        factual statements. Each claim is self-contained and includes necessary
+        context.
+        
+        Args:
+            input_text: Text to decompose into claims.
+            
+        Returns:
+            List of claim strings. Returns empty list if decomposition fails.
+            
+        Example:
+            >>> judge = SomeConcreteJudge(model_name='gpt-4')
+            >>> claims = judge.decompose_claims(
+            ...     "Paris is the capital of France. It has 2 million people."
+            ... )
+            >>> print(claims)
+            ['Paris is the capital of France', 
+             'Paris has a population of 2 million people']
+        """
         print(f"[BaseLLMJudge] Decomposing claims for input: {input_text[:50]}...")
 
         # System prompt with decomposition instructions
@@ -96,8 +141,19 @@ class BaseLLMJudge(ABC):
             print(f"[BaseLLMJudge] Error in claim decomposition: {e}")
             return []
         
-    def _context_support_claim_check(self, claim: str, context: str) -> dict:
-        """Check if the claim is supported by the context"""
+    def _context_support_claim_check(self, 
+                                     claim: str, 
+                                     context: str) -> Dict[str, Any]:
+        """Check if a claim is supported by the provided context.
+        
+        Args:
+            claim: The claim to verify.
+            context: Context text to check against.
+            
+        Returns:
+            Dictionary with 'score' (0 or 1) and optionally 'explanation'.
+            Returns {'score': 0} if check fails.
+        """
         print("[CompositeCorrectnessJudge] Checking if context supports claim.")
 
         system_prompt = """You are an expert evaluation system. Given a claim and context information, evaluate whether the claim is supported by the provided context.
@@ -134,7 +190,18 @@ class BaseLLMJudge(ABC):
 
     @abstractmethod
     def evaluate(self, *args, **kwargs) -> Any:
-        """Abstract method for evaluation logic - to be implemented by specific judges"""
+        """Evaluate the quality of generated content.
+        
+        This method must be implemented by concrete judge classes to provide
+        task-specific evaluation logic.
+        
+        Args:
+            *args: Positional arguments specific to the judge implementation.
+            **kwargs: Keyword arguments specific to the judge implementation.
+            
+        Returns:
+            Evaluation results in a format specific to the judge type.
+        """
         pass
 
 
@@ -144,7 +211,16 @@ class BaseLLMJudge(ABC):
 
 
 class ContextRelevancyJudge(BaseLLMJudge):
-    """Judge for evaluating context relevancy in RAG systems"""
+    """Judge for evaluating context relevancy in RAG systems.
+    
+    Evaluates whether retrieved context chunks are relevant to answering
+    the user's query. Useful for assessing retrieval quality.
+    
+    Attributes:
+        explanations: Whether to generate explanations for scores.
+        chroma_interface: Interface to ChromaDB for retrieving contexts.
+        collection: ChromaDB collection containing document chunks.
+    """
 
     def __init__(
         self,
@@ -153,6 +229,14 @@ class ContextRelevancyJudge(BaseLLMJudge):
         explanations: bool = False,
         **kwargs,
     ):
+        """Initialize the context relevancy judge.
+        
+        Args:
+            collection_name: Name of ChromaDB collection to query.
+            database_path: Path to ChromaDB database.
+            explanations: Whether to include explanations in scores. Defaults to False.
+            **kwargs: Additional arguments passed to BaseLLMJudge.
+        """
         print("[ContextRelevancyJudge] Initializing...")
         super().__init__(**kwargs)
 
@@ -161,8 +245,19 @@ class ContextRelevancyJudge(BaseLLMJudge):
         self.collection = self.chroma_interface.get_or_create_collection(collection_name)
         print("[ContextRelevancyJudge] ChromaDocumentStore initialized.")
 
-    def _load_from_predictions_file(self, filename: str) -> list[dict]:
-        """Load data from a predictions.json format file"""
+    def _load_from_predictions_file(self, 
+                                    filename: str) -> List[Dict[str, Any]]:
+        """Load prediction data from a JSON file.
+        
+        Expects predictions.json format with predicted_doc_ids that will be
+        used to retrieve contexts from ChromaDB.
+        
+        Args:
+            filename: Path to predictions JSON file.
+            
+        Returns:
+            List of dictionaries containing question, reference, answer, and contexts.
+        """
         print(f"[ContextRelevancyJudge] Loading predictions from {filename}")
 
         with open(filename) as f:
@@ -200,8 +295,28 @@ class ContextRelevancyJudge(BaseLLMJudge):
             filename: str,
             store_output: bool = True,
             output_path: str = "context_rel.json",
-        ) -> list[dict]:
-        """Calculate Context Relevancy Scores for the entire file"""
+        ) -> List[Dict[str, Any]]:
+        """Calculate context relevancy scores for all predictions in a file.
+        
+        For each question-answer pair, evaluates whether each retrieved context
+        chunk is relevant to answering the question.
+        
+        Args:
+            filename: Path to predictions JSON file.
+            store_output: Whether to save results to disk. Defaults to True.
+            output_path: Where to save results. Defaults to 'context_rel.json'.
+            
+        Returns:
+            List of evaluation results with context relevancy scores.
+            
+        Example:
+            >>> judge = ContextRelevancyJudge(
+            ...     collection_name='docs',
+            ...     database_path='./chroma_db',
+            ...     model_name='gpt-4'
+            ... )
+            >>> results = judge.evaluate('predictions.json')
+        """
         print(f"[ContextRelevancyJudge] Starting evaluation for {filename}")
 
         dataset = self._load_from_predictions_file(filename)
@@ -254,8 +369,6 @@ class ContextRelevancyJudge(BaseLLMJudge):
                     f"[ContextRelevancyJudge] Context Relevancy Score generated for context {curr_context_id}"
                 )
 
-                
-
                 context_scores.append(
                     {
                         curr_context_id: retrieved_context,
@@ -282,19 +395,42 @@ class ContextRelevancyJudge(BaseLLMJudge):
         return evaluated_output
 
 class CompositeCorrectnessJudge(BaseLLMJudge):
-    """Judge for evaluating composite correctness in RAG Q&A systems"""
+    """Judge for evaluating composite correctness in RAG Q&A systems.
+    
+    Decomposes answers into claims and evaluates each claim's correctness
+    by checking if it's supported by the reference answer or retrieved contexts.
+    Provides a nuanced correctness score that accounts for partial correctness.
+    
+    Attributes:
+        explanations: Whether to generate explanations for scores.
+    """
 
     def __init__(
         self,
         explanations: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ):
+        """Initialize the composite correctness judge.
+        
+        Args:
+            explanations: Whether to include explanations in scores. Defaults to False.
+            **kwargs: Additional arguments passed to BaseLLMJudge.
+        """
         print("[CompositeCorrectnessJudge] Initializing...")
         super().__init__(**kwargs)
         self.explanations = explanations
 
-    def _process_data(self, dataset: list[dict]) -> list[dict]:
-        """Creates the dataset with the claim decompositions"""
+    def _process_data(self, 
+                      dataset: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Decompose answers into claims for each item in the dataset.
+        
+        Args:
+            dataset: List of dictionaries with 'question', 'reference', 'answer',
+                and 'context' keys.
+                
+        Returns:
+            Dataset with added 'decomposed_response' field containing claim lists.
+        """
         print("[CompositeCorrectnessJudge] Processing data for claim decomposition...")
 
         overall_dataset = []
@@ -314,8 +450,18 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
         print("[CompositeCorrectnessJudge] Data processing complete.")
         return overall_dataset
 
-    def _main_idea_check(self, question: str, claim: str) -> dict:
-        """Check if the claim is a main idea in answering the question"""
+    def _main_idea_check(self, 
+                         question: str, 
+                         claim: str) -> Dict[str, Any]:
+        """Check if a claim directly answers the question.
+        
+        Args:
+            question: The question being answered.
+            claim: A claim from the generated answer.
+            
+        Returns:
+            Dictionary with 'score' (0 or 1) and optionally 'explanation'.
+        """
         print(f"[CompositeCorrectnessJudge] Checking if claim is main idea: {claim}")
 
         system_prompt = """You are an expert evaluation system. Given a question and a claim, evaluate whether the claim directly answers any part of the question.
@@ -350,8 +496,18 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
 
         return main_idea
 
-    def _claim_contained_reference_check(self, claim: str, reference: str) -> dict:
-        """Check if the claim is contained in the reference response"""
+    def _claim_contained_reference_check(self, 
+                                         claim: str, 
+                                         reference: str) -> Dict[str, Any]:
+        """Check if a claim is contained in or supported by the reference answer.
+        
+        Args:
+            claim: A claim from the generated answer.
+            reference: The ground truth reference answer.
+            
+        Returns:
+            Dictionary with 'score' (0 or 1) and optionally 'explanation'.
+        """
         print(
             "[CompositeCorrectnessJudge] Checking if claim is contained in reference."
         )
@@ -389,8 +545,19 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
 
         return claim_contained
 
-    def _claim_contradicts_reference_check(self, claim: str, reference: str) -> dict:
-        """Check if the claim directly contradicts any part of the reference response"""
+    def _claim_contradicts_reference_check(self, 
+                                           claim: str, 
+                                           reference: str) -> Dict[str, Any]:
+        """Check if a claim contradicts the reference answer.
+        
+        Args:
+            claim: A claim from the generated answer.
+            reference: The ground truth reference answer.
+            
+        Returns:
+            Dictionary with 'score' (0 or 1) and optionally 'explanation'.
+            Score of 1 means the claim contradicts the reference.
+        """
         print("[CompositeCorrectnessJudge] Checking if claim contradicts reference.")
 
         system_prompt = """You are an expert evaluation system. Given a claim and a reference response, evaluate whether the claim directly contradicts any part of the reference response.
@@ -425,16 +592,39 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
             claim_contradicts = {"score": 0}
 
         return claim_contradicts
-
     
-
     def evaluate(
         self,
-        dataset: list[dict],
+        dataset: List[Dict[str, Any]],
         store_output: bool = True,
         output_path: str = "comp_correctness.json",
-    ) -> dict:
-        """Calculate Composite Correctness Scores for the dataset"""
+    ) -> Dict[str, Any]:
+        """Calculate composite correctness scores for the dataset.
+        
+        For each question-answer pair, decomposes the answer into claims and
+        evaluates each claim's correctness based on:
+        1. Whether it's in the reference answer
+        2. Whether it contradicts the reference
+        3. Whether it's supported by retrieved contexts
+        
+        Only questions with at least one correct main claim get a non-zero score.
+        
+        Args:
+            dataset: List of dicts with 'question', 'reference', 'answer', 'context'.
+            store_output: Whether to save results to disk. Defaults to True.
+            output_path: Where to save results. Defaults to 'comp_correctness.json'.
+            
+        Returns:
+            Dictionary with detailed per-question results and overall average score.
+            
+        Example:
+            >>> judge = CompositeCorrectnessJudge(
+            ...     model_name='gpt-4',
+            ...     explanations=True
+            ... )
+            >>> results = judge.evaluate(dataset)
+            >>> print(results['composite_correctness_average'])
+        """
         print("[CompositeCorrectnessJudge] Starting evaluation...")
 
         dataset = self._process_data(dataset)
@@ -607,7 +797,19 @@ class CompositeCorrectnessJudge(BaseLLMJudge):
 
 
 class ClaimDecompositionJudge(BaseLLMJudge):
-    """Judge for evaluating claim decomposition metrics with precision and recall"""
+    """Judge for evaluating claim decomposition quality in summarization.
+    
+    Evaluates summarization quality by decomposing both the reference and
+    predicted summaries into claims, then computing precision and recall
+    metrics. Claims are categorized as strong (matches reference), weak
+    (supported by input but not reference), or incorrect.
+    
+    Attributes:
+        explanations: Whether to generate explanations for scores.
+        w_strong: Weight for strong support claims in precision calculation.
+        w_weak: Weight for weak support claims in precision calculation.
+        w_incorrect: Penalty weight for incorrect claims in precision calculation.
+    """
 
     def __init__(
         self,
@@ -617,6 +819,15 @@ class ClaimDecompositionJudge(BaseLLMJudge):
         w_incorrect: float = 0.1,
         **kwargs,
     ):
+        """Initialize the claim decomposition judge.
+        
+        Args:
+            explanations: Whether to include explanations. Defaults to False.
+            w_strong: Weight for strong claims. Defaults to 1.0.
+            w_weak: Weight for weak claims. Defaults to 0.5.
+            w_incorrect: Penalty for incorrect claims. Defaults to 0.1.
+            **kwargs: Additional arguments passed to BaseLLMJudge.
+        """
         print("[ClaimDecompositionJudge] Initializing...")
         super().__init__(**kwargs)
         self.explanations = explanations
@@ -624,8 +835,19 @@ class ClaimDecompositionJudge(BaseLLMJudge):
         self.w_weak = w_weak
         self.w_incorrect = w_incorrect
 
-    def _load_from_predictions_file(self, filename: str) -> list[dict]:
-        """Load data from a predictions.json format file"""
+    def _load_from_predictions_file(self, 
+                                    filename: str) -> List[Dict[str, Any]]:
+        """Load summarization predictions from a JSON file.
+        
+        Expects format with 'narrative', 'ground_truth_summary', and
+        'predicted_summary' fields.
+        
+        Args:
+            filename: Path to predictions JSON file.
+            
+        Returns:
+            List of dictionaries with narrative, summaries, and index.
+        """
         print(f"[ClaimDecompositionJudge] Loading predictions from {filename}")
 
         with open(filename) as f:
@@ -652,8 +874,38 @@ class ClaimDecompositionJudge(BaseLLMJudge):
         filename: str,
         store_output: bool = True,
         output_path: str = "claim_decomposition.json",
-    ) -> dict:
-        """Calculate Claim Decomposition Scores for the entire file"""
+    ) -> Dict[str, Any]:
+        """Calculate claim decomposition precision and recall scores.
+        
+        For each summary pair:
+        1. Decomposes ground truth into claims validated against input
+        2. Decomposes predicted summary into claims
+        3. Classifies each predicted claim as strong/weak/incorrect
+        4. Computes weighted precision and recall
+        
+        Precision formula:
+        (w_strong * strong_claims + w_weak * weak_claims - w_incorrect * incorrect) / total_claims
+        
+        Recall formula:
+        (ground_truth_claims_covered) / total_ground_truth_claims
+        
+        Args:
+            filename: Path to predictions JSON file.
+            store_output: Whether to save results. Defaults to True.
+            output_path: Where to save results. Defaults to 'claim_decomposition.json'.
+            
+        Returns:
+            Dictionary with per-item precision, recall, and supporting matrices.
+            
+        Example:
+            >>> judge = ClaimDecompositionJudge(
+            ...     model_name='gpt-4',
+            ...     w_strong=1.0,
+            ...     w_weak=0.5,
+            ...     w_incorrect=0.1
+            ... )
+            >>> results = judge.evaluate('summarization_predictions.json')
+        """
         print(f"[ClaimDecompositionJudge] Starting evaluation for {filename}")
 
         dataset = self._load_from_predictions_file(filename)
@@ -814,5 +1066,3 @@ class ClaimDecompositionJudge(BaseLLMJudge):
 
         print("[ClaimDecompositionJudge] Evaluation complete.")
         return evaluated_output
-
-    """Judge for evaluating composite correctness in RAG Q&A systems"""

@@ -31,7 +31,7 @@ from unstructured.documents.elements import (
 )
 from unstructured.partition.pdf import partition_pdf
 
-from .settings import get_settings
+from alue.settings import get_settings
 
 
 def setup_logger(name: str) -> logging.Logger:

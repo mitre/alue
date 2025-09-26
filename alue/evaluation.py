@@ -14,16 +14,9 @@ from alue import squad_evaluation as squad_eval
 from alue.output_normalizations import normalize_tail_extraction_predictions
 from alue.llm_judge_metrics import ContextRelevancyJudge, CompositeCorrectnessJudge, ClaimDecompositionJudge
 from alue.doc_retrieval_metrics import overall_recall_at_k, recall_at_k_per_query
-# from haystack.components.builders import PromptBuilder
-# from huggingface_hub import InferenceClient
-# from inference import load_prompt_from_file
-# from io_utilities import get_definitions_terms_dataset
-from jinja2 import Template
-from openai import OpenAI
+
 from sklearn.metrics import accuracy_score, classification_report, f1_score
 from sklearn.preprocessing import MultiLabelBinarizer
-
-from schemas.extractive_qa.adjudicator_schema import Score
 from typing import Optional, Callable, Any, Dict
 
 
