@@ -6,46 +6,121 @@ from typing import Any
 from haystack.components.builders import PromptBuilder
 
 # from evaluation import ExtractiveQAEval
-from inference import SummarizationInference
-from io_utilities import get_summarization_dataset
-
-from alue import config
-
-# def run_extractive_qa_evaluation(args):
-#     eval = ExtractiveQAEval(
-#         data_file=args.input_data_json_path,
-#         pred_file=args.predictions_filename,
-#         out_dir=args.output_eval_res_dir,
-#         llm_judge_model=args.llm_judge_model
-#     )
-#     eval.perform_evaluation(llm_judge_examples=args.llm_judge_examples)
+from alue.data_utils import load_data
+from alue.prompt_utils import build_messages
+from alue.inference import run_llm_inference
+from alue.evaluation import SummarizationEval
+from .utils import load_schema, load_normalizer
+import json
 
 
-def run_summarization_inference(args):
-    generation_kwargs = {"return_full_text": False, "max_new_tokens": 512, "top_k": 0}
-    examples = get_summarization_dataset(
-        input_json_data_path=args.input_data_json_path,
-        load_examples=True,
-        nbr_examples=args.nbr_examples,
-        randomize_selection=args.randomize_selection,
-        randomize_order=args.randomize_order,
-        random_seed=args.random_seed,
+def run_inference(args):
+    """Run Summarization inference."""
+    print(f"Summarization Inference: {args.inference_model_name}")
+    print("=" * 50)
+
+    # Load data
+    print("Loading data...")
+    loader = load_data(args.input_data_json_path)
+    examples = loader.get_examples(num_examples=args.num_examples)
+    test_data = loader.get_test_data()
+
+    if args.num_questions:
+        test_data = test_data[:args.num_questions]
+
+    print(f"Loaded {len(test_data)} questions, using {len(examples)} examples")
+
+    # Build messages
+    print("Building messages...")
+    messages = []
+    ground_truth = []
+    question_ids = []
+    all_retrieved_doc_ids = []  
+    questions = []
+    ground_truth_answers = []
+
+    for item in test_data:
+        print(item)
+        
+        question = item["input"]
+        retrieved_docs = chroma.query_collection(
+            query=question,
+            collection_name=args.collection_name,
+            embedding_function=embedding_function,
+            n_results=args.top_k
+        )
+        
+
+        context_parts = []
+        for i, doc in enumerate(retrieved_docs):
+            context_parts.append(f"Document {i}:\n{doc['text']}")
+
+        context = "\n\n".join(context_parts)
+
+        message = build_messages(
+            task_type=args.task_type,
+            system_kwargs={"examples": examples},
+            user_kwargs={"query": question, "context": context}
+        )
+        messages.append(message)
+        ground_truth.append(item['output'])
+        question_ids.append(item["metadata"]['id'])
+        all_retrieved_doc_ids.append([doc["id"] for doc in retrieved_docs]) 
+        questions.append(question)
+        ground_truth_answers.append(item["output"])
+
+    # Load schema and run inference
+    schema = load_schema(args.schema_class)
+    
+    print("Running inference...")
+    predictions = run_llm_inference(
+        messages=messages,
+        model_name=args.inference_model_name,
+        schema=schema,
+        fields_to_extract=args.field_to_extract,
+        temperature=args.temperature,
+        max_tokens=args.max_tokens
     )
-    inference_pipeline = SummarizationInference(
-        model_type=args.model_type,
-        generation_kwargs=generation_kwargs,
-        prompt_template_path=args.prompt_template,
-        examples=examples,
-        use_aip=args.use_aip,
-        use_tgi=args.use_tgi,
-        quantized=args.quantized,
-        batch_size=args.batch_size,
-    )
-    inference_pipeline.full_inference(
-        input_data_json_path=args.input_data_json_path,
-        output_eval_res_dir=args.output_eval_res_dir,
-        batch_size=args.batch_size,
-    )
+
+
+    # Save results
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    # Save predictions with document IDs and questions in the desired format
+    predictions_dict = {}
+    for i, (pred, doc_ids, question, gt_answer) in enumerate(zip(predictions, all_retrieved_doc_ids, questions, ground_truth_answers)):
+        predictions_dict[str(i)] = {  # Use index as key like in your example
+            "answer": pred,
+            "ground_truth_answer": gt_answer,
+            "predicted_doc_ids": doc_ids,  # Already extracted document IDs
+            "question": question
+        }
+    
+    predictions_file = os.path.join(args.output_dir, "predictions.json")
+    with open(predictions_file, 'w') as f:
+        json.dump(predictions_dict, f, indent=2)
+
+    # Save full results (keeping the original format for other purposes)
+    results = {
+        "model": args.inference_model_name,
+        "task_type": args.task_type,
+        "num_questions": len(test_data),
+        "num_examples": args.num_examples,
+        "total": len(predictions),
+        "predictions": predictions,
+        "ground_truth": ground_truth,
+        "questions": [item['input'] for item in test_data],
+        "temperature": args.temperature
+    }
+    
+    results_file = os.path.join(args.output_dir, "results.json")
+    with open(results_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    print(f"Saved to: {args.output_dir}")
+
+    return predictions_file
+
 
 
 def run_summarization_both(args):

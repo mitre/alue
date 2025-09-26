@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from data_utils import (
+from alue.data_utils import (
     load_task_data,
     DataLoader,
 )
@@ -318,3 +318,27 @@ def test_site_licenses_rag_data_loader(current_dir):
         'Due to the recodification of the Commercial Space Launch Act in the federal\ncode, redesignated '
         'Authority to read: "51 U.S.C. Subtitle V, Ch. 509.'
     ))
+
+def test_summarization_data_loader(current_dir):
+    """Test the new JSONL format with split field for summarization task."""
+    
+    data_path = os.path.join(current_dir, "../data/", "asrs_summarization/asrs_summarization.jsonl")
+    examples, test_data = load_task_data(data_path)
+
+    # Test examples
+    assert len(examples) > 0, "Should have examples from the JSONL file"
+    assert "input" in examples[0], "Examples should have 'input' field"
+    assert "output" in examples[0], "Examples should have 'output' field" 
+    
+    # Verify it's actually loading from the "example" split
+    assert examples[0]['input'].startswith("After takeoff"), "Should match expected example content"
+    
+    # Test test data
+    assert len(test_data) > 0, "Should have test data from the JSONL file"
+    assert "input" in test_data[0], "Test data should have 'input' field"
+    assert "output" in test_data[0], "Test data should have 'output' field"
+    
+    # Verify examples and test data are different
+    assert len(examples) != len(test_data), "Examples and test data should have different lengths"
+    
+    print(f"✓ Loaded {len(examples)} examples and {len(test_data)} test items from JSONL")
