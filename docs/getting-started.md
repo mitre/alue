@@ -47,7 +47,7 @@ cp .env.example .env
 ```
 
 Then edit `.env` to provide API keys, model endpoints, and embedding configuration.
-(See [Configuration](../model-configuration.md) for the complete list of variables.)
+(See [Configuration](model-configuration.md) for the complete list of variables.)
 
 ---
 
