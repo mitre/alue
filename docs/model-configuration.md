@@ -259,6 +259,5 @@ EMBEDDING_ENDPOINT_TYPE=local
 * [Getting Started](getting-started.md) — Quick setup guide
 * [Models & Backends](running-models.md) — Detailed backend comparison
 * [Tasks](tasks/index.md) — Task-specific configuration requirements
-```
 
 

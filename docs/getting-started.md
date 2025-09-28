@@ -100,9 +100,3 @@ If successful, predictions will be written to `runs/mcqa_<timestamp>/predictions
   * [Extractive QA](tasks/extractive-qa.md) — Span extraction
 * [Creating Datasets](creating-datasets.md) — Dataset format specifications for each task type
 ```
-
-The key changes:
-1. **model-configuration.md** is now the comprehensive reference with tables, examples, troubleshooting, and backend-specific details
-2. **getting-started.md** is streamlined to just quick setup with minimal examples and clear pointers to the full reference
-3. No duplication - each page has a clear purpose
-4. Better user flow - quick start → detailed reference when needed

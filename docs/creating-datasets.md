@@ -274,4 +274,3 @@ The data loader (`alue.data_utils.load_data`) reads these files and exposes:
 * [MCQA](tasks/mcqa.md) — Prompt templates, schema, evaluation
 * [Summarization](tasks/summarization.md) — Claim-based evaluation settings
 * [Extractive QA](tasks/extractive-qa.md) — Token-level scoring and normalization
-```
