@@ -96,7 +96,7 @@ The entrypoint script `scripts/extractive_qa.py` supports three modes: **inferen
 ### Example: Run Inference Only
 
 ```bash
-python scripts/extractive_qa.py inference \
+python -m scripts.extractive_qa.py inference \
   -i data/extractive_qa/tail_number.json \
   -o runs/extractive_qa \
   -m gpt-4o-mini \
@@ -107,7 +107,7 @@ python scripts/extractive_qa.py inference \
 ### Example: Run Evaluation Only
 
 ```bash
-python scripts/extractive_qa.py evaluation \
+python -m scripts.extractive_qa.py evaluation \
   -i data/extractive_qa/tail_number.json \
   -o runs/extractive_qa \
   --predictions_file runs/extractive_qa/predictions.json \
@@ -117,7 +117,7 @@ python scripts/extractive_qa.py evaluation \
 ### Example: Run Inference + Evaluation
 
 ```bash
-python scripts/extractive_qa.py both \
+python -m scripts.extractive_qa.py both \
   -i data/extractive_qa/tail_number.json \
   -o runs/extractive_qa \
   -m gpt-4o-mini \
@@ -144,7 +144,7 @@ class TailNumberResponse(BaseModel):
 Run with schema enforcement:
 
 ```bash
-python scripts/extractive_qa.py inference \
+python -m scripts.extractive_qa.py inference \
   -i data/extractive_qa/tail_number.json \
   -o runs/extractive_qa \
   -m gpt-4o-mini \

@@ -85,7 +85,7 @@ The entrypoint script `scripts/mcqa.py` supports three modes: **inference**, **e
 ### Example: Run Inference Only
 
 ```bash
-python scripts/mcqa.py inference \
+python -m scripts.mcqa.py inference \
   -i data/mcqa/aviation_exam.json \
   -o runs/mcqa \
   -m gpt-4o-mini \
@@ -96,7 +96,7 @@ python scripts/mcqa.py inference \
 ### Example: Run Evaluation Only
 
 ```bash
-python scripts/mcqa.py evaluation \
+python -m scripts.mcqa.py evaluation \
   -i data/mcqa/aviation_exam.json \
   -o runs/mcqa \
   --predictions_file runs/mcqa/predictions.json
@@ -105,7 +105,7 @@ python scripts/mcqa.py evaluation \
 ### Example: Run Inference + Evaluation
 
 ```bash
-python scripts/mcqa.py both \
+python -m scripts.mcqa.py both \
   -i data/mcqa/aviation_exam.json \
   -o runs/mcqa \
   -m gpt-4o-mini \
@@ -138,7 +138,7 @@ class MCQAResponse(BaseModel):
 Run with schema enforcement:
 
 ```bash
-python scripts/mcqa.py inference \
+python -m scripts.mcqa.py inference \
   -i data/mcqa/aviation_exam.json \
   -o runs/mcqa \
   -m gpt-4o-mini \

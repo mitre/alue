@@ -556,7 +556,7 @@ All arguments from both inference and evaluation modes.
 
 To run the script in `inference` mode:
 ```bash
-python scripts/extractive_qa.py inference \
+python -m scripts.extractive_qa.py inference \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -568,7 +568,7 @@ python scripts/extractive_qa.py inference \
 
 To run the script in `evaluation` mode:
 ```bash
-python scripts/extractive_qa.py evaluation \
+python -m scripts.extractive_qa.py evaluation \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     --predictions_filename <predictions_filename>
@@ -577,7 +577,7 @@ python scripts/extractive_qa.py evaluation \
 To run the script in `both` mode:
 
 ```bash
-python scripts/extractive_qa.py both \
+python -m scripts.extractive_qa.py both \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -587,7 +587,7 @@ python scripts/extractive_qa.py both \
     --predictions_filename <predictions_filename>
 ```
 ```bash
-python scripts/extractive_qa.py both -i <input_data_json_path> \
+python -m scripts.extractive_qa.py both -i <input_data_json_path> \
 -o <output_eval_res_dir> \
 ```
 
@@ -596,7 +596,7 @@ python scripts/extractive_qa.py both -i <input_data_json_path> \
 
 * Run inference using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/extractive_qa.py inference \
+python -m scripts.extractive_qa.py inference \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -606,7 +606,7 @@ python scripts/extractive_qa.py inference \
 
 * Run evaluation using the predictions file `predictions.json` and store evaluation results in the `test` folder:
 ```bash
-python scripts/extractive_qa.py evaluation \
+python -m scripts.extractive_qa.py evaluation \
     -i dummy.json \
     -o test \
     --predictions_filename predictions.json
@@ -614,7 +614,7 @@ python scripts/extractive_qa.py evaluation \
 
 * Run both inference and evaluation using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/extractive_qa.py both \
+python -m scripts.extractive_qa.py both \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -755,7 +755,7 @@ All arguments from both inference and evaluation modes.
 
 To run the script in `inference` mode:
 ```bash
-python scripts/sequence_classification.py inference \
+python -m scripts.sequence_classification.py inference \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -766,7 +766,7 @@ python scripts/sequence_classification.py inference \
 
 To run the script in `evaluation` mode:
 ```bash
-python scripts/sequence_classification.py evaluation \
+python -m scripts.sequence_classification.py evaluation \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     --predictions_filename <predictions_filename>
@@ -774,7 +774,7 @@ python scripts/sequence_classification.py evaluation \
 
 To run the script in `both` mode:
 ```bash
-python scripts/sequence_classification.py both \
+python -m scripts.sequence_classification.py both \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -788,7 +788,7 @@ python scripts/sequence_classification.py both \
 
 * Run inference using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/sequence_classification.py inference \
+python -m scripts.sequence_classification.py inference \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -798,7 +798,7 @@ python scripts/sequence_classification.py inference \
 
 * Run evaluation using the predictions file `predictions.json`, normalize output as per for a `multi-class` task, with the task normalization name being `atc-dialogue-classification` and store evaluation results in the `test` folder:
 ```bash
-python scripts/sequence_classification.py evaluation \
+python -m scripts.sequence_classification.py evaluation \
     -i dummy.json \
     -o test \
     --normalize_output \
@@ -861,7 +861,7 @@ All arguments from both inference and evaluation modes.
 
 To run the script in `inference` mode:
 ```bash
-python scripts/token_classification_ner.py inference \
+python -m scripts.token_classification_ner.py inference \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -873,7 +873,7 @@ python scripts/token_classification_ner.py inference \
 
 To run the script in `evaluation` mode:
 ```bash
-python scripts/tocken_classification_ner.py evaluation \
+python -m scripts.tocken_classification_ner.py evaluation \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     --predictions_filename <predictions_filename>
@@ -882,7 +882,7 @@ python scripts/tocken_classification_ner.py evaluation \
 To run the script in `both` mode:
 
 ```bash
-python scripts/token_classification_ner.py both \
+python -m scripts.token_classification_ner.py both \
     -i <input_data_json_path> \
     -o <output_eval_res_dir> \
     -m <model_type> \
@@ -892,7 +892,7 @@ python scripts/token_classification_ner.py both \
     --predictions_filename <predictions_filename>
 ```
 ```bash
-python scripts/token_classification_ner.py both -i <input_data_json_path> \
+python -m scripts.token_classification_ner.py both -i <input_data_json_path> \
 -o <output_eval_res_dir> \
 ```
 
@@ -901,7 +901,7 @@ python scripts/token_classification_ner.py both -i <input_data_json_path> \
 
 * Run inference using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/token_classification_ner.py inference \
+python -m scripts.token_classification_ner.py inference \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -911,7 +911,7 @@ python scripts/token_classification_ner.py inference \
 
 * Run evaluation using the predictions file `predictions.json` and store evaluation results in the `test` folder:
 ```bash
-python scripts/token_classification_ner.py evaluation \
+python -m scripts.token_classification_ner.py evaluation \
     -i dummy.json \
     -o test \
     --predictions_filename predictions.json
@@ -919,7 +919,7 @@ python scripts/token_classification_ner.py evaluation \
 
 * Run both inference and evaluation using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/token_classification_ner.py both \
+python -m scripts.token_classification_ner.py both \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -933,7 +933,7 @@ python scripts/token_classification_ner.py both \
 
 * Run both inference and evaluation using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/sequence_classification.py both \
+python -m scripts.sequence_classification.py both \
     -i dummy.json \
     -o test \
     -m mistral_v1 \
@@ -978,7 +978,7 @@ Run the script with the following arguments:
 
 To run the script and set up the index:
 ```bash
-python scripts/rag_utils.py \
+python -m scripts.rag_utils.py \
     --use_local \
     --use_splitter \
     --split_by word \
@@ -1058,7 +1058,7 @@ All arguments from both inference and evaluation modes.
 
 To run the script in `inference` mode:
 ```bash
-python scripts/rag.py inference \
+python -m scripts.rag.py inference \
     --input_data_json_path <input_data_json_path> \
     --output_eval_res_dir <output_eval_res_dir> \
     --model_type <model_type> \
@@ -1077,7 +1077,7 @@ python scripts/rag.py inference \
 
 To run the script in `evaluation` mode:
 ```bash
-python scripts/rag.py evaluation \
+python -m scripts.rag.py evaluation \
     --input_data_json_path <input_data_json_path> \
     --output_eval_res_dir <output_eval_res_dir> \
     --predictions_filename <predictions_filename> \
@@ -1087,7 +1087,7 @@ python scripts/rag.py evaluation \
 To run the script in `both` mode:
 
 ```bash
-python scripts/rag.py both \
+python -m scripts.rag.py both \
     --input_data_json_path <input_data_json_path> \
     --output_eval_res_dir <output_eval_res_dir> \
     --model_type <model_type> \
@@ -1109,7 +1109,7 @@ python scripts/rag.py both \
 
 * Run inference using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/rag.py inference \
+python -m scripts.rag.py inference \
     --input_data_json_path dummy.json \
     --output_eval_res_dir test \
     --model_type mistral_v1 \
@@ -1119,7 +1119,7 @@ python scripts/rag.py inference \
 
 * Run evaluation using the predictions file `predictions.json` and store evaluation results in the `test` folder:
 ```bash
-python scripts/rag.py evaluation \
+python -m scripts.rag.py evaluation \
     --input_data_json_path dummy.json \
     --output_eval_res_dir test \
     --predictions_filename predictions.json \
@@ -1128,7 +1128,7 @@ python scripts/rag.py evaluation \
 
 * Run both inference and evaluation using the quantized `mistral_v1` model, input JSON dataset file called `dummy.json`, and store evaluation results in the `test` folder:
 ```bash
-python scripts/rag.py both \
+python -m scripts.rag.py both \
     --input_data_json_path dummy.json \
     --output_eval_res_dir test \
     --model_type mistral_v1 \

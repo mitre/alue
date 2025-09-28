@@ -27,7 +27,7 @@ No manual `venv` creation is needed.
 ```bash
 # create and activate a virtual environment
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # install dependencies
 pip install -r requirements.txt
@@ -37,17 +37,34 @@ pip install -r requirements.txt
 
 ## 2. Environment Configuration
 
-ALUE uses [`pydantic-settings`](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) to manage configuration.
-All variables can be set either via **environment variables** or a `.env` file at the project root.
-
-Start by creating a `.env` file:
+ALUE uses a `.env` file for configuration. Create one from the example:
 
 ```bash
 cp .env.example .env
 ```
 
-Then edit `.env` to provide API keys, model endpoints, and embedding configuration.
-(See [Configuration](model-configuration.md) for the complete list of variables.)
+Then edit `.env` to add your API keys and endpoints. At minimum, you'll need to configure:
+
+**For OpenAI (simplest):**
+```env
+ALUE_ENDPOINT_TYPE=openai
+ALUE_OPENAI_API_KEY=sk-...
+```
+
+**For local Ollama:**
+```env
+ALUE_ENDPOINT_TYPE=ollama
+ALUE_ENDPOINT_URL=http://localhost:11434
+```
+
+**For vLLM:**
+```env
+ALUE_ENDPOINT_TYPE=vllm
+ALUE_ENDPOINT_URL=http://localhost:8000/v1
+HF_TOKEN=hf_...
+```
+
+> **Note:** Different tasks require different configuration. RAG and Summarization tasks require additional LLM Judge and embedding settings. See the [Configuration Reference](model-configuration.md) for complete details on all available settings and backend-specific requirements.
 
 ---
 
@@ -60,10 +77,12 @@ To check that ALUE is installed and functional:
 pytest tests
 
 # or run a sample task (MCQA)
-python scripts/mcqa.py inference \
+python -m scripts.mcqa inference \
   -i data/aviation_knowledge_exam/3_1_aviation_test.json \
   -o runs/mcqa \
-  -m gpt-4o-mini
+  -m gpt-4o-mini \
+  --task_type aviation_exam \
+  --num_examples 3
 ```
 
 If successful, predictions will be written to `runs/mcqa_<timestamp>/predictions.json`.
@@ -72,6 +91,18 @@ If successful, predictions will be written to `runs/mcqa_<timestamp>/predictions
 
 ## Next Steps
 
-* [Models & Backends](running-models.md) — overview of supported inference and embedding engines.
-* [Configuration](model-configuration.md) — complete `.env` variables reference.
-* [Tasks](../tasks/rag.md) — detailed guides per task (RAG, MCQA, Summarization, etc.).
+* [Configuration Reference](model-configuration.md) — Complete `.env` variables reference with troubleshooting
+* [Models & Backends](running-models.md) — Overview of supported inference and embedding engines
+* [Tasks](tasks/index.md) — Detailed guides per task:
+  * [MCQA](tasks/mcqa.md) — Multiple choice question answering
+  * [RAG](tasks/rag.md) — Retrieval-augmented generation
+  * [Summarization](tasks/summarization.md) — Narrative summarization
+  * [Extractive QA](tasks/extractive-qa.md) — Span extraction
+* [Creating Datasets](creating-datasets.md) — Dataset format specifications for each task type
+```
+
+The key changes:
+1. **model-configuration.md** is now the comprehensive reference with tables, examples, troubleshooting, and backend-specific details
+2. **getting-started.md** is streamlined to just quick setup with minimal examples and clear pointers to the full reference
+3. No duplication - each page has a clear purpose
+4. Better user flow - quick start → detailed reference when needed
