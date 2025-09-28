@@ -39,9 +39,6 @@ ALUE provides:
 
 ---
 
-Here's the complete, improved Quickstart section for your `index.md`:
-
-```markdown
 ## Quickstart
 
 ### 1. Install dependencies
