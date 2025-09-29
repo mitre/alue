@@ -44,6 +44,12 @@ ALUE_ENDPOINT_TYPE=openai
 ALUE_OPENAI_API_KEY=sk-...
 ```
 
+> **Note:** Additional configuration required for some tasks:
+> - **RAG**: Requires `EMBEDDING_*` settings
+> - **RAG & Summarization**: Require `ALUE_LLM_JUDGE_*` settings for evaluation
+> 
+> See [Configuration Reference](docs/model-configuration.md) for complete setup.
+
 ### Run Your First Task
 
 ```bash
@@ -81,7 +87,22 @@ python -m scripts.mcqa both \
 **Metrics**: Accuracy
 
 ### Retrieval-Augmented Generation (RAG)
-Answer questions using retrieved document context from a vector database.
+
+#### Vector Database Set-up
+
+```bash
+python -m alue.rag_utils \
+  --document-directory ./tests/resources/ \
+  --database-path ./chroma_db \
+  --collection-name documents \
+  --output-path ./artifacts \
+  --partition-strategy hi_res \
+  --chunk-hard-max 1200 \
+  --chunk-soft-max 700 \
+  --overlap-size 50
+```
+
+#### Run RAG Inference + Evaluation
 
 ```bash
 python -m scripts.rag both \
