@@ -1,4 +1,5 @@
-# Aerospace Language Understanding Evaluation (ALUE)
+
+# ALUE: Aerospace Language Understanding and Evaluation
 
 <p align="center">
 <a href="https://arc.aiaa.org/doi/10.2514/6.2025-3247">
@@ -8,135 +9,248 @@
 
 ALUE (Aerospace Language Understanding Evaluation) is a comprehensive framework designed to facilitate the evaluation and inference of Language Learning Models (LLMs) on aerospace-specific datasets. The framework is user-friendly and versatile, supporting custom datasets, preferred models, user-defined prompts, and quantitative metrics of performance. Contact Eugene Mangortey (emangortey@mitre.org) with inquiries.
 
-## Quickstart
+## Key Features
+
+- **Multiple Task Types**: MCQA, Summarization, RAG, and Extractive QA
+- **Flexible Backends**: Works with OpenAI, vLLM, TGI, Ollama, Transformers, and more
+- **Advanced Evaluation**: Combines traditional metrics with LLM-as-judge evaluation
+
+## Quick Start
 
 ### Installation
 
-This code has only been tested on Python 3.10 and 3.11. Use other versions at your own risk. If you are installing PyTorch, please see [Using PyTorch with uv](https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index) for more information.
+```bash
+# Recommended: using uv
+uv sync
 
-This software uses the [uv](https://docs.astral.sh/uv/) package manager. You can follow the [installation instructions](https://docs.astral.sh/uv/#installation) for your operating system and then run the following to install dependencies:
-
-```sh
-$ uv sync
-```
-
-Using the command above will automatically create a Python virtual environment in the `.venv` directory.
-
-If you do not wish to use `uv`, then you can install the dependencies using `pip`:
-
-```sh
+# Alternative: using pip
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
-Note that will you need to create your own virtual environment.
 
-### Basic Usage
+### Configuration
 
-Once you have installed dependencies, then you need to:
+Create a `.env` file:
 
-1. Configure your models in `config.py`. See our instructions.
-2. Run your models either locally, using [TGI](https://huggingface.co/docs/text-generation-inference/en/), or an OpenAI-compatible endpoint. See our docs below on running models.
-3. Run an evaluation script with a dataset of your choice. You can also create your own dataset (see instructions below) .
-
-#### Configuring and Running Models
-
-ALUE supports running models stored locally on disk using available GPUs (full or quantized) or remotely, using the HuggingFace [Text Generation Interface (TGI)](https://huggingface.co/docs/text-generation-inference/en/) or an OpenAI-compatible model endpoint. Users will be able to decide how to run the models when launching any one of the scripts described below.
-
-The full list of models supported should be added to the config.py script.
-
-Example config.py script:
-
-```python
-MODELS = {
-    "llama_2_7b_chat": "/projects/alue/models/Llama-2-7b-chat-hf",
-    "llama_2_13b_chat": "/projects/alue/models/Llama-2-13b-chat-hf",
-    "llama_2_70b_chat": {
-        "aip_endpoint": "https://llama2-70b.k8s.tld",
-        "local_path": ""
-        },
-    "mistral_v1": "/projects/alue/models/Mistral-7B-Instruct-v0.1",
-    "mistral_v2": {
-        "aip_endpoint": "https://mistral-7b.k8s.tld",
-        "local_path": "/projects/alue/models/Mistral-7B-Instruct-v0.2",
-    },
-    "mixtral": {
-        "aip_endpoint": "https://mixtral-8x7b.k8s.tld",
-        "local_path": "/projects/alue/models/Mixtral-8x7B-Instruct-v0.1"
-    },
-}
-
-EMBEDDING_MODELS = {
-    "BAAI/bge-m3": {
-        "aip_endpoint": "https://embeddings-bge.k8s.tld/",
-        "local_path": ""
-    }
-}
-
-USE_TGI = True
-USE_AIP = False
-```
-
-##### Running Models locally
-
-For local models, you can specify the path to the model weights in the `config.py` file. Note that the model weights need to already be available on the local machine.
-
-For example: `"llama_2_7b_chat": "/projects/alue/models/Llama-2-7b-chat-hf"`
-
-For local models, you can specify the path to the model in the `config.py` file.
-
-
-##### Running Models Remotely
-
-For remote models, you can specify the endpoint in the `config.py` file.
-
-#### Text Generation Inference (TGI):
-
-Text Generation Inference (TGI) is a toolkit for deploying and serving Large Language Models (LLMs). TGI enables high-performance text generation for the most popular open-source LLMs, including Llama, Falcon, StarCoder, BLOOM, GPT-NeoX, and T5. More info [here](https://huggingface.co/docs/text-generation-inference/en/index).
-
-Using TGI can significantly speed up inference time.
-
-On 586 questions with Mistral-7b-v0.1-Instruct:
-Without TGI: 00:15:45
-
-With TGI: 00:04:43
-
-#### Setting up TGI
-
-To use the TGI endpoint, first modify the `run_tgi.sh` file to configure it to your needs in terms of GPU usage. Then run the script with the name of the model as an argument. The name of the model is the model directory name in `/path/to/models` (although this can be changed with a minor modification). For example, to run the TGI endpoint with Mistral V1, in `/projects/alue/models/Mistral-7B-Instruct-v0.1`, run the script as `sudo ./run_tgi.sh Mistral-7B-Instruct-v0.1`.
-
-
-**NOTE***: When running models quantized, add `quantize bitsandbytes-nf4` at the end of the `docker run command`. It wil look like the following:
 ```bash
-docker run -d \
-    --name tgi \
-    --gpus all \
-    --shm-size 1g \
-    -p 3000:80 -v $volume:/data \
-    --rm <docker_image_url>:$tgi_version \
-    --model-id $model_id \
-    --huggingface-hub-cache /data \
-    --num-shard $num_shard \
-    --max-input-length $max_input_length \
-    --max-batch-prefill-tokens $max_batch_prefill_tokens \
-    --max-total-tokens $max_total_tokens \
-    --quantize bitsandbytes-nf4
+cp .env.example .env
 ```
 
-Run the script once you have modified it with the following command:
+Minimal configuration for OpenAI:
+
+```env
+ALUE_ENDPOINT_TYPE=openai
+ALUE_OPENAI_API_KEY=sk-...
+```
+
+### Run Your First Task
+
 ```bash
-sudo ./run_tgi.sh
+# Multiple Choice QA example
+python -m scripts.mcqa inference \
+  -i data/aviation_knowledge_exam/3_1_aviation_test.json \
+  -o runs/mcqa \
+  -m gpt-4o-mini \
+  --task_type aviation_exam \
+  --num_examples 3
 ```
 
-Make sure to replace any paths with those for your setup.
+Results saved to `runs/mcqa_<timestamp>/predictions.json`
 
-#### Running Models on Endpoints
+## Supported Tasks
 
-The current ALUE configuration allows users to run models on endpoints.
+### Multiple Choice QA (MCQA)
+Evaluate model's ability to answer multiple choice questions with a single correct option.
 
-Please note the endpoints have to be hosted via TGI. This is a bit different than running the TGI local instance described above. The endpoints are accessible via the internet instead of running on localhost as with TGI local. The endpoints are listed in the `config.py` script.
+```bash
+python -m scripts.mcqa both \
+  -i data/mcqa/aviation_exam.json \
+  -o runs/mcqa \
+  -m gpt-4o-mini \
+  --task_type aviation_exam
+```
 
-If you have endpoints set up, ensure that the model has an associated `aip_endpoint` in the `config.py` script.
+**Metrics**: Accuracy
 
-Example: `"llama_2_7b_chat": "https://llama-2-7b-chat.k8s.tld"`.
+### Retrieval-Augmented Generation (RAG)
+Answer questions using retrieved document context from a vector database.
+
+```bash
+python -m scripts.rag both \
+  -i data/ASRS_rag/rag_qa.json \
+  -o runs/rag \
+  -m gpt-4o-mini \
+  --database-path ./chroma_db \
+  --collection-name documents \
+  --llm_judge_model_name gpt-4o-mini
+```
+
+**Metrics**: Recall@k, Context Relevancy, Composite Correctness
+
+### Summarization
+Generate concise summaries of aviation narratives.
+
+```bash
+python -m scripts.summarization both \
+  -i data/summarization/sample.jsonl \
+  -o runs/sum \
+  -m gpt-4o-mini \
+  --llm_judge_model_name gpt-4o-mini
+```
+
+**Metrics**: Precision, Recall, F1 (via claim decomposition)
+
+### Extractive QA
+Extract exact text spans from documents that answer questions.
+
+```bash
+python -m scripts.extractive_qa both \
+  -i data/extractive_qa/tail_number.json \
+  -o runs/extractive_qa \
+  -m gpt-4o-mini \
+  --task_type extract_tail_number
+```
+
+**Metrics**: Exact Match, F1 Score
+
+## Supported Backends
+
+### Inference Engines
+
+| Backend | Type | Description |
+|---------|------|-------------|
+| **OpenAI** | API | Direct OpenAI API access |
+| **vLLM** | API/Local | Fast inference with OpenAI-compatible API |
+| **TGI** | API | HuggingFace Text Generation Inference |
+| **Ollama** | API | Local model serving |
+| **Transformers** | Local | Direct HuggingFace transformers |
+
+### Embedding Providers (for RAG)
+
+- OpenAI embeddings
+- Ollama embeddings
+- HuggingFace embeddings
+- Local embeddings (default)
+- OpenAI-compatible endpoints
+
+## Configuration Examples
+
+### All-OpenAI (Simplest)
+```env
+ALUE_ENDPOINT_TYPE=openai
+ALUE_OPENAI_API_KEY=sk-...
+ALUE_LLM_JUDGE_ENDPOINT_TYPE=openai
+ALUE_LLM_JUDGE_OPENAI_API_KEY=sk-...
+EMBEDDING_ENDPOINT_TYPE=openai
+EMBEDDING_API_KEY=sk-...
+```
+
+### Local with Ollama
+```env
+ALUE_ENDPOINT_TYPE=ollama
+ALUE_ENDPOINT_URL=http://localhost:11434
+ALUE_LLM_JUDGE_ENDPOINT_TYPE=ollama
+ALUE_LLM_JUDGE_ENDPOINT_URL=http://localhost:11434
+EMBEDDING_ENDPOINT_TYPE=local
+```
+
+### Mixed (Recommended for Production)
+```env
+# Fast inference with vLLM
+ALUE_ENDPOINT_TYPE=vllm
+ALUE_ENDPOINT_URL=http://localhost:8000/v1
+
+# Separate judge to reduce bias
+ALUE_LLM_JUDGE_ENDPOINT_TYPE=openai
+ALUE_LLM_JUDGE_OPENAI_API_KEY=sk-...
+
+# Local embeddings (no API costs)
+EMBEDDING_ENDPOINT_TYPE=local
+```
+
+## Evaluation Modes
+
+All tasks support three modes:
+
+1. **Inference only** - Generate predictions
+2. **Evaluation only** - Evaluate existing predictions
+3. **Both** - Run inference then evaluation
+
+Example:
+```bash
+# Inference only
+python -m scripts.mcqa inference -i data.json -o runs -m gpt-4o-mini
+
+# Evaluation only
+python -m scripts.mcqa evaluation -i data.json -o runs --predictions_file runs/predictions.json
+
+# Both
+python -m scripts.mcqa both -i data.json -o runs -m gpt-4o-mini
+```
+
+## Advanced Features
+
+### LLM-as-Judge Evaluation
+
+For RAG and Summarization tasks, ALUE uses LLM judges for nuanced evaluation:
+
+- **Context Relevancy**: Assesses whether retrieved chunks are relevant
+- **Composite Correctness**: Evaluates answer factuality via claim decomposition
+- **Claim-based Scoring**: Precision/Recall/F1 for summaries
+
+### Structured Generation
+
+Use Pydantic schemas to enforce structured outputs:
+
+```bash
+python -m scripts.mcqa inference \
+  -i data.json \
+  -o runs \
+  -m gpt-4o-mini \
+  --schema_class MCQAResponse \
+  --field_to_extract answer
+```
+
+### Custom Templates
+
+Customize prompts via Jinja2 templates in `templates/<task>/`:
+- `system.jinja2` - System message with few-shot examples
+- `user.jinja2` - User query template
+
+### Vector Database for RAG
+
+Build ChromaDB from PDFs:
+
+```bash
+python -m alue.rag_utils \
+  --document-directory ./docs_pdfs \
+  --database-path ./chroma_db \
+  --collection-name documents \
+  --partition-strategy hi_res
+```
+
+## Documentation
+
+- **[Getting Started](docs/getting-started.md)** - Installation and setup
+- **[Configuration Reference](docs/model-configuration.md)** - Complete config guide
+- **[Models & Backends](docs/running-models.md)** - Backend comparison
+- **[Creating Datasets](docs/creating-datasets.md)** - Dataset format specs
+- **Tasks**:
+  - [MCQA](docs/tasks/mcqa.md)
+  - [RAG](docs/tasks/rag.md)
+  - [Summarization](docs/tasks/summarization.md)
+  - [Extractive QA](docs/tasks/extractive-qa.md)
+
+
+
+## Requirements
+
+- Python 3.10+ (3.11 partially tested)
+- Dependencies managed via `uv` or `pip`
+- API keys for chosen backend(s)
+- Optional: GPU for local model inference
+
 
 ## Contributing
 
@@ -153,17 +267,16 @@ Check out the [Contributing Guide](CONTRIBUTING.md) on how to contribute to the 
 
 If you have particular tool/database/software in mind that you want to add, you can also submit to this form and the ALUE team may implement them depending on our resource constraints.
 
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/alue/issues)
+- **Documentation**: [Full docs](docs/)
+
+---
+
+**Note**: ALUE has been tested primarily on Python 3.10. Other versions may work but are not officially supported.
 
 
-## Release Schedule
-
-To Be Determined.
-
-## Note
-
-- This release was frozen as of July 21, 2025 and was intended for the AIAA AVIATION 2025 conference.
-- ALUE itself is Apache 2.0-licensed, but certain integrated tools, databases, or software may carry more restrictive commercial licenses. Review each component carefully before any commercial use.
-- The MITRE Corporation and the Federal Aviation Administration (FAA) make no claims that this software will be maintained. Continued development is pursuant to FAA priorities, needs, and available funding.
 
 ## Citation
 
