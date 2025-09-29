@@ -53,7 +53,10 @@ python -m scripts.mcqa inference \
   -o runs/mcqa \
   -m gpt-4o-mini \
   --task_type aviation_exam \
-  --num_examples 3
+  --num_examples 3 \
+  --num_questions 2 \
+  --schema_class schemas.aviation_exam.schema.MCQAResponse \
+  --field_to_extract answer
 ```
 
 Results saved to `runs/mcqa_<timestamp>/predictions.json`
@@ -68,7 +71,11 @@ python -m scripts.mcqa both \
   -i data/mcqa/aviation_exam.json \
   -o runs/mcqa \
   -m gpt-4o-mini \
-  --task_type aviation_exam
+  --task_type aviation_exam \
+  --num_examples 3 \
+  --num_questions 2 \
+  --schema_class schemas.aviation_exam.schema.MCQAResponse \
+  --field_to_extract answer
 ```
 
 **Metrics**: Accuracy
@@ -78,7 +85,7 @@ Answer questions using retrieved document context from a vector database.
 
 ```bash
 python -m scripts.rag both \
-  -i data/ASRS_rag/rag_qa.json \
+  -i data/dummy_rag/rag_qa.json \
   -o runs/rag \
   -m gpt-4o-mini \
   --database-path ./chroma_db \
@@ -93,7 +100,7 @@ Generate concise summaries of aviation narratives.
 
 ```bash
 python -m scripts.summarization both \
-  -i data/summarization/sample.jsonl \
+  -i data/dummy_summarization/data.jsonl \
   -o runs/sum \
   -m gpt-4o-mini \
   --llm_judge_model_name gpt-4o-mini

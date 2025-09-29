@@ -185,7 +185,7 @@ def add_inference_args(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--task_type",
-        default="rag",
+        default="summarization",
         help="Task type for prompt templates"
     )
     parser.add_argument(
