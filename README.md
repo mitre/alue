@@ -113,10 +113,10 @@ Extract exact text spans from documents that answer questions.
 
 ```bash
 python -m scripts.extractive_qa both \
-  -i data/extractive_qa/tail_number.json \
+  -i data/ntsb_tail_extraction/ntsb_tail_extraction_dummy.json \
   -o runs/extractive_qa \
   -m gpt-4o-mini \
-  --task_type extract_tail_number
+  --task_type ntsb_extract_tail_number
 ```
 
 **Metrics**: Exact Match, F1 Score
@@ -196,7 +196,7 @@ python -m scripts.mcqa evaluation -i data.json -o runs --predictions_file runs/p
 python -m scripts.mcqa both -i data.json -o runs -m gpt-4o-mini
 ```
 
-## Advanced Features
+## Additional Configurable Features
 
 ### LLM-as-Judge Evaluation
 
