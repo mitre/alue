@@ -1,0 +1,12 @@
+__pycache__
+mistral_*_test
+roberta_*_test
+.flake8
+.ipynb_checkpoints/
+__pycache__/
+mypy.ini
+.env 
+tests/output/
+artifacts/
+chroma_db/
+runs/

@@ -1,0 +1,49 @@
+{
+    "examples": [
+        {
+            "query": "What is the purpose of FAA Order 8040.1C?",
+            "context": "This order describes the Federal Aviation Administration's (FAA) authority and assigns responsibility for the development and issuance of Airworthiness Directives (AD) in accordance with applicable statutes and regulations.",
+            "answer": "To describe the FAA's authority and assign responsibility for developing and issuing Airworthiness Directives in accordance with applicable statutes and regulations."
+        },
+        {
+            "query": "Which directorates have authority to issue Airworthiness Directives?",
+            "context": "The managers of the four Aircraft Certification Directorates (Engine and Propeller, Rotorcraft, Small Airplane, and Transport Airplane) have the authority and responsibility for the aircraft certification programs assigned to them and for the products under their geographical jurisdiction. Directorate managers may redelegate authority to issue ADs for their Directorate to the Assistant Directorate Manager, but no further.",
+            "answer": "The Engine and Propeller, Rotorcraft, Small Airplane, and Transport Airplane Certification Directorates have authority to issue ADs, and they may delegate this authority to Assistant Directorate Managers."
+        }
+    ],
+    "data": [
+        {
+            "title": "FAA Order 8040.1C - Airworthiness Directives",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": "What is the effective date of FAA Order 8040.1C on Airworthiness Directives?",
+                            "answers": [
+                                {
+                                    "text": "10/03/07",
+                                    "document_id": [
+                                        "faa_order_8040_1c"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1", 
+                            "question": "Which branch is delegated responsibility for assigning AD numbers and final printing and distribution of all ADs?",
+                            "answers": [
+                                {
+                                    "text": "The Aircraft Engineering Division, Delegation and Airworthiness Programs Branch, AIR-140",
+                                    "document_id": [
+                                        "faa_order_8040_1c"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,242 @@
+{
+    "examples": [
+        {
+            "query": "What strategies can NASA employ to enhance cybersecurity across its operations?",
+            "context": "To enhance cybersecurity across its operations, NASA can implement several strategies. These include adopting a zero-trust architecture, which assumes that threats could be internal or external and requires strict identity verification for every person and device trying to access resources. Regular security audits and vulnerability assessments can help identify and mitigate potential risks. Employee training programs focused on cybersecurity awareness can reduce the likelihood of human error leading to security breaches. Additionally, NASA can leverage advanced technologies such as artificial intelligence and machine learning to detect and respond to threats in real-time. Collaboration with other federal agencies and industry partners can also provide valuable insights and resources for strengthening cybersecurity measures.",
+            "answer": "Adopt zero-trust architecture, conduct regular audits, train employees, use AI/ML for threat detection, and collaborate with partners."
+        },
+        {
+            "query": "How does NASA ensure effective project management for its space missions?",
+            "context": "NASA ensures effective project management for its space missions through a structured framework that includes comprehensive planning, execution, and evaluation phases. The agency employs a stage-gate process, where projects must meet specific criteria at each stage before proceeding to the next. This approach helps manage risks and ensures alignment with mission objectives. NASA also utilizes integrated project teams that bring together experts from various disciplines to collaborate on complex challenges. Regular reviews and performance assessments are conducted to track progress and make necessary adjustments. The use of advanced project management tools and software aids in resource allocation, scheduling, and communication among team members.",
+            "answer": "Use a stage-gate process, form integrated teams, conduct regular reviews, and utilize advanced project management tools."
+        }
+    ],
+    "data": [
+        {
+            "title": "NASA Online Directives Information System",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": "Who has has a statutory mandate to promote economy, efficiency, and effectiveness in the administration of NASA\nprograms and operations and to prevent and detect crime, fraud, waste, abuse, and mismanagement in such\nprograms and operations?",
+                            "answers": [
+                                {
+                                    "text": "The Inspector General (IG) ",
+                                    "document_id": [
+                                        "bd19619b1e289651aa074a8226fcf1a6f814a940c34a02d7b9e8084c15a7dc8f"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1",
+                            "question": "What is the Privacy Act of 1974 about?",
+                            "answers": [
+                                {
+                                    "text": "The Privacy Act sets forth extensive requirements for\nthe management of personal information contained in a system of records (SOR), where such information is\nroutinely retrieved by a name or personal identifier unique to the individual.",
+                                    "document_id": [
+                                        "b1aabbb92ac25670a07aed126b445eb174a61b70ebaa3a20f2ce552d020193e9"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "question": "What law authorizes the Inspector General's statutory law enforcement authority?",
+                            "answers": [
+                                {
+                                    "text": "Inspector General Act of 1978, 5 U.S.C. App. 3.",
+                                    "document_id": [
+                                        "4a7774579488c254c0a9991b1680680122ce7d7f8bdc111e6596c233f82de418"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "question": "What is the role of NASA's Office of Inspector General (OIG)?",
+                            "answers": [
+                                {
+                                    "text": "The role of NASA's Office of Inspector General (OIG) is to promote economy, efficiency, and effectiveness in the administration of NASA programs and operations and to prevent and detect crime, fraud, waste, abuse, and mismanagement. The OIG conducts independent and objective audits, investigations, and other evaluations of Agency programs and operations. It also reviews and makes recommendations regarding existing and proposed legislation and regulations and keeps the NASA Administrator and Congress informed of problems in Agency programs and operations. The OIG has investigative jurisdiction for crimes and other violations of law related to NASA, coordinates with the U.S. Department of Justice on violations of Federal criminal and civil statutes, and serves as the focal point for referrals of violations of State and local laws.",
+                                    "document_id": [
+                                        "397440e320bcbeb2ce0df48ad12ae8a7b60a2152e7f27d6437656e0123aeed81",
+                                        " bd19619b1e289651aa074a8226fcf1a6f814a940c34a02d7b9e8084c15a7dc8f"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "4",
+                            "question": "What is the main purpose of NASA's Scientific and Technical Information (STI) management as mentioned in the NPD 2200.1D document?",
+                            "answers": [
+                                {
+                                    "text": "The main purpose of NASA's STI management is to manage and safeguard against inappropriate dissemination, as mandated by 51 U.S.C. SS 20101 et seq. and NPR 2810.7.",
+                                    "document_id": [
+                                        "15397407885b4b8bfe5b3cb5c32e773c78c624d4b5c2899a0ed0c8916cbeb090"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "5",
+                            "question": "Who is responsible for providing direction, oversight, and training for NASA's workplace violence prevention and response policy and procedures?",
+                            "answers": [
+                                {
+                                    "text": "The Chief Human Capital Officer for Human Capital Management, the Assistant Administrator for Protective Services, and the Chief Health and Medical Officer are responsible for providing direction, oversight, and training for NASA's workplace violence prevention and response policy and procedures. ",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6",
+                            "question": "Who are the ex-officio members of the Agency Workplace Violence Prevention and Threat Assessment Team?",
+                            "answers": [
+                                {
+                                    "text": "The NASA Office of the Inspector General will be an ex-officio member of the Agency Workplace Violence Prevention and Threat Assessment Team.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "7",
+                            "question": "Which office is responsible for managing and safeguarding against inappropriate dissemination of STI at NASA?",
+                            "answers": [
+                                {
+                                    "text": "The Office of the Chief Information Officer (CIO) is responsible for managing and safeguarding against inappropriate dissemination of STI at NASA.",
+                                    "document_id": [
+                                        "15397407885b4b8bfe5b3cb5c32e773c78c624d4b5c2899a0ed0c8916cbeb090"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "8",
+                            "question": "What is the role of the STRIVES system in NASA's STI management?",
+                            "answers": [
+                                {
+                                    "text": "The STRIVES system is used to review and approve for publication all applicable STI published or released by, or at the direction of, NASA.",
+                                    "document_id": [
+                                        "15397407885b4b8bfe5b3cb5c32e773c78c624d4b5c2899a0ed0c8916cbeb090"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9",
+                            "question": "Who is responsible for implementing the required Agency-wide process for STI management at NASA?",
+                            "answers": [
+                                {
+                                    "text": "STI Services is responsible for implementing the required Agency-wide process for STI management at NASA.",
+                                    "document_id": [
+                                        "15397407885b4b8bfe5b3cb5c32e773c78c624d4b5c2899a0ed0c8916cbeb090"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "10",
+                            "question": "Which office is responsible for providing oversight and training for NASA's workplace violence prevention and response policy and procedures?",
+                            "answers": [
+                                {
+                                    "text": "The Office of Protective Services is responsible for providing oversight and training for NASA's workplace violence prevention and response policy and procedures.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11",
+                            "question": "Who is responsible for establishing and properly training an Agency core Workplace Violence Prevention and Threat Assessment Team at NASA?",
+                            "answers": [
+                                {
+                                    "text": "The Chief Human Capital Officer for Human Capital Management, the Assistant Administrator for Protective Services, and the Chief Health and Medical Officer are responsible for establishing and properly training an Agency core Workplace Violence Prevention and Threat Assessment Team at NASA.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "12",
+                            "question": "Which office is responsible for providing direction for NASA's workplace violence prevention and response policy and procedures?",
+                            "answers": [
+                                {
+                                    "text": "The Chief Human Capital Officer for Human Capital Management is responsible for providing direction for NASA's workplace violence prevention and response policy and procedures.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "13",
+                            "question": "What is the role of the Office of the General Counsel in NASA's workplace violence prevention and response program?",
+                            "answers": [
+                                {
+                                    "text": "The Office of the General Counsel is responsible for evaluating and making recommendations regarding the Agency's workplace violence prevention and response program as a member of the Agency Threat Assessment Team.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "14",
+                            "question": "Which office is responsible for providing medical oversight for NASA's workplace violence prevention and response policy and procedures?",
+                            "answers": [
+                                {
+                                    "text": "The Office of the Chief Health and Medical Officer is responsible for providing medical oversight for NASA's workplace violence prevention and response policy and procedures. ",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "15",
+                            "question": "What is the role of the Office of Communications in NASA's workplace violence prevention and response program?",
+                            "answers": [
+                                {
+                                    "text": "The Office of Communications is responsible for providing communication support for NASA's workplace violence prevention and response program as needed.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "16",
+                            "question": "Which office is responsible for providing diversity and equal opportunity support for NASA's workplace violence prevention and response program?",
+                            "answers": [
+                                {
+                                    "text": "   The Office of Diversity and Equal Opportunity is responsible for providing diversity and equal opportunity support for NASA's workplace violence prevention and response program as needed.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "17",
+                            "question": "Which office is responsible for providing safety and mission assurance support for NASA's workplace violence prevention and response program?",
+                            "answers": [
+                                {
+                                    "text": "The Office of Safety and Mission Assurance is responsible for providing safety and mission assurance support for NASA's workplace violence prevention and response program as needed.",
+                                    "document_id": [
+                                        "397c12230e53c0ef86bc355ce1a26f0dbf541ce5f76237c2a8080df06e9dd966"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

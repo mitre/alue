@@ -1,0 +1,47 @@
+site_name: ALUE
+site_description: Aerospace Language Understanding Evaluation
+repo_url: https://github.com/mitre/alue
+repo_name: alue
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.highlight
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji
+  - attr_list
+
+plugins:
+  - search
+  - glightbox
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Models & Backends: running-models.md
+  - Configuration: model-configuration.md
+  - Datasets: creating-datasets.md
+  - Tasks:
+      - Overview: tasks-summary.md
+      - MCQA: tasks/mcqa.md
+      - RAG: tasks/rag.md
+      - Extractive QA: tasks/extractive-qa.md
+      - Summarization: tasks/summarization.md
+      - Classification: tasks/classification.md

@@ -1,0 +1,73 @@
+{
+    "examples": [
+        {
+            "query": "What are the benefits of using a model-based systems engineering (MBSE) approach?",
+            "context": "Model-based systems engineering (MBSE) offers several benefits that enhance the development and management of complex systems. By using models as the primary means of information exchange, MBSE improves communication among stakeholders and reduces ambiguity in requirements. It facilitates early detection of design errors and inconsistencies, allowing for timely corrections. MBSE also supports traceability and impact analysis, making it easier to manage changes throughout the system lifecycle. Additionally, the use of standardized modeling languages and tools enables better integration and interoperability across different teams and systems.",
+            "answer": "Improves communication, reduces ambiguity, facilitates error detection, supports traceability, and enables integration."
+        },
+        {
+            "query": "How can risk management be effectively integrated into the systems engineering process?",
+            "context": "Effective integration of risk management into the systems engineering process involves several key practices. First, risks should be identified and assessed early in the project lifecycle to understand their potential impact. A structured risk management plan should be developed, outlining strategies for mitigation, monitoring, and communication. Regular risk reviews and updates ensure that emerging risks are addressed promptly. Involving cross-functional teams in risk assessment can provide diverse perspectives and enhance the identification of potential issues. Finally, leveraging data analytics and simulation tools can improve the accuracy of risk predictions and the effectiveness of mitigation strategies.",
+            "answer": "Identify risks early, develop a risk management plan, conduct regular reviews, involve cross-functional teams, and use data analytics."
+        }
+    ],
+    "data": [
+        {
+            "title": "NASA Systems Engineering Handbook",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": "outline Product Realization Keys for systems engineering",
+                            "answers": [
+                                {
+                                    "text": "Product Realization Keys\nDefine and execute production activities.\nGenerate and manage requirements for off-the-shelf\nhardware/software products as for all other products.\nUnderstand the differences between verification testing and\nvalidation testing.\nConsider all customer, stakeholder, technical, programmatic, and\nsafety requirements when evaluating the input necessary to\nachieve a successful product transition.\nAnalyze for any potential incompatibilities with interfaces as\nearly as possible.\nCompletely understand and analyze all test data for trends and\nanomalies.\nUnderstand the limitations of the testing and any assumptions\nthat are made.\nEnsure that a reused product meets the verification and\nvalidation required for the relevant system in which it is to be\nused, as opposed to relying on the original verification and\nvalidation it met for the system of its original use. Then ensure\nthat it meets the same verification and validation as a purchased\nproduct or a built product. The \u00d2pedigree\u00d3 of a reused product in\nits original application should not be relied upon in a different\nsystem, subsystem, or application.",
+                                    "document_id": [
+                                        "091555a35adc6a49be6f9925373715f8cb0c6cf579b14273d375ab294d18c111"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1",
+                            "question": "where should lower-level products that are needed for assembly and integration be obtained from?",
+                            "answers": [
+                                {
+                                    "text": "Each of the lower-level products that is needed for assembly and\nintegration is obtained from the transitioning lower-level product\nowners or a storage facility as appropriate. Received products should\nbe inspected to ensure no damages occurred during the transitioning\nprocess.",
+                                    "document_id": [
+                                        "b3ee6924b72699621bbaf0f28f7576a3cb12b831c864dad2fa384e3319c8e3e0"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "question": "what are key outputs of Key outputs of validation?",
+                            "answers": [
+                                {
+                                    "text": "Key outputs of validation are:\nValidated end product: This is the end product that has\nsuccessfully passed validation and is ready to be transitioned to\nthe next product layer or to the customer.\nProduct validation results: These are the raw results of\nperforming the validations.\nProduct validation report: This report provides the evidence of\nproduct conformance with the stakeholder expectations that\nwere identified as being validated for the product at this layer. It\nincludes any nonconformance, anomalies, or other corrective\nactions that were taken.\nWork products: These include procedures, required personnel\ntraining, certifications, configuration drawings, and other\nrecords generated during the validation activities.",
+                                    "document_id": [
+                                        "a45497c10ab24872cd4a81df3c04c1e3d635f48fda4d94e2dba3b10b88ea2b87"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "question": "what is used to transition a verified and\nvalidated end product that has been generated by product\nimplementation or product integration to the customer at the next\nlevel in the system structure for integration into an end product or, for\nthe top-level end product, transitioned to the intended end user?",
+                            "answers": [
+                                {
+                                    "text": "Product Transition Process",
+                                    "document_id": [
+                                        "db1174373578b1a43e63e78c39e8b63931c1505d8fa224663a4e0716d0bcbfcb"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "title": "Damages",
+    "type": "object",
+    "required": ["damages"],
+    "properties": {
+        "damages": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/damage"
+            },
+            "maxItems": 3
+        }
+    },
+    "definitions": {
+        "damage": {
+            "type": "object",
+            "description": "label for damage sustained by one party in the event.",
+            "required": ["damage_type","aircraft_description","tail_number"],
+            "properties": {
+                "damage_type": {
+                    "type": "string",
+                    "enum": ["NONE", "MINR", "SUBS", "DEST"]
+                },
+                "aircraft_description": {
+                    "type": "string"
+                },
+                "tail_number": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

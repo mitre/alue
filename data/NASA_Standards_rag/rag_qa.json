@@ -1,0 +1,145 @@
+{
+    "examples": [
+        {
+            "query": "What are the key components of a robust system engineering process?",
+            "context": "A robust system engineering process involves several key components to ensure the successful development and deployment of complex systems. These components include requirements analysis, where system needs are clearly defined and documented. Design synthesis follows, where solutions are developed to meet these requirements. Integration and testing are critical to verify that the system functions as intended. Risk management is also essential, involving the identification and mitigation of potential issues that could impact project success. Finally, continuous evaluation and feedback loops help refine the process and adapt to changing conditions or new information.",
+            "answer": "Requirements analysis, design synthesis, integration and testing, risk management, and continuous evaluation."
+        },
+        {
+            "query": "How can organizations foster a culture of innovation in engineering teams?",
+            "context": "Fostering a culture of innovation within engineering teams requires a supportive environment that encourages creativity and experimentation. Organizations can achieve this by providing resources and time for research and development activities. Encouraging cross-disciplinary collaboration can lead to new perspectives and ideas. Leadership should promote a mindset that values learning from failures as much as successes, reducing the fear of taking risks. Recognition and rewards for innovative solutions can motivate teams to push boundaries. Additionally, creating open channels for communication and idea sharing can help sustain an innovative culture.",
+            "answer": "Provide resources, encourage collaboration, promote learning from failures, recognize innovation, and maintain open communication."
+        }
+    ],
+    "data": [
+        {
+            "title": "NASA Standards",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": "What are the three aspects of MBSE?",
+                            "answers": [
+                                {
+                                    "text": "MBSE has three aspects: the modeling language, the modeling methodology, and the modeling",
+                                    "document_id": [
+                                        "e360ef9e44523bb8679ef962ff1a175e831875668f52fb976d787996ab4ea64d"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1",
+                            "question": "What should model design contain in order to allow the greatest flexibility in model implementation?",
+                            "answers": [
+                                {
+                                    "text": "To allow the greatest flexibility in model implementation, the model design should contain conceptual models, or diagrams, and requirements or specifications that are\nnot implementation specific.",
+                                    "document_id": [
+                                        "78c69651b14908db0fe2fe658a9931e6e214032941f21f61e318a1d31dc88c51"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "question": "What should be produced when the Model Construction Phase is complete?",
+                            "answers": [
+                                {
+                                    "text": "The following items should be produced when the Model Construction Phase is complete:\na. Model Implementation (Development) System (e.g., specific computers and software).\nb. Model (from Model Design).\nc. User\u00d5s Guide (1st Draft).\nd. Verification Test Procedures and Test Suites.\ne. Validation Test Procedures and Test Suites.",
+                                    "document_id": [
+                                        "78c69651b14908db0fe2fe658a9931e6e214032941f21f61e318a1d31dc88c51"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "question": "What is an essenstial outcome and product of empirical validation?",
+                            "answers": [
+                                {
+                                    "text": "An essential outcome and product of empirical validation is the criteria used to determine and\nthen establish whether or not an M&S is a \u00d2good,\u00d3 \u00d2good enough,\u00d3 or \u00d2value-added\u00d3 tool for the\nproject or program it is supporting. ",
+                                    "document_id": [
+                                        "404c2cd5077201053f50f61125bb197fefec5bbd7e5ee4baab564b1a3fa33a1e"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "4",
+                            "question": "when is in-flight configuration used?",
+                            "answers": [
+                                {
+                                    "text": "In-flight reconfiguration is used very carefully if the PLD is performing system-critical\nfunctions.",
+                                    "document_id": [
+                                        "efdeb37b7ef334cf2d35c202730fca4d7794b32543efef2d9e06f1b479ff72f4"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "5",
+                            "question": "What should be considered in post-route verification of PLDs?",
+                            "answers": [
+                                {
+                                    "text": "In PnR verification, consider the following:\na. warnings.\nReview all logs from vendor tools for errors, warnings, and notes. Disposition all\nb. Timing analysis:\n(1) Use the vendor's STA tool or an approved independent STA tool that can perform\nan equivalent analysis using SDF files generated by the vendor tool.\n(2) Check maximum timing with procured speed grade.\n(3) Check minimum timing using the fastest speed grade, in case the PLD vendor\ndelivers a faster PLD (from their current inventory).\n(4) Include delays to/from pads on the board.\n(5) Consider clock source and delays.\n(6) Include loading on outputs.\n(7) Get min/max data for any device interfacing with the PLD.\n(8) Analyze both best case and worst case timing to reveal any setup/hold time\nviolations.\n(9) A minimum 10 percent timing margin is suggested.\n(10) Carefully scrutinize logic crossing clock domains, and the symmetry\nrequirements of clocks when both edges are used.\n(11) Slew rates (especially clock slew).\nc. Review and verify pin report assignments.\nd. Run back-annotated simulations (minimum, typical, and maximum). Verify that\ntiming and functionality are both met.",
+                                    "document_id": [
+                                        "1e48fd3677ba8089eea5a88fb4c4218d2913bd42f2a0037558c10f76feb5922f"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6",
+                            "question": "what are the types of timing analyses for PLDs?",
+                            "answers": [
+                                {
+                                    "text": "The types of timing analyses are as follows:\na. Clock frequency.\nb. Reset pulse widths.\nc. Asynchronous input pulse widths.\nd. Synchronizer metastability settling time.\ne. Synchronous input setup and hold times.\nf. Combinatorial input pulse widths.\ng. Synchronous output delays.\nh. Combinatorial output delays.\ni. Clock domain crossings.",
+                                    "document_id": [
+                                        "90956180909a605c78456d61898ae85a344732cba3537b25283ff4558b7f7497"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "7",
+                            "question": "what are characteristics of a strong reporting culture?",
+                            "answers": [
+                                {
+                                    "text": "In a strong Reporting Culture, employees report hazards or safety concerns, while supervisors\nlisten and respond appropriately. The reporting system offers user-friendly tools, anonymous\noptions and remains separate from disciplinary processes. Reporting results in quick, accessible,\nand insightful feedback. In a healthy Reporting Culture, employees know important information\nmust be voiced, heard, and acted on with consideration of the context of events and the\nenvironment. This creates an atmosphere of trust between managers and workers.",
+                                    "document_id": [
+                                        "3d8b72412b9b22d0af65b3c28f044272285affcb0e70bf4b2c7450fdcd936472"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "8",
+                            "question": "what is a just culture?",
+                            "answers": [
+                                {
+                                    "text": "A Just Culture ensures an environment of open communication while balancing the need for\naction when warranted along with recognition when earned. In a Just Culture, employees\nunderstand the difference between acceptable and unacceptable behaviors. Fair business conduct\nfrom all employees creates and sustains and environment for employees to report safety\nconcerns.\nEmployees who fear unreasonable punishment or blame are less willing to inform an\norganization about their errors and other safety problems or hazards. A lack of trust on the part\nof employees reduces or eliminates the possibility of management being properly informed of\nrisks by their employees. Uninformed managers,\u00d3 \u00d2do not know that they do not know\u00d3\n.\nSupervisory decision-making relies on situational awareness. to prevent the same mishap from\nreoccurring when warranted.\nSupervisors should strive to praise in public and to counsel in private. This fosters an\nenvironment where supervisors and employees address their concerns in a professional manner,\nwithout the scrutiny or judgment of others not involved in the resolution of the concern. It also\nmodels good supervisory practices for younger employees.",
+                                    "document_id": [
+                                        "c49871ab4ec320ec00f17742be610c6132969dc0082197a6396832dcee44f869"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9",
+                            "question": "what is the membership of the NASA Safety Culture Working Group comprised of?",
+                            "answers": [
+                                {
+                                    "text": "The SCWG membership consists of\n\u00a5 A Chair representative from Office of Safety and Mission Assurance (OSMA)\n\u00a5 A Co-Chair\n\u00a5 Representatives from each Center\n\u00a5 OCHMO\n\u00a5 OCE\n\u00a5 Other Agency Working Groups / Technical Groups (e.g. Risk Management, Mishap)",
+                                    "document_id": [
+                                        "7b441870cf7e6c8d15f259243ea2903bf32f5db6a06b8fc58b4479d478cf3593"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

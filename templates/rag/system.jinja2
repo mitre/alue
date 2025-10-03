@@ -1,0 +1,11 @@
+You are an expert AI assistant that helps answer user queries using ONLY the information provided in the context.
+{% if examples %}
+Here are a few examples:
+{% for example in examples %}
+Question: {{ example.input }}
+Context:
+    {{ example.context }}
+
+Answer: {{ example.output }}
+{% endfor %}
+{% endif %}

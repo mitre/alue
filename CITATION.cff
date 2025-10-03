@@ -1,0 +1,81 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Aerospace Language Understanding Evaluation (ALUE): Large
+  Language Benchmark with Aerospace Datasets
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Eugene
+    family-names: Mangortey
+    email: emangortey@mitre.org
+    affiliation: The MITRE Corporation
+  - given-names: Kunal
+    family-names: Sarkhel
+    email: ksarkhel@mitre.org
+    affiliation: The MITRE Corporation
+    orcid: 'https://orcid.org/0000-0003-4721-9416'
+  - given-names: Satyen
+    family-names: Singh
+    email: ssingh@mitre.org
+    affiliation: The MITRE Corporation
+  - given-names: Shuo
+    family-names: Chen
+    email: chen@mitre.org
+    affiliation: The MITRE Corporation
+  - given-names: Bulent
+    family-names: Ayhan
+    email: bayhan@mitre.org
+    affiliation: The MITRE Corporation
+abstract: >-
+  Large Language Models(LLMs) present revolutionary potential
+  for the aviation industry, enabling stakeholders to derive
+  critical intelligence and improve operational efficiencies
+  through automation. However, given the safety-critical
+  nature of aviation, a rigorous domain-specific evaluation
+  of LLMs is paramount before their integration into
+  workflows. General-purpose LLM benchmarks often do not
+  capture the nuanced understanding of aerospace-specific
+  knowledge and the phraseology required for reliable
+  application. This paper introduces the Aerospace Language
+  Understanding Evaluation (ALUE) benchmark, an
+  aviation-specific framework designed for scalable
+  evaluation, assessment, and benchmarking of LLMs against
+  specialized aviation datasets and language tasks. ALUE
+  incorporates diverse datasets and tasks, including binary
+  and multiclass classification for hazard identification,
+  extractive question answering for
+
+  precise information retrieval (e.g., tail numbers,
+  runways), sentiment analysis, and multiclass token
+  classification for fine-grained analysis of air traffic
+  control communications. ALUE also introduces several
+  metrics for evaluating the correctness of generated
+  responses utilizing LLMs to identify and judge claims made
+  in generated responses. Our findings demonstrate that
+  structured prompts and in-context examples significantly
+  improve model performance, highlighting that general
+  models struggle with aviation tasks without such guidance
+  and often produce verbose or unstructured outputs. ALUE
+  provides a crucial tool for guiding the development and
+  safe deployment of LLMs tailored to the unique demands of
+  the aviation and
+
+  aerospace domains.
+keywords:
+  - aviation
+  - aerospace
+  - benchmark
+  - evaluation
+  - dataset
+  - LLM
+  - large language model
+license: Apache-2.0
+identifiers:
+  - type: doi
+    value: 10.2514/6.2025-3247
+date-released: 2021-08-11

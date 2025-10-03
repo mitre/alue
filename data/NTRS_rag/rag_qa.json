@@ -1,0 +1,49 @@
+{
+    "examples": [
+        {
+            "query": "What advancements have been made in the field of autonomous spacecraft navigation?",
+            "context": "Recent advancements in autonomous spacecraft navigation have significantly enhanced the ability of spacecraft to operate independently in space. These advancements include the development of sophisticated algorithms that enable real-time decision-making and path optimization. The integration of artificial intelligence and machine learning techniques allows spacecraft to adapt to changing conditions and unexpected obstacles. Additionally, improvements in sensor technology provide more accurate data for navigation systems, enhancing precision and reliability. These innovations are crucial for deep space missions, where communication delays with Earth make autonomous operation essential.",
+            "answer": "Development of sophisticated algorithms, integration of AI/ML, and improvements in sensor technology."
+        },
+        {
+            "query": "How is 3D printing being utilized in the construction of space habitats?",
+            "context": "3D printing is revolutionizing the construction of space habitats by enabling the in-situ manufacturing of structures using local materials. This technology reduces the need to transport large quantities of building materials from Earth, significantly lowering costs and logistical challenges. 3D printing allows for the creation of complex geometries that are optimized for strength and efficiency, which are essential for withstanding the harsh conditions of space. Additionally, the ability to rapidly prototype and iterate designs on-site enhances adaptability and innovation in habitat construction. This approach is being explored for potential use on the Moon and Mars, where local resources can be utilized to build sustainable living environments.",
+            "answer": "Enables in-situ manufacturing, reduces transport needs, allows complex geometries, and enhances adaptability."
+        }
+    ],
+    "data": [
+        {
+            "title": "NASA Technical Reports Server",
+            "paragraphs": [
+                {
+                    "qas": [
+                        {
+                            "id": "0",
+                            "question": "what is an economical way to manufacture voxels?",
+                            "answers": [
+                                {
+                                    "text": "injection molded chopped fiber composites offered\nan economical way to manufacture voxels that achieved performance regimes\nuseful for space structures",
+                                    "document_id": [
+                                        "f22d5d48c41e8f27bfe3c8e92630db56a4972f891c2b5379b0f9ad669cbf75eb"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1",
+                            "question": "what are the biggest cost drivers for SBSP?",
+                            "answers": [
+                                {
+                                    "text": "The biggest cost drivers for SBSP are launch and\nmanufacturing",
+                                    "document_id": [
+                                        "24e3ef07f656eceb725aea1dd03eac9a51a9a74dba279418e2e15fc5e1a3ba6e"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

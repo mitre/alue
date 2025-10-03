@@ -1,0 +1,16 @@
+{
+    "title": "Pirep",
+    "type": "object",
+    "required": ["is_pirep", "exact_phrase", "explanation"],
+    "properties": {
+        "is_pirep": {
+            "type": "boolean"
+        },
+        "exact_phrase": {
+            "type": "str"
+        },
+        "explanation": {
+            "type": "str"
+        }
+    }
+}
